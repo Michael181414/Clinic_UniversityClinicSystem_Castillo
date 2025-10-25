@@ -8,7 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 
-$clientId = $_SESSION['ClientID'];
+$clientType = $_POST['clientType'] ?? '';
 $pdo = pdo_connect_mysql();
 $user_data = getUserDataFromDatabase($pdo);
 
@@ -47,6 +47,18 @@ $user_data = getUserDataFromDatabase($pdo);
     </div>
     <div class="main-container">
         <nav class="navbar">
+            <a href="Profile.php">
+                <button class="buttons" id="profileBtn">
+                    <img src="UC-Client/assets/images/Usericon2.svg" class="button-icon-nav" loading="lazy">
+                    <span class="nav-text">Manage Profile</span>
+                </button>
+            </a>
+            <a href="Profile.php">
+                <button class="buttons" id="profileBtn">
+                    <img src="UC-Client/assets/images/Usericon2.svg" class="button-icon-nav" loading="lazy">
+                    <span class="nav-text">Manage Profile</span>
+                </button>
+            </a>
             <a href="Profile.php">
                 <button class="buttons" id="profileBtn">
                     <img src="UC-Client/assets/images/Usericon2.svg" class="button-icon-nav" loading="lazy">

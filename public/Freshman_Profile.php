@@ -45,7 +45,6 @@ try {
 }
 
 
-// ==================== Medical Dental History ====================
 $medicalData = [
     'KnownIllness' => 0,
     'KnownIllnessDetails' => '',
