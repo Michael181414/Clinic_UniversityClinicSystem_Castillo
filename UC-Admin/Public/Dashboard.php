@@ -1,6 +1,7 @@
 <?php
 include 'dashboard.dbf/fetch_dashboard_data.php';
 require 'dashboard.dbf/recent_consultations.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -98,7 +99,7 @@ require 'dashboard.dbf/recent_consultations.php';
                 </button>
             </a>
     -->
-            <a href="index.php">
+            <a href="../../index.php">
                 <button class="buttons" id="logoutbtn">
                     <img src="assets/images/logout-icon.svg" class="button-icon-nav" loading="lazy">
                     <span class="nav-text">Logout</span>

@@ -2,11 +2,6 @@
 session_start();
 require 'config/database.php';
 
-if (!isset($_SESSION['AdminID'])) {
-    header('Location: index.php');
-    exit;
-}
-
 $pdo = pdo_connect_mysql();
 
 // === CLIENT COUNTS ===

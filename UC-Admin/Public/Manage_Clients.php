@@ -79,7 +79,7 @@ if (isset($_GET['error'])) {
                 </button>
             </a>
     -->
-            <a href="">
+            <a href="../../index.php">
                 <button class="buttons" id="logoutbtn">
                     <img src="assets/images/logout-icon.svg" class="button-icon-nav" loading="lazy">
                     <span class="nav-text">Logout</span>
@@ -93,6 +93,18 @@ if (isset($_GET['error'])) {
                 <div class="clients-table-container">
                     <div class="table-header-controls">
                         <div class="table-left-controls">
+
+                            <div class="search-input-container rectangular-search">
+                                <div class="input-wrapper">
+                                    <i class="fas fa-search search-icon-inset"></i>
+                                    <input type="text"
+                                        id="searchInput"
+                                        name="id_filter"
+                                        placeholder="Search ID, Name, Email, Department, ClientType"
+                                        value="<?= htmlspecialchars($_GET['id_filter'] ?? '') ?>"
+                                        maxlength="400">
+                                </div>
+                            </div>
                             <div class="select-wrapper">
                                 <i class="fas fa-filter"></i>
                                 <select id="clientTypeDropdown" class="client-type-dropdown">
@@ -105,17 +117,6 @@ if (isset($_GET['error'])) {
                             </div>
 
 
-                            <div class="search-input-container rectangular-search">
-                                <div class="input-wrapper">
-                                    <i class="fas fa-search search-icon-inset"></i>
-                                    <input type="text"
-                                        id="searchInput"
-                                        name="id_filter"
-                                        placeholder="Search ID, Name, Email, Department, ClientType"
-                                        value="<?= htmlspecialchars($_GET['id_filter'] ?? '') ?>"
-                                        maxlength="200">
-                                </div>
-                            </div>
                         </div>
 
                         <button type="button" class="btn-add-patient" onclick="openAddPatientModal()">

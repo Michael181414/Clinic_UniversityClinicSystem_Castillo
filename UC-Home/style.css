@@ -75,9 +75,9 @@ html {
   border-radius: 50px;
   text-decoration: none;
   color: rgb(255, 255, 255);
-  display: flex;               /* Use flexbox */
-  align-items: center;         /* Vertically center text */
-  justify-content: center;     /* Horizontally center text */
+  display: flex; /* Use flexbox */
+  align-items: center; /* Vertically center text */
+  justify-content: center; /* Horizontally center text */
   transform: scale(1);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
   margin-right: 15px;
@@ -86,27 +86,22 @@ html {
   height: 50px;
 }
 
-
-
 .btnsecondary {
   background: linear-gradient(to left, #97cdff, #6da6f7);
   padding: 15px 30px;
   border-radius: 50px;
   text-decoration: none;
   color: rgb(255, 255, 255);
-  display: flex;               /* Use flexbox */
-  align-items: center;         /* Vertically center text */
-  justify-content: center;     /* Horizontally center text */
+  display: flex; /* Use flexbox */
+  align-items: center; /* Vertically center text */
+  justify-content: center; /* Horizontally center text */
   transform: scale(1);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
   margin-right: 15px;
   font-weight: 600;
   width: 160px;
-  height: 50px;                /* Optional: consistent button height */
+  height: 50px; /* Optional: consistent button height */
 }
-
-
-
 
 .btnprimary:hover,
 .btnsecondary:hover {
@@ -189,12 +184,11 @@ html {
 }
 
 .home-text h1 {
-  font-size: 3.8rem;      /* was 3rem — increased for better emphasis */
-  font-weight: 700;       /* makes it bolder */
-  line-height: 1.1;       /* tighter spacing for a cleaner look */
-  margin-bottom: 25px;    /* adds a bit more breathing room below */
+  font-size: 3.8rem; /* was 3rem — increased for better emphasis */
+  font-weight: 700; /* makes it bolder */
+  line-height: 1.1; /* tighter spacing for a cleaner look */
+  margin-bottom: 25px; /* adds a bit more breathing room below */
 }
-
 
 .home-actions {
   display: flex;
@@ -221,14 +215,20 @@ html {
 .btn.secondary:hover {
   background: #f0f0f0;
 }
-
 .home-image img {
-  width: 400px;
-  max-width: 90%;
-  border-radius: 50%;
-  box-shadow: var(--shadow);
+  width: 450px;
+  max-width: 100%;
+  background: none;
+  border: none;
+  border-radius: 0;
+  margin-top: -50px;
+  object-fit: contain;
 }
-
+.home-image {
+  position: relative;
+  top: 88px;
+  z-index: 2;
+}
 /* Intro */
 .home-intro {
   text-align: center;
@@ -446,8 +446,8 @@ footer {
 
 .footer-credit {
   display: flex;
-  justify-content: center;  /* centers content horizontally */
-  align-items: center;      /* centers vertically if there's height */
+  justify-content: center; /* centers content horizontally */
+  align-items: center; /* centers vertically if there's height */
   border-top: solid white 1px;
   padding-top: 25px;
   font-size: 0.9rem;

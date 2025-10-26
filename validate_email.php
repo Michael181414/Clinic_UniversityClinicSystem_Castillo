@@ -1,5 +1,5 @@
 <?php
-require '../config/database.php';
+require 'config/database.php';
 
 if (isset($_POST['email'])) {
     $email = trim($_POST['email']);

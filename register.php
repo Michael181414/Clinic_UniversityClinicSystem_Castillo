@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../config/database.php';
+require 'config/database.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($_POST['consent']) || $_POST['consent'] !== 'agree') {
@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($stmt->execute([$firstname, $lastname, $email, $sex, $dob, $hashed_password])) {
                     $clientId = $pdo->lastInsertId();
                     $_SESSION['ClientID'] = $clientId;
-                    header('Location: client_type_selection.php');
+                    header('Location:  public/client_type_selection.php');
                     exit;
                 } else {
                     $error = "Error creating account. Please try again.";
@@ -108,20 +108,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>University Clinic Sign Up</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="assets/js/script.js" defer></script>
-    <script src="UC-Client/assets/js/validation.js" defer></script>
+    <link rel="stylesheet" href=" public/styles.css">
+    <script src="public/assets/js/script.js" defer></script>
+    <script src="public/UC-Client/assets/js/validation.js" defer></script>
     <style>
         @font-face {
             font-family: "Montserrat";
-            src: url("assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("woff2");
+            src: url(" public/assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("woff2");
             font-weight: 400;
             font-style: normal;
         }
 
         @font-face {
             font-family: "Poppins";
-            src: url("assets/fonts/Poppins/Poppins-Medium.ttf") format("woff2");
+            src: url(" public/assets/fonts/Poppins/Poppins-Medium.ttf") format("woff2");
             font-weight: 400;
             font-style: normal;
         }
@@ -136,8 +136,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="register-container">
         <div class="left-section">
             <div class="overlay">
-                <img id="lspulogo" src="UC-Client/assets/images/Lspu logo.png" alt="LSPU Logo" class="logo">
-                <h1 id="welcomesmg">Welcome!<br>To University Clinic Online Form Submission</h1>
+                <img id="lspulogo" src=" public/UC-Client/assets/images/Lspu logo.png" alt="LSPU Logo" class="logo">
+                <h1 id="welcomesmg">Welcome to LSPU-LBC University Clinic </h1>
                 <p id="loginsmg"></p>
             </div>
         </div>
@@ -173,13 +173,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
 
-            <form id="registerForm" action="register.php" method="POST">
+            <form autocomplete="off" id="registerForm" action="register.php" method="POST">
                 <input type="hidden" name="consent" id="consentField" value="">
 
                 <div class="name-input-group">
                     <div class="input-container">
                         <label for="firstname">First Name</label>
-                        <input class="inputs" type="text" id="firstname" name="firstname" placeholder="First name" required>
+                        <input class="inputs" type="text" id="fname" name="firstname" placeholder="First name" required>
                     </div>
                     <div class="input-container">
                         <label for="lastname">Last Name</label>
@@ -202,12 +202,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="date" class="inputs" id="dob" name="dob" required>
                     </div>
                 </div>
-                <div id="dobError" class="error-message error-hidden"></div>
+                <div id="dobeError" class="error-message error-hidden"></div>
                 <div class="input-container">
                     <label for="email">Email</label>
                     <div class="input-group">
                         <i class="fas fa-envelope left-icon"></i>
-                        <input type="email" class="inputs" id="email" name="email" placeholder="Enter your email" required>
+                        <input type="email" class="inputs" id="email" name="email" placeholder="Enter your email" value="" required>
                     </div>
                 </div>
 
@@ -240,24 +240,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
     <script>
+        document.getElementById('fname').focus();
+
+
         const passwordInput = document.getElementById("password");
         const confirmpassInput = document.getElementById("confirm-password");
         const togglePassword = document.getElementById("togglePassword");
         const confirmtogglepass = document.getElementById("confirm-togglePassword");
 
-        togglePassword.addEventListener("click", function() {
-            const type = passwordInput.type === "password" ? "text" : "password";
-            passwordInput.type = type;
-            this.classList.toggle("fa-eye");
-            this.classList.toggle("fa-eye-slash");
-        });
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener("click", () => {
+                const type = passwordInput.type === "password" ? "text" : "password";
+                passwordInput.type = type;
+                togglePassword.classList.toggle("fa-eye");
+                togglePassword.classList.toggle("fa-eye-slash");
+            });
+        }
 
-        confirmtogglepass.addEventListener("click", function() {
-            const type = confirmpassInput.type === "password" ? "text" : "password";
-            confirmpassInput.type = type;
-            this.classList.toggle("fa-eye");
-            this.classList.toggle("fa-eye-slash");
-        });
+        if (confirmtogglepass && confirmpassInput) {
+            confirmtogglepass.addEventListener("click", () => {
+                const type = confirmpassInput.type === "password" ? "text" : "password";
+                confirmpassInput.type = type;
+                confirmtogglepass.classList.toggle("fa-eye");
+                confirmtogglepass.classList.toggle("fa-eye-slash");
+            });
+        }
     </script>
     <script>
         function showConsentModal() {

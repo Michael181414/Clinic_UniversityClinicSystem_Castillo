@@ -45,7 +45,8 @@ body {
 
 .register-container {
   min-height: 500px;
-  max-height: 900px;
+  max-height: 1000px;
+  overflow: auto;
 }
 
 /* ========== LEFT SECTION ========== */
@@ -55,13 +56,13 @@ body {
   flex: 1;
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  justify-content: flex-start;
+  align-items: left;
+
   background: linear-gradient(
       to right,
-    rgba(7, 72, 238, 0.69),
-      rgba(0, 153, 255, 0.404)    /* even lighter toward right */
+      rgba(7, 72, 238, 0.973),
+      rgba(0, 153, 255, 0.884) /* even lighter toward right */
     ),
     url("assets/images/clinic_door.png") center/cover no-repeat;
   border-radius: 15px;
@@ -71,12 +72,12 @@ body {
 
 /* Logo and Text */
 #lspulogo {
-  width: 170px;
-    max-width: auto;
-    height: auto;
-    border-radius: 50%;
-    margin-bottom: 10px;
-    margin-top: 50px;
+  width: 75px;
+  max-width: auto;
+  height: auto;
+  border-radius: 50%;
+  margin-bottom: 30px;
+  margin-top: 35px;
 }
 
 #welcomesmg {
@@ -123,7 +124,7 @@ body {
 .login-subtitle {
   font-size: 14px;
   color: #555;
-  margin-top: -30px;  /* moves both text lower since it pushes after title */
+  margin-top: -30px; /* moves both text lower since it pushes after title */
   margin-bottom: 28px;
 }
 
@@ -137,17 +138,18 @@ body {
 }
 
 .input-container label {
-  font-size: 14px;
+  font-size: clamp(1rem, 1vw, 1.5rem);
   font-weight: 500;
   margin-bottom: 6px;
   color: #333;
 }
 
 .inputs {
+  display: flex;
   width: 100%;
-  padding: 13px 40px;
+  padding: 13px 25px;
   border: 1px solid #ccc;
-  border-radius: 3px;
+  border-radius: 5px;
   font-size: 15px;
   font-family: "Poppins", sans-serif;
   background-color: #fff;
@@ -260,13 +262,18 @@ input[type="date"].inputs:hover::-webkit-calendar-picker-indicator {
 
 /* Align text and icons nicely */
 .input-group input {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 25px;
   width: 100%;
-  padding: 13px 40px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  font-size: 16px;
+  padding: 13px 28px;
+  border: 1px solid #c5c5c5;
+  border-radius: 5px;
+  font-size: clamp(1rem, 1vw, 1.5rem);
   font-family: "Poppins", sans-serif;
   transition: all 0.3s ease;
+  padding-left: 45px;
 }
 
 .input-group input:focus {
@@ -300,7 +307,7 @@ p {
 }
 
 a.register-link {
-  color: #0748ee;
+  color: #0763ee;
   font-weight: 500;
   text-decoration: none;
 }
@@ -308,7 +315,12 @@ a.register-link {
 a.register-link:hover {
   text-decoration: none;
 }
-
+.paragraph {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding-bottom: 15px;
+}
 /* ========== RESPONSIVE BREAKPOINTS ========== */
 
 /* Tablets */

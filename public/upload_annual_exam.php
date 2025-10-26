@@ -4,7 +4,10 @@ require_once __DIR__ . '/../config/database.php';
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
+if (!isset($_FILES['exam_file'])) {
+    echo json_encode(['status' => 'error', 'message' => 'No file uploaded.']);
+    exit;
+}
 $pdo = pdo_connect_mysql();
 
 header('Content-Type: application/json');

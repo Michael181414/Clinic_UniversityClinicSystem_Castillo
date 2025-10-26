@@ -335,7 +335,10 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                             alert(data.message || 'Upload failed.');
                         }
                     })
-                    .catch(() => alert('Error uploading file.'));
+                    .catch(error => {
+                        console.error('Upload error:', error);
+                        alert('Error: ' + error.message);
+                    });
             };
 
             successClose.onclick = () => successModal.style.display = 'none';

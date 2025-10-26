@@ -279,7 +279,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                 </button>
             </a>
     -->
-            <a href="index.php">
+            <a href="../../index.php">
                 <button class="buttons" id="logoutbtn">
                     <img src="assets/images/logout-icon.svg" class="button-icon-nav" loading="lazy">
                     <span class="nav-text">Logout</span>
