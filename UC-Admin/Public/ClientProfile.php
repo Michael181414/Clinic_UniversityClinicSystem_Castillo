@@ -332,7 +332,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                     src="assets/images/time-past 2.svg"
                                     data-active="assets/images/time-past 2.svg"
                                     data-inactive="assets/images/time-past 3.svg">
-                                Visit History
+                                Patient Visit History
                             </div>
                         <?php endif; ?>
 
@@ -423,43 +423,30 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 <?php if (!$showLimitedTabs): ?>
                     <div id="visit-history" class="history-table-container" style="display: none;">
+                        <div class="filter-container" style="height: 80%;">
 
-                        <div class="filter-container">
-                            <div class="filter-group">
-                                <label class="person-value-label-history" for="idSearch">Search by ID:</label>
-                                <input class="history-filter" type="text" id="idSearch" placeholder="Enter ID">
+                            <div class="filter-container-header">
+                                <div class="filter-group" style="display: none">
+                                    <label class="person-value-label-history" for="idSearch">Search by ID:</label>
+                                    <input class="history-filter" type="text" id="idSearch" placeholder="Enter ID">
+                                </div>
+                                <div class="filter-group">
+                                    <label class="person-value-label-history" for="dateSearch">Search by Date:</label>
+                                    <input class="history-filter" type="date" id="dateSearch" style="width: 250px">
+                                </div>
+
+                                <button class="add-btn" onclick="OpenModal()">
+                                    <i class="fas fa-plus"></i> Add Consultation
+                                </button>
+
                             </div>
-                            <div class="filter-group">
-                                <label class="person-value-label-history" for="dateSearch">Search by Date:</label>
-                                <input class="history-filter" type="date" id="dateSearch">
-                            </div>
-                            <button class="add-btn" onclick="toggleNavDivs()">
-                                <i class="fas fa-plus"></i> Add Consultation
-                            </button>
                             <script>
-                                function toggleNavDivs() {
-                                    document.querySelector('.nav-div').style.display = 'none';
-                                    document.querySelector('.nav-div2').style.display = 'flex';
-
-                                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-
-                                    const visitTab = document.querySelector('.tab[data-target="medrec"]');
-                                    if (visitTab) {
-                                        visitTab.classList.add('active');
-                                    }
-
-                                    document.querySelectorAll('#personal-info-div, #medical-history, #medical-cert, #visit-history, #examFilesTab, #medrec, #rx').forEach(content => {
-                                        content.style.display = 'none';
-                                    });
-
-                                    const visitSection = document.getElementById('medrec');
-                                    if (visitSection) {
-                                        visitSection.style.display = 'block';
-                                    }
+                                function OpenModal() {
+                                    document.getElementById('addConsultationModal').style.display = 'flex';
+                                    document.body.style.overflow = 'hidden';
                                 }
                             </script>
-                            <div id="client-history-container">
-                                <h3>Client History</h3>
+                            <div id="client-history-container" class="client-history-container">
                                 <div class="table-wrapper">
                                     <table class="client-history-table">
                                         <thead>
@@ -492,7 +479,527 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                     </table>
                                 </div>
                             </div>
+                        </div>
+                        <div class="add-consultation-modal" id="addConsultationModal" style="display:none;">
+                            <div class="consultation-modal-content">
+                                <div class="consultation-modal-header">
+                                    <h1>Add Consultation Record</h1>
+                                    <button id="back-to-history" class="back-btn" onclick="backto(<?= htmlspecialchars($clientID) ?>)">
+                                        <i class="fas fa-arrow-left"></i> back
+                                    </button>
+                                </div>
+                                <div class="consultation-tabs">
+                                    <div class="consultation-tabs-childs">
+                                        <div class="consultation-tab active" data-target="medrec">
+                                            <img class="cp-btn-img"
+                                                src="assets/images/patienthistory2.svg"
+                                                data-active="assets/images/patienthistory1.svg"
+                                                data-inactive="assets/images/patienthistory2.svg">
+                                            Consultation Record
+                                        </div>
 
+                                        <div class="consultation-tab" data-target="rx">
+                                            <img class="cp-btn-img"
+                                                src="assets/images/patienthistory2.svg"
+                                                data-active="assets/images/patienthistory1.svg"
+                                                data-inactive="assets/images/patienthistory2.svg">
+                                            Rx Record
+                                        </div>
+                                    </div>
+
+
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            const tabs = document.querySelectorAll(".consultation-tab");
+                                            const contents = document.querySelectorAll(".tab-content");
+
+                                            tabs.forEach((tab) => {
+                                                tab.addEventListener("click", () => {
+                                                    const targetId = tab.getAttribute("data-target");
+
+                                                    // 1. Remove 'active' from all tabs
+                                                    tabs.forEach((t) => {
+                                                        t.classList.remove("active");
+                                                        const img = t.querySelector(".cp-btn-img");
+                                                        img.src = img.getAttribute("data-inactive");
+                                                    });
+
+                                                    // 2. Add 'active' to clicked tab
+                                                    tab.classList.add("active");
+                                                    const activeImg = tab.querySelector(".cp-btn-img");
+                                                    activeImg.src = activeImg.getAttribute("data-active");
+
+                                                    // 3. Hide all tab contents
+                                                    contents.forEach((content) => (content.style.display = "none"));
+
+                                                    // 4. Show the selected tab's content
+                                                    const targetContent = document.getElementById(targetId);
+                                                    targetContent.style.display = "flex"; // keep your layout
+                                                });
+                                            });
+                                        });
+
+
+                                        window.onload = function() {
+                                            backto();
+
+                                        };
+
+                                        document.getElementById("back-to-history").addEventListener("click", function() {
+                                            const urlParams = new URLSearchParams(window.location.search);
+                                            const clientID = urlParams.get('id');
+
+                                            if (clientID) {
+                                                const baseUrl = window.location.href.split('?')[0];
+                                                window.location.href = `${baseUrl}?id=${clientID}`;
+                                            } else {
+                                                window.location.href = window.location.href.split('?')[0]; // fallback
+                                            }
+                                        });
+
+                                        function backto() {
+                                            document.querySelector('.add-consultation-modal').style.display = 'none';
+
+                                            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+                                            const visitTab = document.querySelector('.tab[data-target="visit-history"]');
+                                            if (visitTab) {
+                                                visitTab.classList.add('active');
+                                            }
+
+                                            document.querySelectorAll('#personal-info-div, #medical-history, #medical-cert, #visit-history,#examFilesTab')
+                                                .forEach(content => content.style.display = 'none');
+
+                                            const visitSection = document.getElementById('visit-history');
+                                            if (visitSection) {
+                                                visitSection.style.display = 'block';
+                                            }
+
+                                            fetch('ClientProfile.php')
+                                                .then(response => response.text())
+                                                .then(html => {
+                                                    const tempDiv = document.createElement('div');
+                                                    tempDiv.innerHTML = html;
+
+                                                    const newNavDiv2 = tempDiv.querySelector('.nav-div2');
+                                                    if (newNavDiv2) {
+                                                        const currentNavDiv2 = document.querySelector('.nav-div2');
+                                                        currentNavDiv2.innerHTML = newNavDiv2.innerHTML;
+                                                    }
+                                                })
+                                                .catch(err => console.error('Error reloading .nav-div2:', err));
+                                        }
+                                    </script>
+                                </div>
+
+                                <div id="medrec" class="tab-content" style="display: flex;">
+                                    <div class="medrec-subparent-div">
+                                        <form id="consultationForm" class="medrec-subparent-div">
+                                            <input type="hidden" name="client_id" id="client-id" value="<?= htmlspecialchars($clientid['ClientID']) ?>">
+                                            <div class="left-info-div">
+                                                <div class="phyexam-div">
+                                                    <h3 style="margin-bottom: 15px;">Patient's Info</h3>
+                                                    <div class=" info-row">
+                                                        <span class="info-label">Name:</span>
+                                                        <input type="text" id="name" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
+                                                    </div>
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Age:</span>
+                                                        <input type="text" id="age" value="<?= htmlspecialchars($age) ?: ''; ?>" />
+                                                    </div>
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Address:</span>
+                                                        <input type="text" id="address" value="<?= htmlspecialchars($address) ?: ''; ?>" />
+                                                    </div>
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Course:</span>
+                                                        <input type="text" id="course" value="<?= htmlspecialchars($course) ?: ''; ?>" />
+                                                    </div>
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Date:</span>
+                                                        <span id="date"></span>
+                                                    </div>
+                                                    <script>
+                                                        document.addEventListener("DOMContentLoaded", function() {
+                                                            const dateSpan = document.getElementById("date");
+                                                            const today = new Date();
+                                                            const formattedDate = today.toLocaleDateString("en-US", {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric'
+                                                            });
+                                                            dateSpan.textContent = formattedDate;
+                                                        });
+                                                    </script>
+                                                </div>
+
+                                                <div id="phyexam-div-2" class="phyexam-div">
+                                                    <h3 style="margin-bottom: 15px;">Vital Signs</h3>
+                                                    <div class="info-row">
+                                                        <span class="info-label">BP:</span>
+                                                        <input type="text" id="bp_input" name="bp" placeholder="BP" required>
+                                                    </div>
+                                                    <div class="info-row">
+                                                        <span class="info-label">HR/PR:</span>
+                                                        <input type="text" id="hr_pr" name="hr_pr" placeholder="HR/PR" required>
+                                                    </div>
+                                                    <div class="info-row">
+                                                        <span class="info-label">T°:</span>
+                                                        <input type="text" id="temp_input" name="temp" placeholder="T°" required>
+                                                    </div>
+                                                    <div class="info-row">
+                                                        <span class="info-label">O²sat:</span>
+                                                        <input type="text" id="o2sat" name="o2sat" placeholder="O²sat" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="right-info-div">
+                                                <div class="consultation-cert-controls">
+                                                    <div>
+                                                        <button class="buttonsdp" type="button" onclick="saveConsultation()">Save</button>
+                                                        <button class="buttonsdp2" type="button" onclick="submitPdfForm()">Download as PDF</button>
+                                                    </div>
+                                                </div>
+                                                <div id="saveStatus" style="margin-top: 10px;"></div>
+
+                                                <div class="SOAP-div" style="align-items: left;">
+                                                    <h3 style="margin-bottom: 15px;">Subjective</h3>
+                                                    <textarea style=" font-family:Poppins, sans-serif;" id="subjective" name="subjective" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
+                                                    <h3 style="margin-bottom: 15px;">Objective</h3>
+                                                    <textarea style="font-family:Poppins, sans-serif;" id="objective" name="objective" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
+
+                                                    <h3 style="margin-bottom: 15px;">Assessment</h3>
+                                                    <textarea style="font-family:Poppins, sans-serif;" id="assessment" name="assessment" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
+                                                    <h3 style="margin-bottom: 15px;">Plan</h3>
+                                                    <textarea style="font-family:Poppins, sans-serif;" id="plan" name="plan" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
+
+                                                </div>
+                                            </div>
+
+                                            <input type="hidden" name="patient_name" id="hidden-name">
+                                            <input type="hidden" name="patient_age" id="hidden-age">
+                                            <input type="hidden" name="patient_address" id="hidden-address">
+                                            <input type="hidden" name="patient_course" id="hidden-course">
+                                            <input type="hidden" name="date" id="hidden-date">
+
+
+                                        </form>
+                                        <form id="pdfForm" action="manageclients.dbf/patients_rec_genpdf.php" method="post" target="_blank">
+
+                                            <input type="text" id="pdf-name" name="name" hidden>
+                                            <input type="text" id="pdf-age" name="age" hidden>
+                                            <input type="text" id="pdf-address" name="address" hidden>
+                                            <input type="text" id="pdf-course" name="course" hidden>
+
+                                            <input type="text" id="pdf-bp" name="bp" hidden>
+                                            <input type="text" id="pdf-hr_pr" name="hr_pr" hidden>
+                                            <input type="text" id="pdf-temp" name="temp" hidden>
+                                            <input type="text" id="pdf-o2sat" name="o2sat" hidden>
+
+                                            <input type="hidden" id="pdf-date" name="date">
+
+                                            <textarea id="pdf-subjective" name="subjective" hidden></textarea>
+                                            <textarea id="pdf-objective" name="objective" hidden></textarea>
+                                            <textarea id="pdf-assessment" name="assessment" hidden></textarea>
+                                            <textarea id="pdf-plan" name="plan" hidden></textarea>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                                <script>
+                                    function autoGrow(element) {
+                                        element.style.height = "5px"; // reset height
+                                        element.style.height = (element.scrollHeight) + "px"; // set new height
+                                    }
+                                </script>
+                                <script>
+                                    function saveConsultation() {
+                                        const requiredFields = [{
+                                                id: 'bp_input',
+                                                label: 'BP'
+                                            },
+                                            {
+                                                id: 'hr_pr',
+                                                label: 'HR/PR'
+                                            },
+                                            {
+                                                id: 'temp_input',
+                                                label: 'Temperature'
+                                            },
+                                            {
+                                                id: 'o2sat',
+                                                label: 'O²sat'
+                                            }
+                                        ];
+
+                                        for (const field of requiredFields) {
+                                            const value = document.getElementById(field.id).value.trim();
+                                            if (!value) {
+                                                alert(`Please enter ${field.label}.`);
+                                                return; // stop submission
+                                            }
+                                        }
+                                        const formData = {
+                                            client_id: document.getElementById('client-id').value,
+                                            name: document.getElementById('name').textContent,
+                                            age: document.getElementById('age').textContent,
+                                            address: document.getElementById('address').textContent,
+                                            course: document.getElementById('course').textContent,
+                                            bp: document.getElementById('bp_input').value,
+                                            hr_pr: document.getElementById('hr_pr').value,
+                                            temp: document.getElementById('temp_input').value,
+                                            o2sat: document.getElementById('o2sat').value,
+                                            subjective: document.getElementById('subjective').value,
+                                            objective: document.getElementById('objective').value,
+                                            assessment: document.getElementById('assessment').value,
+                                            plan: document.getElementById('plan').value
+                                        };
+
+                                        const statusDiv = document.getElementById('saveStatus');
+                                        statusDiv.innerHTML = '<p style="color: blue;">Saving data, please wait...</p>';
+
+                                        fetch('manageclients.dbf/save_consultation.php', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                                },
+                                                body: new URLSearchParams(formData)
+                                            })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error('Network response was not ok');
+                                                }
+                                                return response.text();
+                                            })
+                                            .then(data => {
+
+                                                statusDiv.innerHTML = '<p style="color: green;">Data saved successfully!</p>';
+
+                                                setTimeout(() => {
+                                                    statusDiv.innerHTML = '';
+                                                }, 3000);
+                                            })
+                                            .catch(error => {
+                                                statusDiv.innerHTML = `<p style="color: red;">Error saving data: ${error.message}</p>`;
+
+                                                setTimeout(() => {
+                                                    statusDiv.innerHTML = '';
+                                                }, 5000);
+                                            });
+                                    }
+
+                                    function submitPdfForm() {
+                                        document.getElementById('pdf-name').value = document.getElementById('name').textContent;
+                                        document.getElementById('pdf-age').value = document.getElementById('age').textContent;
+                                        document.getElementById('pdf-address').value = document.getElementById('address').textContent;
+                                        document.getElementById('pdf-course').value = document.getElementById('course').textContent;
+                                        document.getElementById('pdf-bp').value = document.getElementById('bp_input').value;
+                                        document.getElementById('pdf-hr_pr').value = document.getElementById('hr_pr').value;
+                                        document.getElementById('pdf-temp').value = document.getElementById('temp_input').value;
+                                        document.getElementById('pdf-o2sat').value = document.getElementById('o2sat').value;
+                                        document.getElementById('pdf-subjective').value = document.getElementById('subjective').value;
+                                        document.getElementById('pdf-objective').value = document.getElementById('objective').value;
+                                        document.getElementById('pdf-assessment').value = document.getElementById('assessment').value;
+                                        document.getElementById('pdf-plan').value = document.getElementById('plan').value;
+
+                                        const today = new Date();
+                                        document.getElementById('pdf-date').value = today.toLocaleDateString("en-US", {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        });
+                                        document.getElementById('pdfForm').submit();
+                                    }
+                                </script>
+
+                                <div id="rx" class="tab-content" style="display: none;">
+                                    <div class="medrec-subparent-div">
+                                        <form method="POST" action="manageclients.dbf/generate_rx_pdf.php" class="medrec-subparent-div" onsubmit="return preparePdfData()" target="_blank">
+
+                                            <input type="hidden" name="client_id" id="client-id" value="<?= htmlspecialchars($clientid['ClientID']) ?>">
+
+                                            <div class="left-info-div">
+                                                <div class="phyexam-div">
+                                                    <h3 style="margin-bottom: 15px;">Patient's Info</h3>
+                                                    <div class="info-row">
+                                                        <span class="info-label">Name:</span>
+                                                        <input type="text" id="name" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
+                                                    </div>
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Age/Sex:</span>
+                                                        <input id="age" value="<?= htmlspecialchars($age) ?>" />
+                                                        <p>/</p>
+                                                        <input type="hidden" name="patient_sex" id="input_patient_sex" value="<?= htmlspecialchars($gender) ?>" />
+                                                        <span><?= htmlspecialchars($gender) ?></span> <!-- still shows on screen -->
+                                                    </div>
+
+                                                    <!-- Removed Address -->
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Impression:</span>
+                                                        <input name="p-impression" id="impression" type="text" />
+                                                    </div>
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Date:</span>
+                                                        <span id="date2"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div id="phyexam-div-2" class="phyexam-div">
+                                                    <div class="info-row">
+                                                        <span class="info-label">Visiting Physician:</span>
+                                                        <input type="text" name="physician" placeholder="Visiting Physician" />
+                                                    </div>
+                                                    <div class="info-row">
+                                                        <span class="info-label">Lic.No:</span>
+                                                        <input type="text" name="LicNo" placeholder="Lic.No." />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="right-info-div">
+                                                <div class="consultation-cert-controls">
+                                                    <div> <button type="button" class="buttonsdp" onclick="savePrescription()">Save</button>
+                                                        <button class="buttonsdp2" type="submit">Download as PDF</button>
+                                                    </div>
+                                                </div>
+                                                <p id="save-message" style="color: green; display: none; font-weight: normal;"></p>
+
+                                                <div class="SOAP-div" style="align-items: left;">
+                                                    <h3 style="font-family:Poppins, sans-serif; font-size: 28pt;">℞</h3>
+                                                    <textarea style="font-family:Poppins, sans-serif;" ; id="notes" name="notes" rows="20" cols="50" placeholder="..."></textarea>
+                                                </div>
+                                            </div>
+
+                                            <input type="hidden" name="patient_name" id="input_patient_name" />
+                                            <input type="hidden" name="patient_age" id="input_patient_age" />
+                                            <input type="hidden" name="patient_sex" value="<?= htmlspecialchars($gender) ?>">
+                                            <input type="hidden" name="date" id="input_date" />
+                                            <input type="hidden" name="input_physician" id="input_physician" />
+                                            <input type="hidden" name="input_LicNo" id="input_LicNo" />
+
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-------->
+
+                                <!----------------------------------->
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function() {
+                                        const dateSpan = document.getElementById("date2");
+                                        const today = new Date();
+                                        const formattedDate = today.toLocaleDateString("en-US", {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        });
+                                        dateSpan.textContent = formattedDate;
+                                    });
+
+                                    function preparePdfData() {
+                                        console.log("Sex value:", document.getElementById('sex').textContent.trim());
+                                        document.getElementById('input_patient_name').value = document.getElementById('name').textContent.trim();
+                                        document.getElementById('input_patient_age').value = document.getElementById('age').textContent.trim();
+                                        document.getElementById('input_patient_sex').value = document.getElementById('sex').textContent.trim();
+
+                                        document.getElementById('input_date').value = document.getElementById('date2').textContent.trim();
+
+                                        // Copy physician and LicNo input values into hidden fields
+                                        document.getElementById('input_physician').value = document.querySelector('input[name="physician"]').value.trim();
+                                        document.getElementById('input_LicNo').value = document.querySelector('input[name="LicNo"]').value.trim();
+
+                                        return true; // allow form submit
+                                    }
+                                </script>
+                                <script>
+                                    function savePrescription() {
+                                        // Get input values trimmed
+                                        const patientName = document.getElementById('name').value;
+                                        const age = document.getElementById('age').value;
+                                        const impression = document.querySelector('input[name="p-impression"]').value.trim();
+                                        const physician = document.querySelector('input[name="physician"]').value.trim();
+                                        const licenseNo = document.querySelector('input[name="LicNo"]').value.trim();
+                                        const notes = document.getElementById('notes').value.trim();
+
+                                        // Validate required fields (adjust which fields are required)
+                                        if (!patientName) {
+                                            alert("Patient name is required.");
+                                            return;
+                                        }
+                                        if (!age) {
+                                            alert("Patient age is required.");
+                                            return;
+                                        }
+                                        if (!impression) {
+                                            alert("Impression is required.");
+                                            return;
+                                        }
+                                        if (!physician) {
+                                            alert("Visiting Physician is required.");
+                                            return;
+                                        }
+                                        if (!licenseNo) {
+                                            alert("License Number is required.");
+                                            return;
+                                        }
+                                        if (!notes) {
+                                            alert("Notes cannot be empty.");
+                                            return;
+                                        }
+
+                                        const data = {
+                                            client_id: document.getElementById('client-id').value,
+                                            patient_name: document.getElementById('name').textContent.trim(),
+                                            age: document.getElementById('age').textContent.trim(),
+
+                                            impression: document.querySelector('input[name="p-impression"]').value.trim(),
+                                            physician: document.querySelector('input[name="physician"]').value.trim(),
+                                            license_no: document.querySelector('input[name="LicNo"]').value.trim(),
+                                            notes: document.getElementById('notes').value.trim(),
+                                            date_created: new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+                                        };
+
+                                        fetch('manageclients.dbf/save_rx.php', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify(data)
+                                            })
+                                            .then(res => res.json())
+                                            .then(response => {
+                                                const msgElem = document.getElementById("save-message");
+                                                if (response.success) {
+                                                    msgElem.style.color = "green";
+                                                    msgElem.textContent = "Saved successfully.";
+                                                    msgElem.style.display = "block";
+                                                    setTimeout(() => {
+                                                        msgElem.style.display = "none";
+                                                    }, 4000); // hides after 4 seconds
+
+                                                } else {
+                                                    msgElem.style.color = "red";
+                                                    msgElem.textContent = "Error saving prescription: " + response.message;
+                                                    msgElem.style.display = "block";
+                                                }
+
+                                            })
+                                            .catch(err => {
+                                                console.error("AJAX error:", err);
+                                                alert("Something went wrong.");
+                                            });
+                                    }
+                                </script>
+
+                            </div>
                         </div>
 
                         <script>
@@ -536,7 +1043,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     </div>
                 <?php endif; ?>
-                <div id="personal-info-div" style="display: flex; overflow: auto">
+                <div id="personal-info-div" style="display: flex; overflow: auto; height: 85%">
                     <?php if ($showAnnualTabs): ?>
                         <div style="overflow: auto">
                             <!--
@@ -992,7 +1499,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                 </div>
 
 
-                <div id="medical-history" style="display: none;">
+                <div id="medical-history" style="display: none; height: 85%">
                     <div class="medtabs">
                         <div class="medtab active" data-target="medicaldentalhistory">Medical & Dental History</div>
                         <div class="medtab" data-target="familymedicalhistory">Family Medical History</div>
@@ -1530,7 +2037,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
 
                 </div>
-                <div id="np_medical-history" style="display: none;">
+                <div id="np_medical-history" style="display: none; height: 85%">
                     <div class="form-container">
                         <form id="medicalForm" method="post">
                             <input type="hidden" name="client_id" value="<?= htmlspecialchars($clientID ?? '') ?>">
@@ -1933,7 +2440,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 </div>
                 <!--  <button type="button" id="toggle-form-btn">Show Medical Certificate Form</button>-->
-                <div id="medical-cert" style="display: none;">
+                <div id="medical-cert" style="display: none; height: 85%">
                     <div id="med-cert-form">
                         <form method="POST" action="manageclients.dbf/save_medical_certificate.php" id="medical-cert-form">
                             <input type="hidden" name="client_id" id="client-id" value="<?= htmlspecialchars($clientid['ClientID']) ?>">
@@ -2122,489 +2629,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
             </div>
 
             <div class="nav-div2" style="display: none;">
-                <div class="tabs2">
-                    <div class="tabs-child">
-                        <div class="tab active" data-target="medrec">
-                            <img class="cp-btn-img"
-                                src="assets/images/patienthistory2.svg"
-                                data-active="assets/images/patienthistory1.svg"
-                                data-inactive="assets/images/patienthistory2.svg">
-                            Consultation Record
-                        </div>
 
-                        <div class="tab" data-target="rx">
-                            <img class="cp-btn-img"
-                                src="assets/images/patienthistory2.svg"
-                                data-active="assets/images/patienthistory1.svg"
-                                data-inactive="assets/images/patienthistory2.svg">
-                            Rx Record
-                        </div>
-                    </div>
-                    <button id="back-to-history" class="back-btn" onclick="backto(<?= htmlspecialchars($clientID) ?>)">
-                        <i class="fas fa-arrow-left"></i> back
-                    </button>
-
-                    <script>
-                        window.onload = function() {
-                            backto();
-
-                        };
-
-                        document.getElementById("back-to-history").addEventListener("click", function() {
-                            const urlParams = new URLSearchParams(window.location.search);
-                            const clientID = urlParams.get('id');
-
-                            if (clientID) {
-                                const baseUrl = window.location.href.split('?')[0];
-                                window.location.href = `${baseUrl}?id=${clientID}`;
-                            } else {
-                                window.location.href = window.location.href.split('?')[0]; // fallback
-                            }
-                        });
-
-                        function backto() {
-                            document.querySelector('.nav-div').style.display = 'flex';
-                            document.querySelector('.nav-div2').style.display = 'none';
-
-                            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-
-                            const visitTab = document.querySelector('.tab[data-target="visit-history"]');
-                            if (visitTab) {
-                                visitTab.classList.add('active');
-                            }
-
-                            document.querySelectorAll('#personal-info-div, #medical-history, #medical-cert, #visit-history,#examFilesTab, #medrec, #rx')
-                                .forEach(content => content.style.display = 'none');
-
-                            const visitSection = document.getElementById('visit-history');
-                            if (visitSection) {
-                                visitSection.style.display = 'block';
-                            }
-
-                            fetch('ClientProfile.php')
-                                .then(response => response.text())
-                                .then(html => {
-                                    const tempDiv = document.createElement('div');
-                                    tempDiv.innerHTML = html;
-
-                                    const newNavDiv2 = tempDiv.querySelector('.nav-div2');
-                                    if (newNavDiv2) {
-                                        const currentNavDiv2 = document.querySelector('.nav-div2');
-                                        currentNavDiv2.innerHTML = newNavDiv2.innerHTML;
-                                    }
-                                })
-                                .catch(err => console.error('Error reloading .nav-div2:', err));
-                        }
-                    </script>
-                </div>
-
-                <div id="medrec" class="medcontainer" style="display: block;">
-                    <div class="medrec-subparent-div">
-                        <form id="consultationForm" class="medrec-subparent-div">
-                            <input type="hidden" name="client_id" id="client-id" value="<?= htmlspecialchars($clientid['ClientID']) ?>">
-                            <div class="left-info-div">
-                                <div class="phyexam-div">
-                                    <h3 style="padding: 15px;">Patient's Info</h3>
-                                    <div class="info-row">
-                                        <span class="info-label">Name:</span>
-                                        <span id="name" contenteditable="true"><?= htmlspecialchars($fullName) ?: ''; ?></span>
-                                    </div>
-
-                                    <div class="info-row">
-                                        <span class="info-label">Age:</span>
-                                        <span id="age" contenteditable="true"><?= htmlspecialchars($age) ?: ''; ?></span>
-                                    </div>
-
-                                    <div class="info-row">
-                                        <span class="info-label">Address:</span>
-                                        <span id="address" contenteditable="true"><?= htmlspecialchars($address) ?: ''; ?></span>
-                                    </div>
-
-                                    <div class="info-row">
-                                        <span class="info-label">Course:</span>
-                                        <span id="course" contenteditable="true"><?= htmlspecialchars($course) ?: ''; ?></span>
-                                    </div>
-
-                                    <div class="info-row">
-                                        <span class="info-label">Date:</span>
-                                        <span id="date"></span>
-                                    </div>
-                                    <script>
-                                        document.addEventListener("DOMContentLoaded", function() {
-                                            const dateSpan = document.getElementById("date");
-                                            const today = new Date();
-                                            const formattedDate = today.toLocaleDateString("en-US", {
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric'
-                                            });
-                                            dateSpan.textContent = formattedDate;
-                                        });
-                                    </script>
-                                </div>
-
-                                <div id="phyexam-div-2" class="phyexam-div">
-                                    <h3 style="padding: 15px;">Vital Signs</h3>
-                                    <div class="info-row">
-                                        <span class="info-label">BP:</span>
-                                        <input type="text" id="bp_input" name="bp" placeholder="BP" required>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">HR/PR:</span>
-                                        <input type="text" id="hr_pr" name="hr_pr" placeholder="HR/PR" required>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">T°:</span>
-                                        <input type="text" id="temp_input" name="temp" placeholder="T°" required>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">O²sat:</span>
-                                        <input type="text" id="o2sat" name="o2sat" placeholder="O²sat" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="right-info-div">
-
-                                <div class="cert-controls" style="margin-top: 0px;">
-                                    <button class="buttonsdp" type="button" onclick="saveConsultation()">Save</button>
-                                    <button class="buttonsdp2" type="button" onclick="submitPdfForm()">Dowload as PDF</button>
-                                </div>
-                                <div id="saveStatus" style="margin-top: 10px;"></div>
-
-                                <div class="SOAP-div" style="align-items: left;">
-                                    <h3 style="padding: 15px;">Subjective</h3>
-                                    <textarea style=" font-family:Poppins, sans-serif;" id="subjective" name="subjective" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
-                                    <h3 style="padding: 15px;">Objective</h3>
-                                    <textarea style="font-family:Poppins, sans-serif;" id="objective" name="objective" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
-
-                                    <h3 style="padding: 15px;">Assessment</h3>
-                                    <textarea style="font-family:Poppins, sans-serif;" id="assessment" name="assessment" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
-                                    <h3 style="padding: 15px;">Plan</h3>
-                                    <textarea style="font-family:Poppins, sans-serif;" id="plan" name="plan" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
-
-                                </div>
-                            </div>
-
-                            <input type="hidden" name="patient_name" id="hidden-name">
-                            <input type="hidden" name="patient_age" id="hidden-age">
-                            <input type="hidden" name="patient_address" id="hidden-address">
-                            <input type="hidden" name="patient_course" id="hidden-course">
-                            <input type="hidden" name="date" id="hidden-date">
-
-
-                        </form>
-                        <form id="pdfForm" action="manageclients.dbf/patients_rec_genpdf.php" method="post" target="_blank">
-
-                            <input type="text" id="pdf-name" name="name" hidden>
-                            <input type="text" id="pdf-age" name="age" hidden>
-                            <input type="text" id="pdf-address" name="address" hidden>
-                            <input type="text" id="pdf-course" name="course" hidden>
-
-                            <input type="text" id="pdf-bp" name="bp" hidden>
-                            <input type="text" id="pdf-hr_pr" name="hr_pr" hidden>
-                            <input type="text" id="pdf-temp" name="temp" hidden>
-                            <input type="text" id="pdf-o2sat" name="o2sat" hidden>
-
-                            <input type="hidden" id="pdf-date" name="date">
-
-                            <textarea id="pdf-subjective" name="subjective" hidden></textarea>
-                            <textarea id="pdf-objective" name="objective" hidden></textarea>
-                            <textarea id="pdf-assessment" name="assessment" hidden></textarea>
-                            <textarea id="pdf-plan" name="plan" hidden></textarea>
-
-                        </form>
-
-                    </div>
-                </div>
-                <script>
-                    function autoGrow(element) {
-                        element.style.height = "5px"; // reset height
-                        element.style.height = (element.scrollHeight) + "px"; // set new height
-                    }
-                </script>
-                <script>
-                    function saveConsultation() {
-                        const requiredFields = [{
-                                id: 'bp_input',
-                                label: 'BP'
-                            },
-                            {
-                                id: 'hr_pr',
-                                label: 'HR/PR'
-                            },
-                            {
-                                id: 'temp_input',
-                                label: 'Temperature'
-                            },
-                            {
-                                id: 'o2sat',
-                                label: 'O²sat'
-                            }
-                        ];
-
-                        for (const field of requiredFields) {
-                            const value = document.getElementById(field.id).value.trim();
-                            if (!value) {
-                                alert(`Please enter ${field.label}.`);
-                                return; // stop submission
-                            }
-                        }
-                        const formData = {
-                            client_id: document.getElementById('client-id').value,
-                            name: document.getElementById('name').textContent,
-                            age: document.getElementById('age').textContent,
-                            address: document.getElementById('address').textContent,
-                            course: document.getElementById('course').textContent,
-                            bp: document.getElementById('bp_input').value,
-                            hr_pr: document.getElementById('hr_pr').value,
-                            temp: document.getElementById('temp_input').value,
-                            o2sat: document.getElementById('o2sat').value,
-                            subjective: document.getElementById('subjective').value,
-                            objective: document.getElementById('objective').value,
-                            assessment: document.getElementById('assessment').value,
-                            plan: document.getElementById('plan').value
-                        };
-
-                        const statusDiv = document.getElementById('saveStatus');
-                        statusDiv.innerHTML = '<p style="color: blue;">Saving data, please wait...</p>';
-
-                        fetch('manageclients.dbf/save_consultation.php', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                },
-                                body: new URLSearchParams(formData)
-                            })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Network response was not ok');
-                                }
-                                return response.text();
-                            })
-                            .then(data => {
-
-                                statusDiv.innerHTML = '<p style="color: green;">Data saved successfully!</p>';
-
-                                setTimeout(() => {
-                                    statusDiv.innerHTML = '';
-                                }, 3000);
-                            })
-                            .catch(error => {
-                                statusDiv.innerHTML = `<p style="color: red;">Error saving data: ${error.message}</p>`;
-
-                                setTimeout(() => {
-                                    statusDiv.innerHTML = '';
-                                }, 5000);
-                            });
-                    }
-
-                    function submitPdfForm() {
-                        document.getElementById('pdf-name').value = document.getElementById('name').textContent;
-                        document.getElementById('pdf-age').value = document.getElementById('age').textContent;
-                        document.getElementById('pdf-address').value = document.getElementById('address').textContent;
-                        document.getElementById('pdf-course').value = document.getElementById('course').textContent;
-                        document.getElementById('pdf-bp').value = document.getElementById('bp_input').value;
-                        document.getElementById('pdf-hr_pr').value = document.getElementById('hr_pr').value;
-                        document.getElementById('pdf-temp').value = document.getElementById('temp_input').value;
-                        document.getElementById('pdf-o2sat').value = document.getElementById('o2sat').value;
-                        document.getElementById('pdf-subjective').value = document.getElementById('subjective').value;
-                        document.getElementById('pdf-objective').value = document.getElementById('objective').value;
-                        document.getElementById('pdf-assessment').value = document.getElementById('assessment').value;
-                        document.getElementById('pdf-plan').value = document.getElementById('plan').value;
-
-                        const today = new Date();
-                        document.getElementById('pdf-date').value = today.toLocaleDateString("en-US", {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        });
-                        document.getElementById('pdfForm').submit();
-                    }
-                </script>
-
-                <div id="rx" class="medrec_container" style="display: none;">
-                    <div class="medrec-subparent-div">
-                        <form method="POST" action="manageclients.dbf/generate_rx_pdf.php" class="medrec-subparent-div" onsubmit="return preparePdfData()" target="_blank">
-
-                            <input type="hidden" name="client_id" id="client-id" value="<?= htmlspecialchars($clientid['ClientID']) ?>">
-
-                            <div class="left-info-div">
-                                <div class="phyexam-div">
-                                    <h3 style="padding: 15px;">Patient's Info</h3>
-                                    <div class="info-row">
-                                        <span class="info-label">Name:</span>
-                                        <span id="name"><?= htmlspecialchars($fullName) ?></span>
-                                    </div>
-
-                                    <div class="info-row">
-                                        <span class="info-label">Age/Sex:</span>
-                                        <span id="age"><?= htmlspecialchars($age) ?></span>
-                                        <p>/</p>
-                                        <input type="hidden" name="patient_sex" id="input_patient_sex" value="<?= htmlspecialchars($gender) ?>" />
-                                        <span><?= htmlspecialchars($gender) ?></span> <!-- still shows on screen -->
-                                    </div>
-
-                                    <!-- Removed Address -->
-
-                                    <div class="info-row">
-                                        <span class="info-label">Impression:</span>
-                                        <input name="p-impression" id="impression" type="text" />
-                                    </div>
-
-                                    <div class="info-row">
-                                        <span class="info-label">Date:</span>
-                                        <span id="date2"></span>
-                                    </div>
-                                </div>
-
-                                <div id="phyexam-div-2" class="phyexam-div">
-                                    <div class="info-row">
-                                        <span class="info-label">Visiting Physician:</span>
-                                        <input type="text" name="physician" placeholder="Visiting Physician" />
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Lic.No:</span>
-                                        <input type="text" name="LicNo" placeholder="Lic.No." />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="right-info-div">
-
-                                <div class="cert-controls" style="margin-top: 20px;">
-                                    <div class="cert-controls" style="margin-top: 0px;">
-                                        <button type="button" class="buttonsdp" onclick="savePrescription()">Save</button>
-                                        <button class="buttonsdp2" type="submit">Download as PDF</button>
-                                    </div>
-                                </div>
-                                <p id="save-message" style="color: green; display: none; font-weight: normal;"></p>
-
-                                <div class="SOAP-div" style="align-items: left;">
-                                    <h3 style="font-family:Poppins, sans-serif; font-size: 28pt;">℞</h3>
-                                    <textarea style="font-family:Poppins, sans-serif;" ; id="notes" name="notes" rows="20" cols="50" placeholder="..."></textarea>
-                                </div>
-                            </div>
-
-                            <input type="hidden" name="patient_name" id="input_patient_name" />
-                            <input type="hidden" name="patient_age" id="input_patient_age" />
-                            <input type="hidden" name="patient_sex" value="<?= htmlspecialchars($gender) ?>">
-                            <input type="hidden" name="date" id="input_date" />
-                            <input type="hidden" name="input_physician" id="input_physician" />
-                            <input type="hidden" name="input_LicNo" id="input_LicNo" />
-
-                        </form>
-                    </div>
-                </div>
-                <!-------->
-
-                <!----------------------------------->
-                <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        const dateSpan = document.getElementById("date2");
-                        const today = new Date();
-                        const formattedDate = today.toLocaleDateString("en-US", {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        });
-                        dateSpan.textContent = formattedDate;
-                    });
-
-                    function preparePdfData() {
-                        console.log("Sex value:", document.getElementById('sex').textContent.trim());
-                        document.getElementById('input_patient_name').value = document.getElementById('name').textContent.trim();
-                        document.getElementById('input_patient_age').value = document.getElementById('age').textContent.trim();
-                        document.getElementById('input_patient_sex').value = document.getElementById('sex').textContent.trim();
-
-                        document.getElementById('input_date').value = document.getElementById('date2').textContent.trim();
-
-                        // Copy physician and LicNo input values into hidden fields
-                        document.getElementById('input_physician').value = document.querySelector('input[name="physician"]').value.trim();
-                        document.getElementById('input_LicNo').value = document.querySelector('input[name="LicNo"]').value.trim();
-
-                        return true; // allow form submit
-                    }
-                </script>
-                <script>
-                    function savePrescription() {
-                        // Get input values trimmed
-                        const patientName = document.getElementById('name').textContent.trim();
-                        const age = document.getElementById('age').textContent.trim();
-                        const impression = document.querySelector('input[name="p-impression"]').value.trim();
-                        const physician = document.querySelector('input[name="physician"]').value.trim();
-                        const licenseNo = document.querySelector('input[name="LicNo"]').value.trim();
-                        const notes = document.getElementById('notes').value.trim();
-
-                        // Validate required fields (adjust which fields are required)
-                        if (!patientName) {
-                            alert("Patient name is required.");
-                            return;
-                        }
-                        if (!age) {
-                            alert("Patient age is required.");
-                            return;
-                        }
-                        if (!impression) {
-                            alert("Impression is required.");
-                            return;
-                        }
-                        if (!physician) {
-                            alert("Visiting Physician is required.");
-                            return;
-                        }
-                        if (!licenseNo) {
-                            alert("License Number is required.");
-                            return;
-                        }
-                        if (!notes) {
-                            alert("Notes cannot be empty.");
-                            return;
-                        }
-
-                        const data = {
-                            client_id: document.getElementById('client-id').value,
-                            patient_name: document.getElementById('name').textContent.trim(),
-                            age: document.getElementById('age').textContent.trim(),
-
-                            impression: document.querySelector('input[name="p-impression"]').value.trim(),
-                            physician: document.querySelector('input[name="physician"]').value.trim(),
-                            license_no: document.querySelector('input[name="LicNo"]').value.trim(),
-                            notes: document.getElementById('notes').value.trim(),
-                            date_created: new Date().toISOString().slice(0, 10) // YYYY-MM-DD
-                        };
-
-                        fetch('manageclients.dbf/save_rx.php', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(data)
-                            })
-                            .then(res => res.json())
-                            .then(response => {
-                                const msgElem = document.getElementById("save-message");
-                                if (response.success) {
-                                    msgElem.style.color = "green";
-                                    msgElem.textContent = "Saved successfully.";
-                                    msgElem.style.display = "block";
-                                    setTimeout(() => {
-                                        msgElem.style.display = "none";
-                                    }, 4000); // hides after 4 seconds
-
-                                } else {
-                                    msgElem.style.color = "red";
-                                    msgElem.textContent = "Error saving prescription: " + response.message;
-                                    msgElem.style.display = "block";
-                                }
-
-                            })
-                            .catch(err => {
-                                console.error("AJAX error:", err);
-                                alert("Something went wrong.");
-                            });
-                    }
-                </script>
 
             </div>
     </div>

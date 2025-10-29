@@ -86,7 +86,9 @@ try {
                     <!-- Backup Card -->
                     <a href="javascript:void(0);" onclick="showBackupModal()" class="data-management-link">
                         <div class="data-management-card">
-                            <span class="icon-span"><i class="fas fa-file-export"></i> Backup Data</span>
+                            <span class="icon-span"><i class="fas fa-file-export"></i>
+                                <p>Backup Data</p>
+                            </span>
                             <p class="p-tag">Create a backup of the database to ensure data safety and recovery options.</p>
                         </div>
                     </a>
@@ -94,7 +96,9 @@ try {
                     <!-- Restore Card -->
                     <a href="javascript:void(0);" onclick="showRestoreModal()" class="data-management-link">
                         <div class="data-management-card">
-                            <span class="icon-span"><i class="fas fa-database"></i> Restore Data</span>
+                            <span class="icon-span"><i class="fas fa-database"></i>
+                                <p>Restore Data</p>
+                            </span>
                             <p class="p-tag">Restore the database from a previously created backup file.</p>
                         </div>
                     </a>
@@ -113,7 +117,7 @@ try {
             </div>
             <?php if (!empty($historyData)): ?>
                 <div class="backup-history">
-                    <h2 style="margin-bottom: 10px; color:#005b99;"><i class="fas fa-file-export"></i> Backup History</h2>
+                    <h2 style="margin-bottom: 10px;"><i class="fas fa-file-export"></i> Backup History</h2>
 
                     <div class="table-wrapper">
                         <table class="history-table">
@@ -283,251 +287,7 @@ try {
         </script>
 
         <style>
-            /* General Page Style */
-            body {
-                overflow: auto;
-            }
 
-            .content-body {
-                display: flex;
-                flex-direction: row;
-                height: 195px;
-                justify-content: center;
-                width: 100%;
-                border: solid #ccc 1px;
-                border-radius: 5px;
-                background-color: white;
-                padding: 20px;
-                box-sizing: border-box;
-            }
-
-            /* Options Grid */
-
-            .data-management-options {
-                display: flex;
-                gap: 25px;
-                flex-wrap: wrap;
-                justify-content: center;
-                margin-bottom: 40px;
-            }
-
-            .data-management-card {
-                display: flex;
-                flex-direction: column;
-                background: #ecececff;
-                border-radius: 15px;
-                padding: 35px 25px;
-                text-align: center;
-                box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                width: 480px;
-                height: 100%;
-                max-height: 250px;
-            }
-
-            .data-management-card:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-                background: #e6f5ff;
-            }
-
-            .data-management-card i {
-                font-size: 28px;
-                color: #005b99;
-                margin-bottom: 12px;
-            }
-
-            .data-management-card p {
-                font-size: 14px;
-                color: #555;
-            }
-
-            /* ---------- TABLE STYLE ---------- */
-            .backup-history {
-                background: #fff;
-                padding: 25px 20px;
-                border-radius: 12px;
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            }
-
-            .backup-history h2 {
-                margin-bottom: 20px;
-                color: #005b99;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .history-table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            .history-table th,
-            .history-table td {
-                padding: 12px 15px;
-                text-align: center;
-                font-size: 14px;
-            }
-
-            .history-table th {
-                background: #f0f4f8;
-                font-weight: 500;
-            }
-
-            .history-table tr {
-                border-bottom: 1px solid #e0e0e0;
-            }
-
-            .history-table tr:hover {
-                background: #f9f9f9;
-            }
-
-            .status.success {
-                color: #28a745;
-                font-weight: 500;
-            }
-
-            .status.failed {
-                color: #dc3545;
-                font-weight: 500;
-            }
-
-            .btn-download {
-                padding: 6px 12px;
-                background: #005b99;
-                color: #fff;
-                border-radius: 6px;
-                font-size: 13px;
-                text-decoration: none;
-                transition: 0.2s;
-            }
-
-            .btn-download:hover {
-                background: #004080;
-            }
-
-            .no-records {
-                text-align: center;
-                padding: 20px 0;
-                font-style: italic;
-                color: #666;
-            }
-
-            /* ---------- MODAL STYLE ---------- */
-            .modal-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.6);
-                justify-content: center;
-                align-items: center;
-                z-index: 10000;
-            }
-
-            .modal-box {
-                background: #fff;
-                padding: 25px 30px;
-                border-radius: 15px;
-                width: 400px;
-                max-width: 90%;
-                text-align: center;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-                animation: popUp 0.3s ease;
-            }
-
-            .modal-box h2 {
-                margin-bottom: 15px;
-                font-size: 20px;
-                color: #d9534f;
-            }
-
-            .modal-box p {
-                font-size: 14px;
-                color: #444;
-                margin-bottom: 20px;
-            }
-
-            .modal-actions {
-                display: flex;
-                justify-content: space-between;
-                gap: 15px;
-            }
-
-            .btn-cancel {
-                background: #ccc;
-                color: #333;
-                flex: 1;
-                border-radius: 8px;
-                padding: 10px 15px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: 0.2s;
-            }
-
-            .btn-cancel:hover {
-                background: #b3b3b3;
-            }
-
-            .btn-confirm {
-                background: #005b99;
-                color: #fff;
-                flex: 1;
-                border-radius: 8px;
-                padding: 10px 15px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: 0.2s;
-            }
-
-            .btn-confirm:hover {
-                background: #004080;
-            }
-
-            @keyframes popUp {
-                0% {
-                    transform: scale(0.9);
-                    opacity: 0;
-                }
-
-                100% {
-                    transform: scale(1);
-                    opacity: 1;
-                }
-            }
-
-            /* ---------- RESPONSIVE ---------- */
-            @media screen and (max-width: 1024px) {
-                .main-container {
-                    margin-left: 0;
-                    padding: 20px;
-                }
-
-                .navbar {
-                    flex-direction: row;
-                    overflow-x: auto;
-                    width: 100%;
-                    border-right: none;
-                    border-bottom: 1px solid #e0e0e0;
-                    padding: 10px;
-                    position: sticky;
-                    top: 0;
-                    z-index: 1000;
-                }
-
-                .data-management-options {
-                    flex-direction: column;
-                    gap: 20px;
-                    align-items: center;
-                }
-
-                .data-management-card {
-                    width: 90%;
-                }
-            }
         </style>
 
 </body>

@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->execute([$hashed_password, $email]);
 
             unset($_SESSION['reset_email']);
-            $message = "Password reset successfully! <a href='index.php'>Sign In</a>";
+            $message = "Password reset successfully! <a href='../index.php'>Sign In</a>";
         } else {
             $message = "Invalid reset code!";
         }
@@ -49,50 +49,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="styles.css">
     <script src="assets/js/script.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        @font-face {
+            font-family: "Montserrat";
+            src: url("UC-Admin/Public/assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("woff2");
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Poppins";
+            src: url("UC-Admin/Public/assets/fonts/Poppins/Poppins-Medium.ttf") format("woff2");
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .right-section {
+            font-family: "Poppins", sans-serif;
+        }
+
+        h2 {
+            font-family: "Poppins", sans-serif;
+        }
+    </style>
 </head>
-<style>
-    .input-group {
-        position: relative;
-        margin-bottom: 15px;
-    }
-
-    /* Left-side icons (email, lock) */
-    .input-group i.left-icon {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #888;
-        font-size: 16px;
-    }
-
-    /* Right-side eye toggle */
-    .input-group i.toggle-password {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #888;
-        font-size: 16px;
-    }
-
-    .input-group i.toggle-password:hover {
-        color: #333;
-    }
-
-    /* Add padding for both icons */
-    .input-group input {
-        width: 100%;
-        padding: 10px 40px;
-        /* space for left + right icons */
-        padding-left: 35px;
-        /* extra left padding for left icon */
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-</style>
 
 <body onload="autoScrollToLogin()">
     <div class="container">

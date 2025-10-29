@@ -135,11 +135,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="password" class="inputs" id="password" name="password" placeholder="Password" required>
                     <i class="fas fa-eye toggle-password" id="togglePassword"></i>
                 </div>
-                <p class="paragraph"><a href="request_reset.php" class="register-link">Forgot Password?</a></p>
+                <p class="paragraph"><a href="public/request_reset.php" class="register-link">Forgot Password?</a></p>
                 <button type="submit" class="buttons">Login</button>
 
 
                 <p>Don't have an account? <a href="register.php" class="register-link">Sign up here</a></p>
+                <p style="margin-right: 10px">Go to <a href="index.html" class="register-link">Home Page</a></p>
             </form>
         </div>
     </div>

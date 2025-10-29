@@ -58,7 +58,7 @@
   flex-direction: row;
   background-color: #ffffff;
   height: 100%;
-  width: 25%;
+  width: 40%;
   padding: 15px;
   gap: 15px;
   border-right: solid 1px #9c9c9c;
@@ -437,7 +437,7 @@ img {
 }
 
 .person-info-label {
-  color: #5a6a85;
+  color: #575757;
   font-weight: 500;
   font-size: 0.75em;
   display: block;
@@ -681,7 +681,7 @@ label {
   margin-bottom: 5px;
   font-weight: 500;
 }
-
+input,
 input[type="text"],
 input[type="date"],
 textarea {
@@ -745,7 +745,7 @@ textarea {
 }
 
 .buttonsdp {
-  background-color: #3498db;
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -818,6 +818,25 @@ textarea {
   background-color: white;
   position: sticky;
   top: -15px;
+}
+
+.filter-container-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 20%;
+  padding: 15px;
+  box-shadow: 0px 3px 5px 0px rgba(128, 128, 128, 0.205);
+  border-left: solid 3px #0056b3;
+
+  label {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(1rem, 1vw, 1.5rem);
+    padding: 0px;
+    color: #004c99;
+  }
 }
 
 .department-table thead th:first-child {
@@ -940,6 +959,13 @@ textarea {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+
+  h3 {
+    width: 100%;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(1.5rem, 1vw, 2rem);
+    color: #004c99;
+  }
 }
 
 .filter-group {
@@ -964,16 +990,6 @@ textarea {
 /*===========================================================================*/
 #medical-cert {
   display: flex;
-  width: 100%;
-  height: 100%;
-  border: solid 1px #ccc;
-  border-radius: 10px;
-  overflow: auto;
-}
-
-#rx {
-  display: flex;
-  flex-direction: row;
   width: 100%;
   height: 100%;
   border: solid 1px #ccc;
@@ -1040,6 +1056,21 @@ textarea {
   height: 150px;
   width: 150px;
   object-fit: contain;
+}
+
+.consultation-cert-controls {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: white;
+  border-bottom: 3px #f6fbff solid;
+  padding-bottom: 15px;
+  box-shadow: 0px 3px 5px 0px rgba(128, 128, 128, 0.205);
+  width: 100%;
 }
 
 .cert-controls {
@@ -1336,6 +1367,51 @@ textarea {
   transition: all 0.3s ease;
 }
 
+.add-consultation-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+}
+
+.consultation-modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 95%;
+  height: 90%;
+  max-width: 1500px;
+  max-height: 1100px;
+  background-color: white;
+  font-family: "Poppins", sans-serif;
+  padding: 20px;
+  border-radius: 5px;
+}
+.consultation-modal-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(1.5rem, 1vw, 1rem);
+  color: #0b4f8a;
+
+  h1 {
+    font-size: clamp(1.5rem, 1vw, 1rem);
+  }
+}
+.consultation-close-btn {
+  align-self: flex-end;
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
 /* Heading style */
 .department-table h3 {
   color: #0b4f8a;
@@ -1432,14 +1508,13 @@ textarea {
 
 /*============================================================*/
 .add-btn {
-  background-color: #15a83f;
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 8px 15px;
-  height: 35px;
+  height: 55px;
   font-size: 14px;
   border-radius: 4px;
-  margin-top: 40px;
   cursor: pointer;
 }
 
@@ -1530,15 +1605,16 @@ textarea {
 }
 
 /*===================================================================*/
-.medcontainer {
+.tab-content {
   display: flex;
   flex-direction: row;
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  border-radius: 5px;
+  padding: 10px;
   overflow: auto;
   box-sizing: border-box;
-  overflow-y: auto;
+  border: 1px solid #e2e6ef;
 }
 
 .medrec-subparent-div {
@@ -1546,7 +1622,6 @@ textarea {
   flex-direction: row;
   width: 100%;
   height: 100%;
-  border-radius: 10px;
   overflow: auto;
   box-sizing: border-box;
   overflow-y: auto;
@@ -1559,9 +1634,18 @@ textarea {
   width: 30%;
   height: 100%;
   max-width: 320px;
-  background-color: #f9f9fd;
+  background-color: #f1f4ff;
   padding: 10px;
-  border-radius: 15px;
+  border-radius: 5px;
+  overflow: auto;
+}
+.left-info-div::-webkit-scrollbar {
+  width: 8px;
+}
+
+.left-info-div::-webkit-scrollbar-thumb {
+  background: #0f68ce;
+  border-radius: 0px;
 }
 
 .phyexam-div {
@@ -1589,8 +1673,18 @@ span {
   height: 100%;
   background-color: #ffffff;
   padding: 10px;
+  padding-top: 0px;
   overflow: auto;
 }
+.right-info-div::-webkit-scrollbar {
+  width: 8px;
+}
+
+.right-info-div::-webkit-scrollbar-thumb {
+  background: #0f68ce;
+  border-radius: 0px;
+}
+
 /* Modal Background */
 .medrec-modal {
   display: none; /* hidden by default */
@@ -1711,6 +1805,11 @@ span {
   flex-wrap: wrap;
   justify-content: flex-start;
 }
+.consultation-tabs {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 
 /* Tab Item */
 .tab {
@@ -1736,6 +1835,46 @@ span {
   font-weight: 600;
   padding: 15px;
   border-radius: 5px;
+}
+
+.consultation-tabs-childs {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #e2e6ef;
+  margin-bottom: 5px;
+}
+
+.consultation-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #4a5568;
+  background-color: #ffffff;
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.consultation-tab:hover {
+  background-color: #f0f4ff;
+  border-color: #c3d4ff;
+  transform: translateY(-1px);
+}
+
+.consultation-tab.active {
+  background-color: #eef3ff;
+  color: #184dbe;
+  border-bottom: solid #2f6fed 3px;
 }
 
 /* Underline animation for active tab */
@@ -1788,19 +1927,25 @@ span {
 .history-table-container {
   display: flex;
   width: 100%;
-  height: 100%;
+  height: 85%;
 }
+
 #client-history-container {
   background: #f8fbff;
   padding: 0px;
   border-radius: 3px;
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
   font-family: "Poppins", sans-serif;
-  max-width: 1000px;
-  overflow-x: auto;
   width: 100%;
+  height: 80%;
 }
-
+#client-history-container::-webkit-scrollbar {
+  width: 8px;
+}
+#client-history-container::-webkit-scrollbar-thumb {
+  background: #357fd3;
+  border-radius: 0px;
+}
 /* Heading */
 #client-history-container h3 {
   font-size: 26px;
@@ -1811,23 +1956,19 @@ span {
   padding-left: 12px;
 }
 
-/* Table Wrapper */
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-}
-
 /* Table Styling */
 .client-history-table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 10px;
+  border-spacing: 0 0px;
+  padding-top: 0px;
 }
 
 .client-history-table thead {
-  background: linear-gradient(90deg, #3498db, #2980b9);
+  background-color: #397dda;
   color: #fff;
-  border-radius: 10px;
+  border-radius: 5px;
+  padding-top: 0px;
 }
 
 .client-history-table th {
@@ -1840,7 +1981,6 @@ span {
 /* Table Rows */
 .client-history-table tbody tr {
   background-color: #ffffff;
-  border-left: 4px solid #3b82f6;
   box-shadow: 0 2px 8px rgba(0, 0, 80, 0.05);
   transition: all 0.3s ease;
   cursor: pointer;
@@ -2132,4 +2272,8 @@ span {
     font-weight: bold;
     color: #555;
   }
+}
+
+.client-history-container {
+  overflow: auto;
 }

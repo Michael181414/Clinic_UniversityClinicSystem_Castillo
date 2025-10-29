@@ -179,11 +179,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="name-input-group">
                     <div class="input-container">
                         <label for="firstname">First Name</label>
-                        <input class="inputs" type="text" id="fname" name="firstname" placeholder="First name" required>
+                        <input class="inputs" type="text" id="fname" name="firstname" placeholder="Ex: Juan" required>
                     </div>
                     <div class="input-container">
                         <label for="lastname">Last Name</label>
-                        <input class="inputs" type="text" id="lastname" name="lastname" placeholder="Last name" required>
+                        <input class="inputs" type="text" id="lastname" name="lastname" placeholder="Ex: Dela Cruz" required>
                     </div>
                 </div>
 
@@ -207,7 +207,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="email">Email</label>
                     <div class="input-group">
                         <i class="fas fa-envelope left-icon"></i>
-                        <input type="email" class="inputs" id="email" name="email" placeholder="Enter your email" value="" required>
+                        <input type="email" class="inputs" id="email" name="email" placeholder="juandelacruz@example.com" value="" required>
                     </div>
                 </div>
 

@@ -1,11 +1,13 @@
 <?php
 session_start();
 
+require '../config/database.php';
+require '../vendor/autoload.php';
+
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require '../config/database.php';
-require 'vendor/autoload.php';
 
 $pdo = pdo_connect_mysql();
 $message = '';
