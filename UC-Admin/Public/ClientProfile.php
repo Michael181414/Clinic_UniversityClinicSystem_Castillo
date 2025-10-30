@@ -287,6 +287,8 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
             </a>
         </nav>
 
+
+
         <main class="content" id="mainContent">
             <div class="profile-div">
                 <div class="profile-div2">
@@ -327,13 +329,40 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                 <div class="tabs">
                     <div class="tabs-child">
                         <?php if (!$showLimitedTabs): ?>
-                            <div class="tab" data-target="visit-history">
+                            <div id="visitHistoryTab" class="tab" data-target="visit-history">
                                 <img class="cp-btn-img"
                                     src="assets/images/time-past 2.svg"
                                     data-active="assets/images/time-past 2.svg"
                                     data-inactive="assets/images/time-past 3.svg">
                                 Patient Visit History
                             </div>
+                            <script>
+                                // Make sure this runs after DOM is ready
+                                window.addEventListener('DOMContentLoaded', () => {
+                                    const tab = document.getElementById('visitHistoryTab');
+                                    if (!tab) {
+                                        console.error('visitHistoryTab element not found');
+                                        return;
+                                    }
+
+                                    function backto(event) {
+                                        // If this is called from a click on a form element, prevent default
+                                        if (event && typeof event.preventDefault === 'function') {
+                                            event.preventDefault();
+                                        }
+
+                                        console.log('backto() called — reloading the page now');
+                                        // Reload the current page
+                                        location.reload();
+                                    }
+
+                                    // Attach click handler
+                                    tab.addEventListener('click', backto);
+
+                                    // IMPORTANT: Do not call backto() here — that would reload on load.
+                                    // If you previously had: window.onload = function(){ backto(); }; remove it.
+                                });
+                            </script>
                         <?php endif; ?>
 
                         <div class="tab <?php echo $showLimitedTabs ? 'active' : 'active'; ?>" data-target="personal-info-div">
@@ -1058,7 +1087,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                     -->
                             <!-- History -->
                             <div class="file-history">
-                                <h3>Previous Uploads</h3>
+                                <h3>Patient Annual Exam Files</h3>
                                 <table id="historyTable" style="width:100%; border-collapse:collapse;">
                                     <thead>
                                         <tr>
@@ -1074,18 +1103,19 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                             </div>
                         </div>
 
-                        <div id="filePreviewModal" class="modal" aria-hidden="true" role="dialog" aria-label="File preview">
-                            <div class="modal-content large" role="document">
-
-                                <div class="preview-modal-header">
-                                    <h2>📄 File Preview</h2>
+                        <div id="filePreviewModal" class="modal">
+                            <div id="preview-modal-content" class="modal-content large">
+                                <div class="Preview-header">
+                                    <span>📄 </span>
+                                    <p>File Preview</p>
                                 </div>
                                 <div id="preview-modal-body" class="modal-body">
                                     <iframe id="pdfViewer" title="PDF viewer"></iframe>
                                     <div id="previewContainer"></div>
                                 </div>
-                                <span id="close-preview" class="close-btn" data-close="filePreviewModal">&times;</span>
+                                <span id="close-preview" class="preview-close-btn" data-close="filePreviewModal">&times;</span>
                             </div>
+
                         </div>
                         <script>
                             (function() {

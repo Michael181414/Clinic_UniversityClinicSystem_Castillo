@@ -280,7 +280,6 @@ img {
   border-radius: 5px;
   height: 100%;
   width: 100%;
-  padding: 15px;
 }
 
 .profile-pic-info-div {
@@ -2089,126 +2088,12 @@ span {
 
 /*=======For Annual Exam Styles ===========*/
 /* Full-screen modal overlay */
-#filePreviewModal.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 9999;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-/* Modal overlay for background clicks */
-#filePreviewModal .modal-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-/* Modal content container */
-#filePreviewModal .modal-content.large {
-  position: relative;
-  width: 85%;
-  height: 100%;
-  max-width: 1400px;
-  max-height: 90vh;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  z-index: 2;
-}
-
-/* Modal header */
-#filePreviewModal .modal-header {
-  background-color: #3b3b3b;
-  color: #fff;
-  padding: 16px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 6px 6px 0 0;
-  height: 57px;
-
-  h2 {
-    font-size: clamp(1.5rem, 1vw, 2rem);
-    font-weight: 400;
-  }
-}
-
-/* Modal body - FIXED to take remaining space */
-#filePreviewModal .modal-body {
-  flex: 1;
-  padding: 0;
-  background: #111;
-  display: flex;
-  overflow: hidden;
-  position: relative;
-  min-height: 0; /* Important for flex children */
-}
-
-/* PDF iframe - FIXED */
-#filePreviewModal iframe#pdfViewer {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: none;
-  flex: 1;
-}
-
-/* Preview container - FIXED */
-#filePreviewModal #previewContainer {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  flex: 1;
-  overflow: auto;
-}
-
-/* Images inside preview */
-#filePreviewModal #previewContainer img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-}
-
-/* Close button */
-#filePreviewModal .close-btn {
-  cursor: pointer;
-  font-size: 24px;
-  line-height: 1;
-  padding: 8px 12px;
-  border-radius: 4px;
-  color: #333;
-  background: transparent;
-  border: none;
-  transition: background-color 0.2s;
-}
-#filePreviewModal .close-btn:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
 
 /* Responsive tweaks */
 @media (max-width: 800px) {
   #filePreviewModal .modal-content.large {
     width: 98%;
-    height: 96%;
+    height: 100%;
     max-width: none;
     max-height: none;
     border-radius: 4px;
@@ -2216,14 +2101,20 @@ span {
 }
 
 .file-history {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
   background: #fff;
   border-radius: 10px;
   padding: 20px;
-  margin-top: 25px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 .file-history h3 {
+  width: 100%;
   margin-bottom: 15px;
   font-size: 20px;
   color: #003366; /* LSPU-LBC blue tone */
@@ -2314,50 +2205,116 @@ span {
 }
 
 /* End of new_profile_style.css */
-.preview-modal-header {
-  background-color: #3b3b3b;
-  color: #fff;
-  padding: 16px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 6px 6px 0 0;
-  height: 57px;
-
-  h2 {
-    font-size: clamp(1.5rem, 1vw, 2rem);
-    font-weight: 400;
-  }
+#filePreviewModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: row;
+  justify-content: flex-start;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  box-sizing: border-box;
+  padding: 0px;
 }
+
+/* Modal overlay for background clicks */
+
+/* Modal content container */
+
+/* Modal header */
+
 .modal-content.large {
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  justify-content: flex-start;
+  justify-content: center;
   width: 100%;
-  max-width: 2000px;
+  max-width: 3000px;
   height: 100%;
-  margin-top: 0px;
-  padding-bottom: 0px;
-  background-color: rgba(43, 43, 43, 0.164);
+  max-height: 3000px;
+  padding: 0px;
+  background-color: rgba(59, 59, 59, 0.164);
+  border: none;
+  box-shadow: none;
+}
+/* Modal body - FIXED to take remaining space */
+#filePreviewModal .modal-body {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-#filePreviewModal {
-  margin-top: 0px;
+/* PDF iframe - FIXED */
+#filePreviewModal iframe#pdfViewer {
+  width: 100%;
+  height: 100%;
+  max-height: 2000px;
+  border: none;
+  display: none;
+  flex: 1;
 }
 
-#close-preview {
+/* Preview container - FIXED */
+#filePreviewModal #previewContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 2000px;
+  flex: 1;
+  overflow: auto;
+}
+
+/* Images inside preview */
+#filePreviewModal #previewContainer img {
+  max-width: 100%;
+  max-height: 100%;
+  max-height: 2000px;
+
+  object-fit: contain;
+}
+
+/* Close button */
+
+.preview-close-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100px;
-  font-size: clamp(2rem, 2vw, 2.5rem);
+  font-size: clamp(1.5rem, 2vw, 2rem);
   font-weight: 600;
   background-color: #3b3b3b;
-  height: 57px;
+  color: #fff;
+  height: 9%;
+  max-height: 70px;
 }
 body.modal-open {
   overflow: hidden;
 }
-#preview-modal-body {
-  height: 100%;
-  max-height: 2000px;
-  background: #57575723;
+.Preview-header {
+  background-color: #3b3b3b;
+  color: #fff;
+  padding: 16px 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  height: 9%;
+  width: 210px;
+  border-radius: 0px;
+  max-height: 70px;
+  p {
+    display: flex;
+    flex-direction: row;
+    font-size: clamp(1rem, 1vw, 1.5rem);
+    font-weight: 400;
+    color: white;
+    width: 400px;
+  }
 }
