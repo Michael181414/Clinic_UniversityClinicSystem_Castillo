@@ -45,11 +45,6 @@ try {
     ]);
 
     // Insert into consultations table
-    $remarks = "Medical certificate issued on $date_issued";
-    $stmt2 = $pdo->prepare("INSERT INTO consultations (client_id, historyID, consultation_date, certificate_issued, remarks) 
-                            VALUES (?, ?, CURDATE(), TRUE, ?)");
-    $stmt2->execute([$client_id, $historyID, $remarks]);
-
     echo json_encode(['success' => true]);
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);

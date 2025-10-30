@@ -102,7 +102,34 @@ try {
                             <p class="p-tag">Restore the database from a previously created backup file.</p>
                         </div>
                     </a>
+                    <div id="loading-modal" class="modal">
+                        <div class="modal-content">
+                            <div id="loadingDiv">
+                                <div class="spinner"></div>
+                                <p>Restoring data, please wait...</p>
+                                <div class="progress-bar">
+                                    <div class="progress"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div id="loading-modal">
+                        <div class="modal-content">
+                            <div class="spinner"></div>
+                            <p>Restoring data, please wait...</p>
+                            <div class="progress-bar">
+                                <div class="progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="success-modal" class="modal">
+                        <div class="modal-content">
+                            <h3>Success</h3>
+                            <p id="success-message">Database restored successfully!</p>
+                            <button id="close-success" class="btn">OK</button>
+                        </div>
+                    </div>
                     <!-- Hidden Restore Form -->
                     <form id="restoreForm" action="restore.php" method="post" enctype="multipart/form-data" style="display:none;">
                         <input type="file" id="restoreInput" name="backup_file" accept=".sql">
@@ -171,24 +198,74 @@ try {
             document.getElementById("restoreInput").addEventListener("change", function() {
                 const form = document.getElementById("restoreForm");
                 const formData = new FormData(form);
+                const loadingModal = document.getElementById("loading-modal");
+                const progressBar = loadingModal.querySelector(".progress");
+                const successModal = document.getElementById("success-modal");
+                const successMsg = document.getElementById("success-message");
+
+                // Show loading modal
+                loadingModal.classList.add("active");
+                progressBar.style.width = "0%";
 
                 fetch("restore.php", {
                         method: "POST",
                         body: formData
                     })
-                    .then(res => res.json())
+                    .then(res => {
+                        let progress = 0;
+                        const interval = setInterval(() => {
+                            progress = Math.min(progress + 15, 90);
+                            progressBar.style.width = progress + "%";
+                        }, 300);
+
+                        return res.json().finally(() => {
+                            clearInterval(interval);
+                            progressBar.style.width = "100%";
+                        });
+                    })
                     .then(data => {
-                        alert(data.msg); // ✅ only alert, no redirect
+                        setTimeout(() => {
+                            loadingModal.classList.remove("active");
+
+                            if (data.status === "success") {
+                                successMsg.textContent = data.msg;
+                                successModal.classList.add("active");
+                            } else {
+                                alert(data.msg);
+                            }
+                        }, 400);
                     })
                     .catch(err => {
+                        loadingModal.classList.remove("active");
                         alert("❌ Restore error: " + err);
                     });
+
+                // Close success modal
+                document.getElementById("close-success").addEventListener("click", () => {
+                    successModal.classList.remove("active");
+                    location.reload(); // optional: refresh to show updated data
+                });
             });
         </script>
 
+        <div id="backup-loading-modal" class="modal">
+            <div class="modal-content">
+                <div class="spinner"></div>
+                <p id="loading-text">Creating backup, please wait...</p>
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
+        </div>
 
-
-
+        <!-- ✅ Success Modal -->
+        <div id="success-modal" class="modal">
+            <div class="modal-content">
+                <h3>✅ Success</h3>
+                <p id="success-message">Backup completed successfully!</p>
+                <button id="close-success" class="btn">OK</button>
+            </div>
+        </div>
         <!-- ⚠️ Custom Modal for Restore Confirmation -->
         <div id="restoreWarningModal" class="modal-overlay">
             <div class="modal-box">
@@ -222,28 +299,64 @@ try {
         <script>
             // ✅ Backup Function
             function runBackup() {
+                const loadingModal = document.getElementById("backup-loading-modal");
+                const progressBar = document.querySelector(".progress");
+                const loadingText = document.getElementById("loading-text");
+                const successModal = document.getElementById("success-modal");
+                const successMessage = document.getElementById("success-message");
+                const closeSuccess = document.getElementById("close-success");
+
+                // 🌀 Show loading modal
+                loadingText.textContent = "Creating backup, please wait...";
+                loadingModal.classList.add("active");
+                progressBar.style.width = "0%";
+
                 let xhr = new XMLHttpRequest();
                 xhr.open("GET", "back_up.php", true);
+
                 xhr.onload = function() {
+                    let progress = 0;
+                    const interval = setInterval(() => {
+                        progress = Math.min(progress + 10, 90);
+                        progressBar.style.width = progress + "%";
+                    }, 300);
+
                     if (xhr.status === 200) {
                         let response = xhr.responseText.trim();
                         console.log("back_up.php response:", response);
 
-                        if (response.startsWith("success")) {
-                            let parts = response.split("|");
-                            let file = parts[1];
-                            alert("✅ Backup created successfully!");
-                            window.location.href = file; // download
-                        } else {
-                            alert("❌ Backup failed!\n\nResponse: " + response);
-                        }
+                        setTimeout(() => {
+                            clearInterval(interval);
+                            progressBar.style.width = "100%";
+                            loadingModal.classList.remove("active");
+
+                            if (response.startsWith("success")) {
+                                let parts = response.split("|");
+                                let file = parts[1];
+                                successMessage.textContent = "✅ Backup created successfully!";
+                                successModal.classList.add("active");
+
+                                // ✅ Close modal & download file
+                                closeSuccess.onclick = () => {
+                                    successModal.classList.remove("active");
+                                    window.location.href = file; // download backup
+                                };
+                            } else {
+                                alert("❌ Backup failed!\n\nResponse: " + response);
+                            }
+                        }, 800);
                     } else {
+                        clearInterval(interval);
+                        loadingModal.classList.remove("active");
                         alert("❌ Request failed. Status: " + xhr.status);
                     }
                 };
+
                 xhr.onerror = function() {
-                    alert("❌ Network error calling backup.php");
+                    loadingModal.classList.remove("active");
+                    alert("❌ Network error calling back_up.php");
                 };
+
                 xhr.send();
             }
 

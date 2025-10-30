@@ -459,26 +459,33 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($historyData as $row): ?>
-                                                <?php
-                                                $url = "History_Page.php?client_id=" . urlencode($row['ClientID']) .
-                                                    "&history_id=" . urlencode($row['historyID']) .
-                                                    "&date=" . urlencode($row['actionDate']);
-                                                ?>
-                                                <tr class="history-row" data-href="<?= htmlspecialchars($url) ?>">
-                                                    <td class="id-col"><?= htmlspecialchars($row['historyID']) ?></td>
-                                                    <td class="id-col"><?= htmlspecialchars($row['ClientID']) ?></td>
-                                                    <td class="action-datetime"><?= htmlspecialchars($row['actionDate']) ?></td>
-                                                    <td class="action-datetime"><?= htmlspecialchars($row['actionTime']) ?></td>
-                                                    <td class="remarks-col">
-                                                        <a href="<?= htmlspecialchars($url) ?>" class="btn-view">View</a>
-                                                    </td>
+                                            <?php if (!empty($historyData)): ?>
+                                                <?php foreach ($historyData as $row): ?>
+                                                    <?php
+                                                    $url = "History_Page.php?client_id=" . urlencode($row['ClientID']) .
+                                                        "&history_id=" . urlencode($row['historyID']) .
+                                                        "&date=" . urlencode($row['actionDate']);
+                                                    ?>
+                                                    <tr class="history-row" data-href="<?= htmlspecialchars($url) ?>">
+                                                        <td class="id-col"><?= htmlspecialchars($row['historyID']) ?></td>
+                                                        <td class="id-col"><?= htmlspecialchars($row['ClientID']) ?></td>
+                                                        <td class="action-datetime"><?= htmlspecialchars($row['actionDate']) ?></td>
+                                                        <td class="action-datetime"><?= htmlspecialchars($row['actionTime']) ?></td>
+                                                        <td class="remarks-col">
+                                                            <a href="<?= htmlspecialchars($url) ?>" class="btn-view">View</a>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <tr>
+                                                    <td colspan="5" class="no-record">No consultation records found.</td>
                                                 </tr>
-                                            <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+
                         </div>
                         <div class="add-consultation-modal" id="addConsultationModal" style="display:none;">
                             <div class="consultation-modal-content">
@@ -659,14 +666,13 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                             </div>
 
                                             <div class="right-info-div">
+                                                <div id="saveStatus" style="display: flex; height: 50px; width: 100%; margin-top: 10px;"></div>
                                                 <div class="consultation-cert-controls">
                                                     <div>
                                                         <button class="buttonsdp" type="button" onclick="saveConsultation()">Save</button>
                                                         <button class="buttonsdp2" type="button" onclick="submitPdfForm()">Download as PDF</button>
                                                     </div>
                                                 </div>
-                                                <div id="saveStatus" style="margin-top: 10px;"></div>
-
                                                 <div class="SOAP-div" style="align-items: left;">
                                                     <h3 style="margin-bottom: 15px;">Subjective</h3>
                                                     <textarea style=" font-family:Poppins, sans-serif;" id="subjective" name="subjective" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
@@ -712,6 +718,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
                                     </div>
                                 </div>
+
                                 <script>
                                     function autoGrow(element) {
                                         element.style.height = "5px"; // reset height
@@ -762,7 +769,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                         };
 
                                         const statusDiv = document.getElementById('saveStatus');
-                                        statusDiv.innerHTML = '<p style="color: blue;">Saving data, please wait...</p>';
+                                        statusDiv.innerHTML = '<p class="loading">Saving data, please wait...</p>';
 
                                         fetch('manageclients.dbf/save_consultation.php', {
                                                 method: 'POST',
@@ -779,7 +786,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                             })
                                             .then(data => {
 
-                                                statusDiv.innerHTML = '<p style="color: green;">Data saved successfully!</p>';
+                                                statusDiv.innerHTML = '<p class="success">Data saved successfully!</p>';
 
                                                 setTimeout(() => {
                                                     statusDiv.innerHTML = '';
@@ -866,13 +873,12 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                             </div>
 
                                             <div class="right-info-div">
+                                                <div id="saveRxStatus" style="display: flex; height: 50px; width: 100%; margin-top: 10px;"></div>
                                                 <div class="consultation-cert-controls">
                                                     <div> <button type="button" class="buttonsdp" onclick="savePrescription()">Save</button>
                                                         <button class="buttonsdp2" type="submit">Download as PDF</button>
                                                     </div>
                                                 </div>
-                                                <p id="save-message" style="color: green; display: none; font-weight: normal;"></p>
-
                                                 <div class="SOAP-div" style="align-items: left;">
                                                     <h3 style="font-family:Poppins, sans-serif; font-size: 28pt;">℞</h3>
                                                     <textarea style="font-family:Poppins, sans-serif;" ; id="notes" name="notes" rows="20" cols="50" placeholder="..."></textarea>
@@ -921,7 +927,6 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                 </script>
                                 <script>
                                     function savePrescription() {
-                                        // Get input values trimmed
                                         const patientName = document.getElementById('name').value;
                                         const age = document.getElementById('age').value;
                                         const impression = document.querySelector('input[name="p-impression"]').value.trim();
@@ -929,7 +934,6 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                         const licenseNo = document.querySelector('input[name="LicNo"]').value.trim();
                                         const notes = document.getElementById('notes').value.trim();
 
-                                        // Validate required fields (adjust which fields are required)
                                         if (!patientName) {
                                             alert("Patient name is required.");
                                             return;
@@ -957,14 +961,14 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
                                         const data = {
                                             client_id: document.getElementById('client-id').value,
-                                            patient_name: document.getElementById('name').textContent.trim(),
-                                            age: document.getElementById('age').textContent.trim(),
+                                            patient_name: document.getElementById('name').value,
+                                            age: document.getElementById('age').value,
 
                                             impression: document.querySelector('input[name="p-impression"]').value.trim(),
                                             physician: document.querySelector('input[name="physician"]').value.trim(),
                                             license_no: document.querySelector('input[name="LicNo"]').value.trim(),
                                             notes: document.getElementById('notes').value.trim(),
-                                            date_created: new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+                                            date_created: new Date().toISOString().slice(0, 10)
                                         };
 
                                         fetch('manageclients.dbf/save_rx.php', {
@@ -976,25 +980,23 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                             })
                                             .then(res => res.json())
                                             .then(response => {
-                                                const msgElem = document.getElementById("save-message");
+                                                const statusDiv = document.getElementById("saveRxStatus");
                                                 if (response.success) {
-                                                    msgElem.style.color = "green";
-                                                    msgElem.textContent = "Saved successfully.";
-                                                    msgElem.style.display = "block";
+                                                    statusDiv.innerHTML = '<p class="success">Data saved successfully!</p>';
                                                     setTimeout(() => {
-                                                        msgElem.style.display = "none";
-                                                    }, 4000); // hides after 4 seconds
+                                                        statusDiv.style.display = "none";
+                                                    }, 4000);
 
                                                 } else {
-                                                    msgElem.style.color = "red";
-                                                    msgElem.textContent = "Error saving prescription: " + response.message;
-                                                    msgElem.style.display = "block";
+                                                    statusDiv.style.color = "red";
+                                                    statusDiv.textContent = "Error saving prescription: " + response.message;
+                                                    statusDiv.style.display = "block";
                                                 }
 
                                             })
                                             .catch(err => {
                                                 console.error("AJAX error:", err);
-                                                alert("Something went wrong.");
+                                                statusDiv.innerHTML = '<p style="color: red;">Something went wrong while saving.</p>';
                                             });
                                     }
                                 </script>

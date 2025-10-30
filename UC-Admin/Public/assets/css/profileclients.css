@@ -1392,6 +1392,36 @@ textarea {
   font-family: "Poppins", sans-serif;
   padding: 20px;
   border-radius: 5px;
+  animation: slideDown 0.3s ease;
+}
+.success {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 15px;
+  background-color: rgb(246, 255, 246);
+  color: rgb(5, 99, 5);
+  font-size: clamp(1rem, 1vw, 1.2rem);
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  border-radius: 5px;
+  border: solid green 1px;
+}
+.loading {
+  color: rgb(3, 126, 209);
+  font-size: clamp(1rem, 1vw, 1.2rem);
+  font-family: "Poppins", sans-serif;
+}
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 .consultation-modal-header {
   display: flex;
@@ -1412,6 +1442,7 @@ textarea {
   font-size: 24px;
   cursor: pointer;
 }
+
 /* Heading style */
 .department-table h3 {
   color: #0b4f8a;

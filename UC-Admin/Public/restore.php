@@ -33,7 +33,7 @@ if ($return_var === 0) {
 } else {
     echo json_encode([
         "status" => "error",
-        "msg"    => "❌ Restore failed: " . implode("\n", $output)
+        "msg"    => "Restore failed: " . implode("\n", $output)
     ]);
 }
 exit;

@@ -204,7 +204,7 @@ $diagnostic = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
 //==========================================================================================
 // Fetch consultation record based on historyID and date
-$sql = "SELECT * FROM consultationrecords WHERE historyid = :history_id OR DATE(datecreated) = :date";
+$sql = "SELECT * FROM consultationrecords WHERE historyid = :history_id OR DATE(datecreated) = :date ORDER BY consultationID DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([
     'history_id' => $historyID,
@@ -213,13 +213,17 @@ $stmt->execute([
 $consultationrecords = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
 // Fetch prescription based on historyID and date
-$sql = "SELECT * FROM prescriptions WHERE historyID = :history_id OR date_created = :date";
+$sql = "SELECT * FROM prescriptions 
+        WHERE historyID = :history_id OR date_created = :date OR ClientID = :client_id 
+        ORDER BY id DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([
     'history_id' => $historyID,
-    'date' => $date
+    'date' => $date,
+    'client_id' => $clientID
 ]);
 $prescriptions = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
 //===============================================================================================
 $stmt = $pdo->prepare("SELECT Surname, GivenName, MiddleName, Age, CurrentAddress, Gender, Course FROM personalinfo WHERE ClientID = ?");
 $stmt->execute([$clientID]);
