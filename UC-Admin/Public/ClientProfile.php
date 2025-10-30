@@ -1073,20 +1073,20 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                 </table>
                             </div>
                         </div>
+
                         <div id="filePreviewModal" class="modal" aria-hidden="true" role="dialog" aria-label="File preview">
-                            <div class="modal-overlay" data-close="filePreviewModal"></div>
                             <div class="modal-content large" role="document">
-                                <div class="modal-header">
-                                    <h2 style="margin:0; font-size:18px;">📄 File Preview</h2>
-                                    <button class="close-btn" data-close="filePreviewModal" aria-label="Close preview">&times;</button>
+
+                                <div class="preview-modal-header">
+                                    <h2>📄 File Preview</h2>
                                 </div>
-                                <div class="modal-body">
+                                <div id="preview-modal-body" class="modal-body">
                                     <iframe id="pdfViewer" title="PDF viewer"></iframe>
                                     <div id="previewContainer"></div>
                                 </div>
+                                <span id="close-preview" class="close-btn" data-close="filePreviewModal">&times;</span>
                             </div>
                         </div>
-
                         <script>
                             (function() {
                                 const clientId = <?= json_encode($clientID) ?>;

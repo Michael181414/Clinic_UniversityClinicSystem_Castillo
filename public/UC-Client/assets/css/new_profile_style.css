@@ -904,3 +904,52 @@ select:focus,
   overflow: visible !important;
   padding-bottom: 120px !important; /* allow space for last form field */
 }
+
+/* End of new_profile_style.css */
+.preview-modal-header {
+  background-color: #3b3b3b;
+  color: #fff;
+  padding: 16px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 6px 6px 0 0;
+  height: 57px;
+
+  h2 {
+    font-size: clamp(1.5rem, 1vw, 2rem);
+    font-weight: 400;
+  }
+}
+.modal-content.large {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 2000px;
+  height: 100%;
+  margin-top: 0px;
+  padding-bottom: 0px;
+  background-color: rgba(43, 43, 43, 0.164);
+}
+
+#filePreviewModal {
+  margin-top: 0px;
+}
+
+#close-preview {
+  width: 100px;
+  font-size: clamp(2rem, 2vw, 2.5rem);
+  font-weight: 600;
+  background-color: #3b3b3b;
+  height: 57px;
+}
+body.modal-open {
+  overflow: hidden;
+}
+#preview-modal-body {
+  height: 100%;
+  max-height: 2000px;
+  background: #57575723;
+}

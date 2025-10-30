@@ -185,7 +185,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                 <h3>Upload Annual Examination File</h3>
                 <div class="upload-section">
                     <form id="uploadForm" enctype="multipart/form-data">
-                        <input type="file" name="exam_files[]" id="exam_file" accept=".pdf,.doc,.docx,.jpg,.png" multiple required>
+                        <input type="file" id="exam_file" name="exam_file" accept=".pdf,.doc,.docx,.jpg,.png" multiple required>
 
                         <label for="exam_file"><i class="fas fa-upload"></i> Choose File</label>
                         <br><br>
@@ -193,7 +193,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                     </form>
                 </div>
 
-                <div id="fileOverview" style="margin-top:20px;"></div>
+                <div id="fileOverview"></div>
 
                 <button id="viewHistoryBtn" class="btn-secondary" style="margin-top:15px;">📁 View Uploaded Files History</button>
             </div>
@@ -252,17 +252,16 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
             <!-- File Preview Modal -->
             <div id="filePreviewModal" class="modal">
                 <div class="modal-content large">
-                    <div class="modal-header">
+                    <div class="preview-modal-header">
                         <h2>📄 File Preview</h2>
-                        <span class="close-btn" data-close="filePreviewModal">&times;</span>
                     </div>
-                    <div class="modal-body">
-                        <iframe id="pdfViewer" width="100%" height="650px" style="border: none; display: none;"></iframe>
+                    <div id="preview-modal-body" class=" modal-body">
+                        <iframe id="pdfViewer" width="100%" height="1300px" style="border: none; display: none;"></iframe>
                         <!-- Preview container for non-PDF files will be dynamically inserted here -->
                     </div>
+                    <span id="close-preview" class="close-btn" data-close="filePreviewModal">&times;</span>
                 </div>
             </div>
-
         </div>
         <script>
             // --- ELEMENT REFERENCES ---
@@ -421,7 +420,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
             // --- FILE PREVIEW LOGIC ---
             function handleFilePreview(filePath, fileName) {
                 const fileExtension = fileName.split('.').pop().toLowerCase();
-
+                document.body.classList.add('modal-open');
                 // Clear previous content
                 pdfViewer.style.display = 'none';
 
@@ -436,8 +435,8 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                     previewContainer.style.flexDirection = 'column';
                     previewContainer.style.alignItems = 'center';
                     previewContainer.style.justifyContent = 'center';
-                    previewContainer.style.background = '#f5f5f5';
-                    previewContainer.style.border = '1px solid #ddd';
+                    previewContainer.style.backgroundColor = 'rgba(43, 43, 43, 0.164)';
+
 
                     const modalBody = filePreviewModal.querySelector('.modal-body');
                     modalBody.appendChild(previewContainer);
@@ -563,7 +562,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                 filePreviewModal.style.display = 'none';
                 pdfViewer.src = '';
                 pdfViewer.style.display = 'none';
-
+                document.body.classList.remove('modal-open');
                 // Clear preview container
                 const previewContainer = document.getElementById('previewContainer');
                 if (previewContainer) {
@@ -987,14 +986,6 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
             }
 
             /* FILE PREVIEW MODAL STYLES */
-            .modal-content.large {
-                width: 95%;
-                max-width: 1200px;
-                height: 90vh;
-                display: flex;
-                flex-direction: column;
-                overflow: hidden;
-            }
 
             .modal-body {
                 flex: 1;
@@ -1063,6 +1054,10 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                     opacity: 1;
                     transform: scale(1);
                 }
+            }
+
+            #filePreviewModal {
+                padding-top: 0px;
             }
         </style>
         <script src="UC-Client/assets/js/new_profile_function.js" defer></script>
