@@ -6,56 +6,56 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 if (!class_exists('PHPMailer\PHPMailer\PHPMailer')) {
-    die('PHPMailer not loaded — check autoload path.');
+  die('PHPMailer not loaded — check autoload path.');
 }
 
 $pdo = pdo_connect_mysql();
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $fullname = $_POST['fullname'];
-    $email = $_POST['email'];
-    $unhashedPassword = $_POST['password'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $client_type = $_POST['client_type'];
-    $department = $_POST['department'] ?? null;
+  $fullname = $_POST['fullname'];
+  $email = $_POST['email'];
+  $unhashedPassword = $_POST['password'];
+  $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+  $client_type = $_POST['client_type'];
+  $department = $_POST['department'] ?? null;
 
-    $parts = explode(" ", $fullname, 2);
-    $firstname = $parts[0];
-    $lastname = $parts[1] ?? '';
+  $parts = explode(" ", $fullname, 2);
+  $firstname = $parts[0];
+  $lastname = $parts[1] ?? '';
 
-    $stmt = $pdo->prepare("SELECT * FROM clients WHERE Email = ?");
-    $stmt->execute([$email]);
+  $stmt = $pdo->prepare("SELECT * FROM clients WHERE Email = ?");
+  $stmt->execute([$email]);
 
-    if ($stmt->rowCount() > 0) {
-        header("Location: ../Manage_Clients.php?error=Email already exists");
-        exit();
-    }
+  if ($stmt->rowCount() > 0) {
+    header("Location: ../Manage_Clients.php?error=Email already exists");
+    exit();
+  }
 
-    $insert_stmt = $pdo->prepare("INSERT INTO clients (Firstname, Lastname, Email, Password, ClientType, Department) VALUES (?, ?, ?, ?, ?, ?)");
-    $insert_stmt->execute([$firstname, $lastname, $email, $password, $client_type, $department]);
+  $insert_stmt = $pdo->prepare("INSERT INTO clients (Firstname, Lastname, Email, Password, ClientType, Department) VALUES (?, ?, ?, ?, ?, ?)");
+  $insert_stmt->execute([$firstname, $lastname, $email, $password, $client_type, $department]);
 
-    $mail = new PHPMailer(true);
-    try {
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'jaymichaelcastillo18@gmail.com';
-        $mail->Password = 'dmjh epxq wsiw cwnm';
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
+  $mail = new PHPMailer(true);
+  try {
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = 'jaymichaelcastillo18@gmail.com';
+    $mail->Password = 'dmjh epxq wsiw cwnm';
+    $mail->SMTPSecure = 'tls';
+    $mail->Port = 587;
 
-        $mail->setFrom('jaymichaelcastillo18@gmail.com', 'LSPU-LBS University Clinic');
-        $mail->addAddress($email);
+    $mail->setFrom('jaymichaelcastillo18@gmail.com', 'LSPU-LBC University Clinic');
+    $mail->addAddress($email);
 
-        $mail->isHTML(true);
-        $mail->Subject = 'Welcome to ClinicConnect! Your Account Is Now Active';
-        $mail->Body = '
+    $mail->isHTML(true);
+    $mail->Subject = 'Welcome to LSPU-LBC University Clinic! Your Account Is Now Active';
+    $mail->Body = '
 <div style="font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background-color: #f6f9fc; padding: 30px;">
   <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden;">
     <div style="background-color: #2e68cc;; color: #fff; text-align: center; padding: 18px 0;">
-      <h2 style="margin: 0;">Clinic Connect</h2>
-      <p style="margin: 0; font-size: 14px;">LSPU-LBC University Clinic System</p>
+      <h2 style="margin: 0;">LSPU-LBC University Clinic System</h2>
+      <p style="margin: 0; font-size: 14px;"></p>
     </div>
 
     <div style="padding: 25px 30px; color: #333;">
@@ -90,11 +90,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ';
 
 
-        $mail->send();
-    } catch (Exception $e) {
-        $message = "Mailer Error: {$mail->ErrorInfo}";
-    }
+    $mail->send();
+  } catch (Exception $e) {
+    $message = "Mailer Error: {$mail->ErrorInfo}";
+  }
 
-    header("Location: ../Manage_Clients.php?success=User created successfully");
-    exit();
+  header("Location: ../Manage_Clients.php?success=User created successfully");
+  exit();
 }

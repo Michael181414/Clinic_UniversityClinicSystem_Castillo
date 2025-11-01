@@ -1058,18 +1058,12 @@ textarea {
 }
 
 .consultation-cert-controls {
-  position: sticky;
-  top: 0;
-  left: 0;
-  z-index: 1000;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   background-color: white;
-  border-bottom: 3px #f6fbff solid;
   padding-bottom: 15px;
-  box-shadow: 0px 3px 5px 0px rgba(128, 128, 128, 0.205);
-  width: 100%;
+  width: 45%;
 }
 
 .cert-controls {
@@ -1350,6 +1344,14 @@ textarea {
 
 .SOAP-div {
   font-family: "Poppins", sans-serif;
+
+  h3 {
+    font-size: clamp(1rem, 1vw, 1.5rem);
+  }
+
+  textarea {
+    margin-bottom: 25px;
+  }
 }
 
 .history-row[data-tooltip]:hover::after {
@@ -1399,7 +1401,7 @@ textarea {
   align-items: center;
   width: 100%;
   padding: 15px;
-  background-color: rgb(246, 255, 246);
+  background-color: rgb(225, 255, 225);
   color: rgb(5, 99, 5);
   font-size: clamp(1rem, 1vw, 1.2rem);
   font-family: "Poppins", sans-serif;
@@ -1830,10 +1832,14 @@ span {
 /* Tabs Inner Wrapper */
 .tabs-child {
   display: flex;
-  gap: 28px;
+  gap: 15px;
   padding: 5px 0;
+  border: 1px solid #e2e6ef;
   flex-wrap: wrap;
   justify-content: flex-start;
+  padding: 10px;
+  width: 100%;
+  border-radius: 5px;
 }
 .consultation-tabs {
   display: flex;
@@ -1847,24 +1853,27 @@ span {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  font-size: 15px;
   font-weight: 500;
   color: #6b7280;
   cursor: pointer;
   transition: color 0.25s ease;
-  padding: 8px 0;
+  padding: 15px 22px;
+  border-radius: 3px;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(1rem, 1vw, 1.5rem);
 }
 
 /* Tab Hover and Active Colors */
 .tab:hover {
   color: #111827;
+  background-color: #f0f4ff;
+  border: #c3d4ff solid 1px;
 }
 
 .tab.active {
-  color: #258beb;
-  font-weight: 600;
-  padding: 15px;
-  border-radius: 5px;
+  background-color: #eef3ff;
+  color: #184dbe;
+  border-bottom: solid #2f6fed 3px;
 }
 
 .consultation-tabs-childs {
@@ -1907,7 +1916,7 @@ span {
   border-bottom: solid #2f6fed 3px;
 }
 
-/* Underline animation for active tab */
+/* Underline animation for active tab 
 .tab::after {
   content: "";
   position: absolute;
@@ -1919,7 +1928,7 @@ span {
   border-radius: 2px;
   transition: width 0.3s ease;
 }
-
+*/
 .tab.active::after {
   width: 100%;
 }
@@ -1952,7 +1961,16 @@ span {
     height: 16px;
   }
 }
-
+.status-smg {
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+  display: flex;
+  height: 50px;
+  width: 100%;
+  margin-top: 10px;
+}
 /* ---------- Client History Table Container ---------- */
 .history-table-container {
   display: flex;

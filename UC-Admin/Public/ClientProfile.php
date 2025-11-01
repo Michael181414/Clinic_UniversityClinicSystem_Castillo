@@ -543,11 +543,13 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                         </div>
                                     </div>
 
-
                                     <script>
                                         document.addEventListener("DOMContentLoaded", function() {
                                             const tabs = document.querySelectorAll(".consultation-tab");
                                             const contents = document.querySelectorAll(".tab-content");
+
+                                            const consultation = document.getElementById("consultation-control");
+                                            const prescription = document.getElementById("prescription-control");
 
                                             tabs.forEach((tab) => {
                                                 tab.addEventListener("click", () => {
@@ -571,8 +573,18 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                                     // 4. Show the selected tab's content
                                                     const targetContent = document.getElementById(targetId);
                                                     targetContent.style.display = "flex"; // keep your layout
+
+                                                    if (targetId === "medrec") {
+                                                        consultation.style.display = "flex";
+                                                        prescription.style.display = "none";
+                                                    } else {
+                                                        consultation.style.display = "none";
+                                                        prescription.style.display = "flex";
+                                                    }
                                                 });
                                             });
+                                            tabs[0].click();
+
                                         });
 
 
@@ -626,6 +638,18 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                                 .catch(err => console.error('Error reloading .nav-div2:', err));
                                         }
                                     </script>
+
+                                    <div id="consultation-control" class="consultation-cert-controls">
+                                        <div>
+                                            <button class="buttonsdp" type="button" onclick="saveConsultation()">Save</button>
+                                            <button class="buttonsdp2" type="button" onclick="submitPdfForm()">Download as PDF</button>
+                                        </div>
+                                    </div>
+                                    <div id="prescription-control" class="consultation-cert-controls">
+                                        <div> <button type="button" class="buttonsdp" onclick="savePrescription()">Save</button>
+                                            <button class="buttonsdp2" type="submit">Download as PDF</button>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div id="medrec" class="tab-content" style="display: flex;">
@@ -695,23 +719,18 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                             </div>
 
                                             <div class="right-info-div">
-                                                <div id="saveStatus" style="display: flex; height: 50px; width: 100%; margin-top: 10px;"></div>
-                                                <div class="consultation-cert-controls">
-                                                    <div>
-                                                        <button class="buttonsdp" type="button" onclick="saveConsultation()">Save</button>
-                                                        <button class="buttonsdp2" type="button" onclick="submitPdfForm()">Download as PDF</button>
-                                                    </div>
-                                                </div>
+                                                <div id="saveStatus" class="status-smg"></div>
+
                                                 <div class="SOAP-div" style="align-items: left;">
                                                     <h3 style="margin-bottom: 15px;">Subjective</h3>
-                                                    <textarea style=" font-family:Poppins, sans-serif;" id="subjective" name="subjective" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
+                                                    <textarea style=" font-family:Poppins, sans-serif;" id="subjective" name="subjective" rows="1" cols="50" placeholder="Add notes" oninput="autoGrow(this)"></textarea>
                                                     <h3 style="margin-bottom: 15px;">Objective</h3>
-                                                    <textarea style="font-family:Poppins, sans-serif;" id="objective" name="objective" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
+                                                    <textarea style="font-family:Poppins, sans-serif;" id="objective" name="objective" rows="1" cols="50" placeholder="Add notes" oninput="autoGrow(this)"></textarea>
 
                                                     <h3 style="margin-bottom: 15px;">Assessment</h3>
-                                                    <textarea style="font-family:Poppins, sans-serif;" id="assessment" name="assessment" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
+                                                    <textarea style="font-family:Poppins, sans-serif;" id="assessment" name="assessment" rows="1" cols="50" placeholder="Add notes" oninput="autoGrow(this)"></textarea>
                                                     <h3 style="margin-bottom: 15px;">Plan</h3>
-                                                    <textarea style="font-family:Poppins, sans-serif;" id="plan" name="plan" rows="1" cols="50" placeholder="..." oninput="autoGrow(this)"></textarea>
+                                                    <textarea style="font-family:Poppins, sans-serif;" id="plan" name="plan" rows="1" cols="50" placeholder="Add notes" oninput="autoGrow(this)"></textarea>
 
                                                 </div>
                                             </div>
@@ -902,12 +921,8 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                             </div>
 
                                             <div class="right-info-div">
-                                                <div id="saveRxStatus" style="display: flex; height: 50px; width: 100%; margin-top: 10px;"></div>
-                                                <div class="consultation-cert-controls">
-                                                    <div> <button type="button" class="buttonsdp" onclick="savePrescription()">Save</button>
-                                                        <button class="buttonsdp2" type="submit">Download as PDF</button>
-                                                    </div>
-                                                </div>
+                                                <div id="saveRxStatus" class="status-smg"></div>
+
                                                 <div class="SOAP-div" style="align-items: left;">
                                                     <h3 style="font-family:Poppins, sans-serif; font-size: 28pt;">℞</h3>
                                                     <textarea style="font-family:Poppins, sans-serif;" ; id="notes" name="notes" rows="20" cols="50" placeholder="..."></textarea>

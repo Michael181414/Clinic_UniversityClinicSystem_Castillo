@@ -347,8 +347,8 @@ $fullName = trim($givenName . $surname);
 
         <main class="content" id="mainContent">
 
-            <a href="ClientProfile.php?id=<?= urlencode($clientID) ?>" class="button"><i class="fas fa-arrow-left"></i>
-                Back to Profile</a>
+            <!--     <a href="ClientProfile.php?id=<?= urlencode($clientID) ?>" class="button"><i class="fas fa-arrow-left"></i>
+                Back to Profile</a> -->
             <div class="nav-div">
                 <div class="tabs">
                     <div class="tab active" data-target="medrec">
