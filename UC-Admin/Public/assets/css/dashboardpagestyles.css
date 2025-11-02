@@ -58,12 +58,13 @@ h3 {
 }
 
 .patients-statisticis {
-  display: grid;
-  grid-template-columns: repeat(2, 55% 45%);
+  display: flex;
+  flex-direction: row;
   height: 100%;
   width: 98%;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0);
   border-radius: 5px;
+  gap: 15px;
 }
 .patients-type-counts-div {
   display: flex;
@@ -94,7 +95,6 @@ h3 {
   padding: 3px;
   border-radius: 0px 0px 5px 5px;
   background-color: rgb(255, 255, 255);
-  border: solid #f0f0f0 1px;
 }
 
 #header-count-div {
@@ -192,8 +192,6 @@ h3 {
 
 #totals-card {
   background-color: #e2faee;
-  border-top: solid #ccc 1px;
-  border-bottom: solid #ccc 1px;
 }
 #freshman-card:hover {
   background-color: rgb(231, 255, 235);
@@ -283,10 +281,10 @@ h3 {
 .patients-sex-distribution-count-div {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 80%;
   height: 100%;
   padding: 10px;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   border-radius: 5px;
   font-family: "Poppins", sans-serif;
   max-height: 320px;
@@ -306,7 +304,6 @@ h3 {
   padding: 3px;
   border-radius: 0px 0px 5px 5px;
   background-color: rgb(255, 255, 255);
-  border: solid #f0f0f0 1px;
 }
 #genderChart {
   display: flex;
@@ -320,22 +317,20 @@ h3 {
   background-color: rgb(241, 247, 255);
   border-radius: 0px 0px 0px 0px;
   color: #0562ba;
-  border: solid #f0f0f0 1px;
 }
 .gender-count {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 5px;
-  width: 100%;
+  width: 90%;
+  margin-left: 15px;
   height: 100%;
-  border: solid #f0f0f0 1px;
 }
 .gender-count-sub-sec {
   display: grid;
   grid-template-columns: repeat(2, 30% 70%);
-  width: 100%;
+  width: 90%;
   height: 40%;
 }
 .gender-icon-cards {
@@ -356,7 +351,7 @@ h3 {
   justify-content: space-between;
   gap: 15px;
   align-items: center;
-  width: 80%;
+  width: 100%;
   height: 100%;
   padding-left: 15px;
 }
@@ -1360,7 +1355,7 @@ p {
   justify-content: space-between;
   align-items: center;
   padding: 25px;
-  border: solid #ccc 1px;
+  border: solid #ffffff 1px;
   background-color: #e7f6ff;
   h2 {
     color: #004a8f;
@@ -1372,11 +1367,12 @@ p {
   flex-direction: column;
   width: 100%;
   height: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 .patients-table {
   display: flex;
   flex-direction: column;
-  border: solid #ccc 1px;
+  border: solid #ffffff 1px;
   border-top: none;
   border-bottom: none;
 }
