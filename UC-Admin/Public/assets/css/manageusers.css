@@ -977,3 +977,17 @@ label {
 .password-strength.strong {
   color: #16a34a;
 }
+
+#fname,
+#lname {
+  width: 50%;
+
+  input {
+    width: 100%;
+  }
+}
+
+input,
+select {
+  color: #666666;
+}

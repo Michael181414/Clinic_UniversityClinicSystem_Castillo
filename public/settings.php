@@ -122,7 +122,7 @@ try {
             <button class="buttons" id="backToForm">
 
                 <?php if ($userType === "Faculty" || $userType === "Personnel") : ?>
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-home"></i>
                 <?php endif; ?>
                 <?php if ($userType === "Freshman" || $userType === "NewPersonnel") : ?>
                     <i class="fas fa-file-lines button-icon-nav"></i>
@@ -132,7 +132,7 @@ try {
                 <?php endif; ?>
                 <span class="nav-text">
                     <?php if ($userType === "Faculty" || $userType === "Personnel") : ?>
-                        Profile
+                        Home
                     <?php endif; ?>
                     <?php if ($userType === "Freshman" || $userType === "NewPersonnel") : ?>
                         Medical Forms
@@ -147,114 +147,159 @@ try {
             <a href="Settings.php">
                 <button class="active-buttons" id="settingBtn">
                     <i class="fas fa-cog"></i>
-                    <span class="nav-text">Settings</span>
+
+                    <?php if ($userType === "Faculty" || $userType === "Personnel"): ?>
+                        <span class="nav-text">Profile Settings</span>
+                    <?php else: ?>
+                        <span class="nav-text">Settings</span>
+                    <?php endif; ?>
+
                 </button>
             </a>
         </nav>
 
 
         <main class="content" loading="lazy">
-
             <div class="profile-main-container">
-                <!-- Profile Picture -->
                 <div class="profile-picture-section">
-                    <img src="../uploads/profilepic2.png" alt="Profile Picture" class="profile-pic">
-                    <button class="btn-upload" onclick="alert('Upload feature not implemented')">
-                        <i class="fas fa-upload"></i> Change Picture
-                    </button>
+                    <div class="profile-pic-wrapper">
+                        <img src="../uploads/profilepic2.png" alt="Profile Picture" class="profile-pic">
+                        <button class="btn-upload" onclick="alert('Upload feature not implemented')">
+                            <i class="fas fa-upload"></i> Change Picture
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Personal Info -->
                 <div class="profile-info-section">
                     <h2>User Profile</h2>
+                    <p class="profile-subtitle">Manage your personal details</p>
 
-                    <div class="profile-field">
-                        <label for="fullName">Full Name:</label>
-                        <input type="text" id="fullName" value="<?= htmlspecialchars(trim(($UserInfoData['Firstname'] ?? '') . ' ' . ($UserInfoData['Lastname'] ?? '')) ?: 'Undone') ?>">
-                    </div>
+                    <div class="profile-grid">
+                        <div class="profile-field">
+                            <label for="fullName">Full Name:</label>
+                            <input type="text" id="fullName"
+                                value="<?= htmlspecialchars(trim(($UserInfoData['Firstname'] ?? '') . ' ' . ($UserInfoData['Lastname'] ?? '')) ?: 'Undone') ?>">
+                        </div>
 
-                    <div class="profile-field">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" value="<?= htmlspecialchars($UserInfoData['Email'] ?? 'user@email.com') ?>">
+                        <div class="profile-field">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" value="<?= htmlspecialchars($UserInfoData['Email'] ?? 'user@email.com') ?>">
+                        </div>
                     </div>
 
                     <div class="profile-field">
                         <label for="password">Password:</label>
-                        <input type="password" id="password" value="<?= htmlspecialchars($UserInfoData["Password"]) ?>" placeholder="Enter new password">
+                        <input type="password" id="password" value="<?= htmlspecialchars($UserInfoData["Password"]) ?>"
+                            placeholder="Enter new password">
                     </div>
 
-                    <div class="profile-field">
-                        <label for="birthdate">Birthdate:</label>
-                        <input type="date" id="birthdate" value="<?= htmlspecialchars($UserInfoData['BirthDate'] ?? '') ?>">
+                    <div class="profile-grid">
+                        <div class="profile-field">
+                            <label for="birthdate">Birthdate:</label>
+                            <input type="date" id="birthdate" value="<?= htmlspecialchars($UserInfoData['BirthDate'] ?? '') ?>">
+                        </div>
+
+                        <div class="profile-field">
+                            <label for="gender">Gender:</label>
+                            <input type="text" id="gender"
+                                value="<?= htmlspecialchars($UserInfoData['Sex'] ?? 'Not specified') ?>" readonly>
+                        </div>
                     </div>
 
-                    <div class="profile-field">
-                        <label for="gender">Gender:</label>
-                        <input type="text" id="gender" value="<?= htmlspecialchars($UserInfoData['Sex'] ?? 'Not specified') ?>" readonly>
+                    <div class="btn-wrapper">
+                        <button class="btn-save" onclick="alert('Save feature not implemented')">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
                     </div>
-
-                    <button class="btn-save" onclick="alert('Save feature not implemented')">
-                        <i class="fas fa-save"></i> Save Changes
-                    </button>
                 </div>
             </div>
+
             <script>
-                document.getElementById('backToForm').addEventListener('click', () => {
-                    // This URL comes directly from PHP mapping above
+                document.getElementById('backToForm')?.addEventListener('click', () => {
                     window.location.href = "<?= $targetPage ?>";
                 });
             </script>
+
             <style>
                 .profile-main-container {
                     display: flex;
-                    gap: 2rem;
-                    padding: 2rem;
-                    background-color: #ffffffff;
-                    border-radius: 5px;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-                    height: 100%;
-                    max-height: 2000px;
-
+                    gap: 3rem;
+                    padding: 2.5rem;
+                    background-color: #fff;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+                    align-items: flex-start;
                 }
 
                 .profile-picture-section {
                     flex: 1;
-                    text-align: center;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .profile-pic-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 12px;
                 }
 
                 .profile-pic {
-                    width: 150px;
-                    height: 150px;
+                    width: 140px;
+                    height: 140px;
                     border-radius: 50%;
+                    border: 4px solid #2767c0;
                     object-fit: cover;
-                    border: 3px solid #2767c0;
+                    transition: transform 0.3s ease;
+                }
+
+                .profile-pic:hover {
+                    transform: scale(1.05);
                 }
 
                 .btn-upload {
-                    margin-top: 10px;
                     background-color: #2767c0;
                     color: white;
                     border: none;
-                    padding: 8px 12px;
-                    border-radius: 3px;
+                    padding: 8px 14px;
+                    border-radius: 8px;
                     cursor: pointer;
                     font-size: 0.9rem;
+                    transition: background 0.3s ease;
+                }
+
+                .btn-upload:hover {
+                    background-color: #1e4ea7;
                 }
 
                 .btn-upload i {
-                    margin-right: 5px;
+                    margin-right: 6px;
                 }
 
                 .profile-info-section {
                     flex: 2;
                     display: flex;
                     flex-direction: column;
-                    gap: 1rem;
+                    gap: 1.2rem;
                 }
 
                 .profile-info-section h2 {
-                    margin-bottom: 1rem;
                     color: #1547b3;
+                    margin-bottom: 0.2rem;
+                    font-size: 1.6rem;
+                }
+
+                .profile-subtitle {
+                    color: #666;
+                    font-size: 0.9rem;
+                    margin-bottom: 1rem;
+                }
+
+                .profile-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1.2rem;
                 }
 
                 .profile-field {
@@ -264,31 +309,42 @@ try {
 
                 .profile-field label {
                     font-weight: 600;
-                    margin-bottom: 0.3rem;
+                    margin-bottom: 0.4rem;
+                    color: #333;
                 }
 
                 .profile-field input {
-                    padding: 8px 10px;
-                    border-radius: 6px;
+                    padding: 10px 12px;
+                    border-radius: 8px;
                     border: 1px solid #ccc;
                     font-size: 1rem;
+                    transition: all 0.2s ease;
                 }
 
                 .profile-field input:focus {
                     border-color: #2767c0;
                     outline: none;
+                    box-shadow: 0 0 0 2px rgba(39, 103, 192, 0.2);
+                }
+
+                .btn-wrapper {
+                    margin-top: 1.5rem;
+                    text-align: right;
                 }
 
                 .btn-save {
-                    align-self: flex-start;
                     background-color: #2767c0;
                     color: white;
                     border: none;
-                    padding: 10px 16px;
-                    border-radius: 3px;
+                    padding: 10px 20px;
+                    border-radius: 8px;
                     cursor: pointer;
                     font-size: 1rem;
-                    margin-top: 1rem;
+                    transition: background 0.3s ease;
+                }
+
+                .btn-save:hover {
+                    background-color: #1e4ea7;
                 }
 
                 .btn-save i {
@@ -299,16 +355,20 @@ try {
                     .profile-main-container {
                         flex-direction: column;
                         align-items: center;
+                        padding: 1.5rem;
                     }
 
-                    .profile-info-section {
-                        width: 100%;
+                    .profile-grid {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .btn-wrapper {
+                        text-align: center;
                     }
                 }
             </style>
-
-
         </main>
+
     </div>
 
 </body>

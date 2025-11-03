@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="left-section">
             <div class="overlay">
                 <img id="lspulogo" src="UC-Client/assets/images/Lspu logo.png" alt="LSPU Logo" class="logo">
-                <h1 id="welcomesmg">Welcome!<br>To University Clinic Online</h1>
+                <h1 id="welcomesmg">Welcome to LSPU-LBC University Clinic </h1>
                 <p id="loginsmg"></p>
             </div>
         </div>
@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="email" class="inputs" name="email" placeholder="Email" required>
                 </div>
                 <button type="submit">Send Reset Code</button>
-                <p>Remember your password? <a class="register-link" href="index.php">Sign in</a></p>
+                <p>Remember your password? <a class="register-link" href="../index.php">Sign in</a></p>
             </form>
         </div>
     </div>

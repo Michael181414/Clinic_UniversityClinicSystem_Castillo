@@ -130,14 +130,34 @@ if (isset($_GET['error'])) {
                             <h3 class="modal-title">
                                 <i class="fas fa-user-plus title-icon"></i> Add Patient
                             </h3>
-
                             <form method="POST" action="manageclients.dbf/add-patient.php" id="addPatientForm">
+                                <div class="form-group-row" style="display: flex; gap: 15px;">
+                                    <div id="fname" class="form-group" style="flex: 1;">
+                                        <label><i class="fas fa-user icon-blue"></i> First Name</label>
 
-                                <div class="form-group">
-                                    <label><i class="fas fa-user icon-blue"></i> Full Name</label>
-                                    <div class="input-wrapper">
-                                        <i class="fas fa-user input-icon"></i>
-                                        <input type="text" name="fullname" placeholder="Enter patient's full name" class="form-control" required autocomplete="off">
+                                        <input type="text" name="firstname" placeholder="Ex: Juan" class="form-control" required autocomplete="off">
+                                    </div>
+
+                                    <div id="lname" class="form-group" style="flex: 1;">
+                                        <label><i class="fas fa-user icon-blue"></i> Last Name</label>
+
+                                        <input type="text" name="lastname" placeholder="Ex: Cruz" class="form-control" required autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group-row" style="display: flex; gap: 15px;">
+                                    <div class="form-group" style="flex: 1;">
+                                        <label><i class="fas fa-venus-mars icon-blue"></i> Gender</label>
+                                        <select name="sex" class="form-control" required>
+                                            <option value="">Select Gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group" style="flex: 1;">
+                                        <label><i class="fas fa-calendar-alt icon-blue"></i> Birthdate</label>
+                                        <input type="date" name="birthdate" class="form-control" required>
                                     </div>
                                 </div>
 
@@ -148,31 +168,15 @@ if (isset($_GET['error'])) {
                                     </div>
                                     <div class="input-wrapper">
                                         <i class="fas fa-envelope input-icon"></i>
-                                        <input type="email"
-                                            name="email"
-                                            id="emailInput"
-                                            class="form-control"
-                                            required
-                                            autocomplete="off"
-                                            placeholder="Enter patient's email">
-
+                                        <input type="email" name="email" id="emailInput" class="form-control" required autocomplete="off" placeholder="Enter patient's email">
                                     </div>
                                 </div>
-
 
                                 <div class="form-group">
                                     <label><i class="fas fa-lock icon-blue"></i> Password</label>
                                     <div class="pass-input-wrapper">
                                         <i class="fas fa-lock input-icon"></i>
-                                        <input
-                                            type="password"
-                                            name="password"
-                                            id="passwordInput"
-                                            class="form-control"
-                                            required
-                                            minlength="8"
-                                            placeholder="Enter a strong password">
-
+                                        <input type="password" name="password" id="passwordInput" class="form-control" required minlength="8" placeholder="Enter a strong password">
                                         <i id="togglePassword" class="fas fa-eye toggle-password"></i>
                                     </div>
                                     <div id="passwordStrength" class="password-strength">
@@ -225,13 +229,19 @@ if (isset($_GET['error'])) {
                 </div>
                 <script>
                     document.getElementById("emailInput").addEventListener("blur", generateAutoPassword);
-                    document.querySelector("input[name='fullname']").addEventListener("blur", generateAutoPassword);
+                    document.querySelector("input[name='firstname']").addEventListener("blur", generateAutoPassword);
+                    document.querySelector("input[name='lastname']").addEventListener("blur", generateAutoPassword);
 
                     function generateAutoPassword() {
-                        const fullname = document.querySelector("input[name='fullname']").value.trim();
+                        const firstname = document.querySelector("input[name='firstname']").value.trim();
+                        const lastname = document.querySelector("input[name='lastname']").value.trim();
                         const email = document.getElementById("emailInput").value.trim();
 
-                        if (!fullname && !email) return;
+                        // If all are empty, do nothing
+                        if (!firstname && !lastname && !email) return;
+
+                        // Combine name parts for generation logic
+                        const fullname = `${firstname} ${lastname}`.trim();
 
                         fetch("manageclients.dbf/generate-password.php", {
                                 method: "POST",
@@ -245,13 +255,13 @@ if (isset($_GET['error'])) {
                                 if (data.password) {
                                     const passwordInput = document.getElementById("passwordInput");
                                     passwordInput.value = data.password;
-
-                                    passwordInput.dispatchEvent(new Event("input"));
+                                    passwordInput.dispatchEvent(new Event("input")); // trigger strength update, if any
                                 }
                             })
                             .catch(err => console.error("Password generation failed:", err));
                     }
                 </script>
+
                 <script>
                     const passwordInput = document.getElementById("passwordInput");
                     const togglePassword = document.getElementById("togglePassword");
