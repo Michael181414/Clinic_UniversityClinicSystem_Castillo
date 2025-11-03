@@ -2045,18 +2045,21 @@ span {
   padding: 14px 18px;
   font-size: 14px;
   color: #333;
-  border-left: 1px solid #e0ecf8;
-  border-right: 1px solid #e0ecf8;
-}
 
+  border-bottom: 1px solid #e0ecf8;
+}
+.client-history-table tr:hover {
+  border-left: solid #397dda 3px;
+}
 /* Rounded edges for first and last cell in row */
 .client-history-table tbody tr td:first-child {
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
+
 .client-history-table tbody tr td:last-child {
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
   border-right: none;
 }
 
@@ -2064,7 +2067,9 @@ span {
 .client-history-table tbody tr:nth-child(even) {
   background-color: #f7faff;
 }
-
+.client-history-table tbody:hover {
+  border-left: solid #397dda 3px;
+}
 /* View Button */
 .btn-view {
   background: #3b82f6;

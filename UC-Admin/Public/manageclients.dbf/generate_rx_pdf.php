@@ -37,15 +37,15 @@ try {
     $pdf->SetFont('helvetica', '', 8);
     $pdf->Cell(1, 5, 'Name:', 0, 0);
     $pdf->SetFont('helvetica', 'B', 8);
-    $pdf->Cell(38, 5, $patientName, 0, 0, 'R');
+    $pdf->Cell(25, 5, $patientName, 0, 0, 'R');
     $pdf->SetFont('helvetica', '', 8);
     $pdf->SetX(60);
     $pdf->Cell(15, 5, 'Age/Sex:', 0, 0);
     $pdf->SetFont('helvetica', 'B', 8);
-    $pdf->Cell(0, 5, $patientAge. "/". $patientSex, 0, 1);
+    $pdf->Cell(0, 5, $patientAge . "/" . $patientSex, 0, 1);
 
     $pdf->SetFont('helvetica', '', 8);
-    $pdf->Cell(20, 5, 'Impression:', 0, 0);
+    $pdf->Cell(18, 5, 'Impression:', 0, 0);
     $pdf->SetFont('helvetica', 'B', 8);
     $pdf->Cell(60, 5, $patientImpression, 0, 0);
 
@@ -64,7 +64,7 @@ try {
     $footerStartY = 139.7 - 15; // Page height - footer height
     $currentY = $pdf->GetY();
     $availableSpace = $footerStartY - $currentY - 25; // Extra 25mm for signature area
-    
+
     $pdf->SetFont('helvetica', '', 9);
     // MultiCell with maximum height constraint
     $pdf->MultiCell(0, 5, $notes, 0, 'L', false, 1, '', '', true, 0, false, true, $availableSpace);

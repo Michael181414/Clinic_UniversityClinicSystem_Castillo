@@ -187,40 +187,39 @@ body {
 }
 
 .table-container ::-webkit-scrollbar-thumb {
-  background: #3498db;
+  background: #357fd3;
   border-radius: 0px;
 }
 
 .table-div {
-  max-height: 500px;
-  overflow-y: auto;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
+  background: #f8fbff;
+  padding: 0px;
+  border-radius: 3px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+  height: 80%;
 }
 
 .table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 0px;
+  padding-top: 0px;
 }
 
 .table thead {
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  background-color: #397dda;
+  color: #fff;
+  border-radius: 5px 0px 0px 0px;
+  padding-top: 0px;
 }
 
 .table thead th {
-  background-color: #397dda;
-  position: sticky;
-  top: 0;
-  z-index: 101;
-  padding: 12px 8px;
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 15px;
   font-weight: 500;
-  color: white;
-  font-size: 13px;
-  text-align: center;
-  vertical-align: middle;
-  border-bottom: 2px solid #dee2e6;
 }
 
 .table tbody {
@@ -235,12 +234,13 @@ body {
 }
 
 .table tbody tr {
-  border-bottom: 1px solid #dee2e6;
   transition: background-color 0.2s ease;
 }
 
 .table tbody tr:hover {
-  background-color: #e9ecef; /* Slightly darker on hover */
+  background-color: #e3f0ff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 80, 0.12);
 }
 
 .table th,
@@ -254,7 +254,7 @@ body {
 .table th:nth-child(1),
 .table td:nth-child(1) {
   /* ID column */
-  width: 80px;
+  width: 70px;
   min-width: 80px;
 }
 
@@ -307,6 +307,23 @@ body {
   height: 50px;
 }
 
+.table tbody tr {
+  background-color: #f9f9f9;
+  transition: all 0.2s ease;
+}
+
+.table tbody tr:nth-child(odd) {
+  background-color: #ffffff; /* White for odd rows */
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f7faff;
+}
+
+.table tbody tr:last-of-type {
+  border-bottom: 2px solid #b3d9ff;
+}
+
 .table-icon-img {
   border-radius: 0;
   object-fit: unset;
@@ -320,6 +337,7 @@ body {
 
 .client-row {
   transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
 .client-row:hover {
@@ -374,23 +392,6 @@ body {
 
 .rounded-circle {
   border: 2px solid #1583eb;
-}
-
-.table tbody tr {
-  background-color: #f9f9f9;
-  transition: all 0.2s ease;
-}
-
-.table tbody tr:nth-child(odd) {
-  background-color: #ffffff; /* White for odd rows */
-}
-
-.table tbody tr:nth-child(even) {
-  background-color: #f8f9fa; /* Light gray for even rows */
-}
-
-.table tbody tr:last-of-type {
-  border-bottom: 2px solid #2c3e50;
 }
 
 .tabs {
@@ -740,8 +741,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(6px) saturate(140%);
+  background-color: rgba(0, 0, 0, 0.4);
   justify-content: center;
   align-items: center;
   animation: fadeIn 0.25s ease;
@@ -749,10 +749,9 @@ body {
 
 /* Modal Content */
 .modal-content {
-  background: rgba(255, 255, 255, 0.9);
   margin: 1% auto;
   padding: 32px;
-  border-radius: var(--radius);
+  border-radius: 5px;
   width: 480px;
   height: auto;
   max-height: 90vh;
@@ -762,6 +761,11 @@ body {
   transition: all 0.3s ease;
   animation: slideUp 0.3s ease, popShadow 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.25);
+  background-color: white;
+
+  form {
+    background-color: white;
+  }
 }
 
 /* Close Button */
@@ -827,7 +831,7 @@ label {
   border: 1px solid var(--border-color);
   border-radius: 10px;
   font-size: 14px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   transition: all 0.25s ease;
 }
 .modal-content input:focus,
@@ -835,7 +839,7 @@ label {
   border-color: var(--primary-color) !important;
   outline: none;
   box-shadow: 0 0 0 4px rgba(57, 125, 218, 0.15) !important;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
 .modal-content select {

@@ -661,8 +661,9 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                         </div>
                                     </div>
                                     <div id="prescription-control" class="consultation-cert-controls">
-                                        <div> <button type="button" class="buttonsdp" onclick="savePrescription()">Save</button>
-                                            <button class="buttonsdp2" type="submit">Download as PDF</button>
+                                        <div>
+                                            <button type="button" class="buttonsdp" onclick="savePrescription()">Save</button>
+                                            <button class="buttonsdp2" type="submit" onclick="savePDFRX()">Download as PDF</button>
                                         </div>
                                     </div>
                                 </div>
@@ -676,22 +677,22 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                                     <h3 style="margin-bottom: 15px;">Patient's Info</h3>
                                                     <div class=" info-row">
                                                         <span class="info-label">Name:</span>
-                                                        <input type="text" id="name" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
+                                                        <input id="name" contenteditable="true" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
                                                         <span class="info-label">Age:</span>
-                                                        <input type="text" id="age" value="<?= htmlspecialchars($age) ?: ''; ?>" />
+                                                        <input id="age" contenteditable="true" value="<?= htmlspecialchars($age) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
                                                         <span class="info-label">Address:</span>
-                                                        <input type="text" id="address" value="<?= htmlspecialchars($address) ?: ''; ?>" />
+                                                        <input id="address" contenteditable="true" value="<?= htmlspecialchars($address) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
                                                         <span class="info-label">Course:</span>
-                                                        <input type="text" id="course" value="<?= htmlspecialchars($course) ?: ''; ?>" />
+                                                        <input id="course" contenteditable="true" value="<?= htmlspecialchars($course) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
@@ -865,10 +866,10 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                     }
 
                                     function submitPdfForm() {
-                                        document.getElementById('pdf-name').value = document.getElementById('name').textContent;
-                                        document.getElementById('pdf-age').value = document.getElementById('age').textContent;
-                                        document.getElementById('pdf-address').value = document.getElementById('address').textContent;
-                                        document.getElementById('pdf-course').value = document.getElementById('course').textContent;
+                                        document.getElementById('pdf-name').value = document.getElementById('name').value;
+                                        document.getElementById('pdf-age').value = document.getElementById('age').value;
+                                        document.getElementById('pdf-address').value = document.getElementById('address').value;
+                                        document.getElementById('pdf-course').value = document.getElementById('course').value;
                                         document.getElementById('pdf-bp').value = document.getElementById('bp_input').value;
                                         document.getElementById('pdf-hr_pr').value = document.getElementById('hr_pr').value;
                                         document.getElementById('pdf-temp').value = document.getElementById('temp_input').value;
@@ -890,7 +891,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
                                 <div id="rx" class="tab-content" style="display: none;">
                                     <div class="medrec-subparent-div">
-                                        <form method="POST" action="manageclients.dbf/generate_rx_pdf.php" class="medrec-subparent-div" onsubmit="return preparePdfData()" target="_blank">
+                                        <form method="POST" id="rx-pdfForm" action="manageclients.dbf/generate_rx_pdf.php" class="medrec-subparent-div" onsubmit="return preparePdfData()" target="_blank">
 
                                             <input type="hidden" name="client_id" id="client-id" value="<?= htmlspecialchars($clientid['ClientID']) ?>">
 
@@ -982,6 +983,26 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                         document.getElementById('input_LicNo').value = document.querySelector('input[name="LicNo"]').value.trim();
 
                                         return true; // allow form submit
+                                    }
+
+                                    function savePDFRX() {
+                                        document.getElementById('input_patient_name').value = document.getElementById('name').textContent.trim();
+                                        document.getElementById('input_patient_age').value = document.getElementById('age').textContent.trim();
+                                        document.getElementById('input_patient_sex').value = document.getElementById('sex').textContent.trim();
+
+                                        document.getElementById('input_date').value = document.getElementById('date2').textContent.trim();
+
+                                        // Copy physician and LicNo input values into hidden fields
+                                        document.getElementById('input_physician').value = document.querySelector('input[name="physician"]').value.trim();
+                                        document.getElementById('input_LicNo').value = document.querySelector('input[name="LicNo"]').value.trim();
+
+                                        const today = new Date();
+                                        document.getElementById('pdf-date').value = today.toLocaleDateString("en-US", {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        });
+                                        document.getElementById('rx-pdfForm').submit();
                                     }
                                 </script>
                                 <script>

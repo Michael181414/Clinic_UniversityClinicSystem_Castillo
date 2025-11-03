@@ -333,7 +333,7 @@ if (isset($_GET['error'])) {
                                     </thead>
                                     <tbody class="clientTableBody">
                                         <?php foreach ($freshman as $freshman): ?>
-                                            <tr class="client-row">
+                                            <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($freshman['ClientID']) ?>">
                                                 <td class="searchable-id"><?= htmlspecialchars($freshman['ClientID']) ?></td>
                                                 <td>
                                                     <?php
@@ -361,9 +361,9 @@ if (isset($_GET['error'])) {
                                                         <a href="ClientProfile.php?id=<?= $freshman['ClientID'] ?>" title="Edit User">
                                                             <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                                                         </a>
-                                                        <a href="ClientProfile.php?id=<?= $freshman['ClientID'] ?>" title="View Profile">
+                                                        <!--     <a href="ClientProfile.php?id=<?= $freshman['ClientID'] ?>" title="View Profile">
                                                             <i class="fas fa-eye eye-icon" style="color: #000; font-size: 18px;"></i>
-                                                        </a>
+                                                        </a>-->
                                                         <a href="manageclients.dbf/delete_client.php?id=<?= $freshman['ClientID'] ?>"
                                                             onclick="return confirm('Are you sure you want to delete this user?');"
                                                             title="Delete User">
@@ -378,6 +378,18 @@ if (isset($_GET['error'])) {
                             </div>
                         </div>
                     </div>
+                    <script>
+                        // Make table rows clickable
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const rows = document.querySelectorAll(".client-row");
+                            rows.forEach(row => {
+                                row.addEventListener("click", function() {
+                                    const url = this.dataset.href;
+                                    window.location.href = url;
+                                });
+                            });
+                        });
+                    </script>
                     <!--====================================================================================-->
                     <div id="newpersonnel-content" class="tab-content" style="display: none;">
                         <div class="table-container">
@@ -397,7 +409,7 @@ if (isset($_GET['error'])) {
                                     </thead>
                                     <tbody class="clientTableBody">
                                         <?php foreach ($newpersonnel as $newpersonnel): ?>
-                                            <tr class="client-row">
+                                            <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($newpersonnel['ClientID']) ?>">
                                                 <td class="searchable-id"><?= htmlspecialchars($newpersonnel['ClientID']) ?></td>
                                                 <td>
                                                     <?php
@@ -425,9 +437,7 @@ if (isset($_GET['error'])) {
                                                         <a href="ClientProfile.php?id=<?= $newpersonnel['ClientID'] ?>" title="Edit User">
                                                             <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                                                         </a>
-                                                        <a href="ClientProfile.php?id=<?= $newpersonnel['ClientID'] ?>" title="View Profile">
-                                                            <i class="fas fa-eye eye-icon" style="color: #000; font-size: 18px;"></i>
-                                                        </a>
+
                                                         <a href="manageclients.dbf/delete_client.php?id=<?= $newpersonnel['ClientID'] ?>"
                                                             onclick="return confirm('Are you sure you want to delete this user?');"
                                                             title="Delete User">
@@ -463,7 +473,7 @@ if (isset($_GET['error'])) {
                                     </thead>
                                     <tbody class="clientTableBody">
                                         <?php foreach ($students as $students): ?>
-                                            <tr class="client-row">
+                                            <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($students['ClientID']) ?>">
                                                 <td class="searchable-id"><?= htmlspecialchars($students['ClientID']) ?></td>
                                                 <td>
                                                     <?php
@@ -491,9 +501,7 @@ if (isset($_GET['error'])) {
                                                         <a href="ClientProfile.php?id=<?= $students['ClientID'] ?>" title="Edit User">
                                                             <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                                                         </a>
-                                                        <a href="ClientProfile.php?id=<?= $students['ClientID'] ?>" title="View Profile">
-                                                            <i class="fas fa-eye eye-icon" style="color: #000; font-size: 18px;"></i>
-                                                        </a>
+
                                                         <a href="manageclients.dbf/delete_client.php?id=<?= $students['ClientID'] ?>"
                                                             onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
                                                             <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
@@ -526,7 +534,7 @@ if (isset($_GET['error'])) {
                                     </thead>
                                     <tbody class="clientTableBody">
                                         <?php foreach ($faculties as $faculties): ?>
-                                            <tr class="client-row">
+                                            <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($faculties['ClientID']) ?>">
                                                 <td class="searchable-id"><?= htmlspecialchars($faculties['ClientID']) ?></td>
                                                 <td>
                                                     <?php
@@ -554,9 +562,7 @@ if (isset($_GET['error'])) {
                                                         <a href="ClientProfile.php?id=<?= $faculties['ClientID'] ?>" title="Edit User">
                                                             <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                                                         </a>
-                                                        <a href="ClientProfile.php?id=<?= $faculties['ClientID'] ?>" title="View Profile">
-                                                            <i class="fas fa-eye eye-icon" style="color: #000; font-size: 18px;"></i>
-                                                        </a>
+
                                                         <a href="manageclients.dbf/delete_client.php?id=<?= $faculties['ClientID'] ?>"
                                                             onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
                                                             <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
@@ -588,7 +594,7 @@ if (isset($_GET['error'])) {
                                     </thead>
                                     <tbody class="clientTableBody">
                                         <?php foreach ($personnel as $personnel): ?>
-                                            <tr class="client-row">
+                                            <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($personnel['ClientID']) ?>">
                                                 <td class="searchable-id"><?= htmlspecialchars($personnel['ClientID']) ?></td>
                                                 <td>
                                                     <?php
@@ -613,9 +619,7 @@ if (isset($_GET['error'])) {
                                                         <a href="ClientProfile.php?id=<?= $personnel['ClientID'] ?>" title="Edit User">
                                                             <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                                                         </a>
-                                                        <a href="ClientProfile.php?id=<?= $personnel['ClientID'] ?>" title="View Profile">
-                                                            <i class="fas fa-eye eye-icon" style="color: #000; font-size: 18px;"></i>
-                                                        </a>
+
                                                         <a href="manageclients.dbf/delete_client.php?id=<?= $personnel['ClientID'] ?>"
                                                             onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
                                                             <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
