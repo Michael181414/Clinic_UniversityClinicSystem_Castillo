@@ -164,9 +164,6 @@ try {
                 <div class="profile-picture-section">
                     <div class="profile-pic-wrapper">
                         <img src="../uploads/profilepic2.png" alt="Profile Picture" class="profile-pic">
-                        <button class="btn-upload" onclick="alert('Upload feature not implemented')">
-                            <i class="fas fa-upload"></i> Change Picture
-                        </button>
                     </div>
                 </div>
 
@@ -174,200 +171,362 @@ try {
                     <h2>User Profile</h2>
                     <p class="profile-subtitle">Manage your personal details</p>
 
-                    <div class="profile-grid">
-                        <div class="profile-field">
-                            <label for="fullName">Full Name:</label>
-                            <input type="text" id="fullName"
-                                value="<?= htmlspecialchars(trim(($UserInfoData['Firstname'] ?? '') . ' ' . ($UserInfoData['Lastname'] ?? '')) ?: 'Undone') ?>">
+                    <form id="profileForm" method="POST">
+                        <div class="profile-grid">
+                            <div class="profile-field">
+                                <label for="fullName">Full Name:</label>
+                                <input type="text" name="fullName" id="fullName"
+                                    value="<?= htmlspecialchars(trim(($UserInfoData['Firstname'] ?? '') . ' ' . ($UserInfoData['Lastname'] ?? '')) ?: 'Undone') ?>">
+                            </div>
+
+                            <div class="profile-field">
+                                <label for="email">Email:</label>
+                                <input type="email" name="email" id="email"
+                                    value="<?= htmlspecialchars($UserInfoData['Email'] ?? 'user@email.com') ?>">
+                            </div>
                         </div>
 
                         <div class="profile-field">
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" value="<?= htmlspecialchars($UserInfoData['Email'] ?? 'user@email.com') ?>">
-                        </div>
-                    </div>
-
-                    <div class="profile-field">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" value="<?= htmlspecialchars($UserInfoData["Password"]) ?>"
-                            placeholder="Enter new password">
-                    </div>
-
-                    <div class="profile-grid">
-                        <div class="profile-field">
-                            <label for="birthdate">Birthdate:</label>
-                            <input type="date" id="birthdate" value="<?= htmlspecialchars($UserInfoData['BirthDate'] ?? '') ?>">
+                            <label for="password">New Password:</label>
+                            <input type="password" name="password" id="password" placeholder="Enter new password">
                         </div>
 
                         <div class="profile-field">
-                            <label for="gender">Gender:</label>
-                            <input type="text" id="gender"
-                                value="<?= htmlspecialchars($UserInfoData['Sex'] ?? 'Not specified') ?>" readonly>
+                            <label for="confirmPassword">Confirm Password:</label>
+                            <input type="password" id="confirmPassword" placeholder="Confirm new password">
                         </div>
-                    </div>
 
-                    <div class="btn-wrapper">
-                        <button class="btn-save" onclick="alert('Save feature not implemented')">
-                            <i class="fas fa-save"></i> Save Changes
-                        </button>
+                        <div class="profile-grid">
+                            <div class="profile-field">
+                                <label for="birthdate">Birthdate:</label>
+                                <input type="date" name="birthdate" id="birthdate"
+                                    value="<?= htmlspecialchars($UserInfoData['BirthDate'] ?? '') ?>">
+                            </div>
+
+                            <div class="profile-field">
+                                <label for="gender">Gender:</label>
+                                <input type="text" id="gender"
+                                    value="<?= htmlspecialchars($UserInfoData['Sex'] ?? 'Not specified') ?>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="btn-wrapper">
+                            <button type="button" class="btn-save" onclick="confirmUpdate()">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Confirm Modal -->
+            <div id="confirmModal" class="messagemodal">
+                <div class="messagemodal-content">
+                    <h2>Confirm Update</h2>
+                    <p>Are you sure you want to save these changes?</p>
+                    <div class="messagemodal-buttons">
+                        <button id="confirmYes" class="btn-primary">Yes, Update</button>
+                        <button onclick="closeModal('confirmModal')" class="btn-secondary">Cancel</button>
                     </div>
                 </div>
             </div>
 
-            <script>
-                document.getElementById('backToForm')?.addEventListener('click', () => {
-                    window.location.href = "<?= $targetPage ?>";
-                });
-            </script>
+            <!-- Success Modal -->
+            <div id="successModal" class="messagemodal">
+                <div class="messagemodal-content">
+                    <h2>✅ Profile Updated!</h2>
+                    <p>Your profile information has been successfully updated.</p>
+                    <div class="messagemodal-buttons">
+                        <button onclick="closeModal('successModal')" class="btn-primary">OK</button>
+                    </div>
+                </div>
+            </div>
 
-            <style>
+            <!-- Error Modal -->
+            <div id="errorModal" class="messagemodal">
+                <div class="messagemodal-content">
+                    <h2>⚠️ Error</h2>
+                    <p id="errorMsg">Something went wrong.</p>
+                    <div class="messagemodal-buttons">
+                        <button onclick="closeModal('errorModal')" class="btn-secondary">Close</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            function confirmUpdate() {
+                const fullName = document.getElementById('fullName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const pass = document.getElementById('password').value;
+                const confirm = document.getElementById('confirmPassword').value;
+
+                if (!fullName) return showError('Full name cannot be empty.');
+                if (!email || !validateEmail(email)) return showError('Please enter a valid email address.');
+                if (pass && pass !== confirm) return showError('Passwords do not match.');
+
+                // Check email availability before showing confirm modal
+                fetch('check_email.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'email=' + encodeURIComponent(email)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.exists) {
+                            showError('This email is already taken. Please choose another.');
+                        } else {
+                            openModal('confirmModal');
+                        }
+                    })
+                    .catch(err => showError('Error checking email: ' + err.message));
+            }
+
+            function validateEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+
+            function openModal(id) {
+                document.getElementById(id).style.display = 'flex';
+            }
+
+            function closeModal(id) {
+                document.getElementById(id).style.display = 'none';
+            }
+
+            function showError(msg) {
+                document.getElementById('errorMsg').textContent = msg;
+                openModal('errorModal');
+            }
+
+            document.getElementById('confirmYes').addEventListener('click', function() {
+                const form = document.getElementById('profileForm');
+                const formData = new FormData(form);
+                closeModal('confirmModal');
+
+                fetch('update_profile.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') openModal('successModal');
+                        else showError(data.message || 'Failed to update profile.');
+                    })
+                    .catch(err => showError('Error: ' + err.message));
+            });
+        </script>
+
+
+        <style>
+            .messagemodal {
+                display: none;
+                position: fixed;
+                z-index: 999;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.4);
+                justify-content: center;
+                align-items: center;
+            }
+
+            .messagemodal-content {
+                background: #fff;
+                padding: 25px 35px;
+                border-radius: 10px;
+                text-align: center;
+                width: 90%;
+                max-width: 400px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                animation: fadeIn 0.3s ease;
+            }
+
+            .messagemodal-buttons {
+                margin-top: 20px;
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .btn-primary {
+                background: #2767c0;
+                color: #fff;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+
+            .btn-secondary {
+                background: #ddd;
+                color: #333;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+        </style>
+
+
+        <style>
+            .profile-main-container {
+                display: flex;
+                gap: 3rem;
+                padding: 2.5rem;
+                background-color: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+                align-items: flex-start;
+            }
+
+            .profile-picture-section {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .profile-pic-wrapper {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .profile-pic {
+                width: 140px;
+                height: 140px;
+                border-radius: 50%;
+                border: 4px solid #2767c0;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+            .profile-pic:hover {
+                transform: scale(1.05);
+            }
+
+            .btn-upload {
+                background-color: #2767c0;
+                color: white;
+                border: none;
+                padding: 8px 14px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                transition: background 0.3s ease;
+            }
+
+            .btn-upload:hover {
+                background-color: #1e4ea7;
+            }
+
+            .btn-upload i {
+                margin-right: 6px;
+            }
+
+            .profile-info-section {
+                flex: 2;
+                display: flex;
+                flex-direction: column;
+                gap: 1.2rem;
+            }
+
+            .profile-info-section h2 {
+                color: #1547b3;
+                margin-bottom: 0.2rem;
+                font-size: 1.6rem;
+            }
+
+            .profile-subtitle {
+                color: #666;
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+
+            .profile-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.2rem;
+            }
+
+            .profile-field {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .profile-field label {
+                font-weight: 600;
+                margin-bottom: 0.4rem;
+                color: #333;
+            }
+
+            .profile-field input {
+                padding: 10px 12px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                font-size: 1rem;
+                transition: all 0.2s ease;
+            }
+
+            .profile-field input:focus {
+                border-color: #2767c0;
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(39, 103, 192, 0.2);
+            }
+
+            .btn-wrapper {
+                margin-top: 1.5rem;
+                text-align: right;
+            }
+
+            .btn-save {
+                background-color: #2767c0;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: background 0.3s ease;
+            }
+
+            .btn-save:hover {
+                background-color: #1e4ea7;
+            }
+
+            .btn-save i {
+                margin-right: 5px;
+            }
+
+            @media (max-width: 768px) {
                 .profile-main-container {
-                    display: flex;
-                    gap: 3rem;
-                    padding: 2.5rem;
-                    background-color: #fff;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-                    align-items: flex-start;
-                }
-
-                .profile-picture-section {
-                    flex: 1;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-
-                .profile-pic-wrapper {
-                    display: flex;
                     flex-direction: column;
                     align-items: center;
-                    gap: 12px;
-                }
-
-                .profile-pic {
-                    width: 140px;
-                    height: 140px;
-                    border-radius: 50%;
-                    border: 4px solid #2767c0;
-                    object-fit: cover;
-                    transition: transform 0.3s ease;
-                }
-
-                .profile-pic:hover {
-                    transform: scale(1.05);
-                }
-
-                .btn-upload {
-                    background-color: #2767c0;
-                    color: white;
-                    border: none;
-                    padding: 8px 14px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-size: 0.9rem;
-                    transition: background 0.3s ease;
-                }
-
-                .btn-upload:hover {
-                    background-color: #1e4ea7;
-                }
-
-                .btn-upload i {
-                    margin-right: 6px;
-                }
-
-                .profile-info-section {
-                    flex: 2;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1.2rem;
-                }
-
-                .profile-info-section h2 {
-                    color: #1547b3;
-                    margin-bottom: 0.2rem;
-                    font-size: 1.6rem;
-                }
-
-                .profile-subtitle {
-                    color: #666;
-                    font-size: 0.9rem;
-                    margin-bottom: 1rem;
+                    padding: 1.5rem;
                 }
 
                 .profile-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 1.2rem;
-                }
-
-                .profile-field {
-                    display: flex;
-                    flex-direction: column;
-                }
-
-                .profile-field label {
-                    font-weight: 600;
-                    margin-bottom: 0.4rem;
-                    color: #333;
-                }
-
-                .profile-field input {
-                    padding: 10px 12px;
-                    border-radius: 8px;
-                    border: 1px solid #ccc;
-                    font-size: 1rem;
-                    transition: all 0.2s ease;
-                }
-
-                .profile-field input:focus {
-                    border-color: #2767c0;
-                    outline: none;
-                    box-shadow: 0 0 0 2px rgba(39, 103, 192, 0.2);
+                    grid-template-columns: 1fr;
                 }
 
                 .btn-wrapper {
-                    margin-top: 1.5rem;
-                    text-align: right;
+                    text-align: center;
                 }
-
-                .btn-save {
-                    background-color: #2767c0;
-                    color: white;
-                    border: none;
-                    padding: 10px 20px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-size: 1rem;
-                    transition: background 0.3s ease;
-                }
-
-                .btn-save:hover {
-                    background-color: #1e4ea7;
-                }
-
-                .btn-save i {
-                    margin-right: 5px;
-                }
-
-                @media (max-width: 768px) {
-                    .profile-main-container {
-                        flex-direction: column;
-                        align-items: center;
-                        padding: 1.5rem;
-                    }
-
-                    .profile-grid {
-                        grid-template-columns: 1fr;
-                    }
-
-                    .btn-wrapper {
-                        text-align: center;
-                    }
-                }
-            </style>
+            }
+        </style>
         </main>
+        <script>
+            document.getElementById('backToForm')?.addEventListener('click', () => {
+                window.location.href = "<?= $targetPage ?>";
+            });
+        </script>
+
+
 
     </div>
 

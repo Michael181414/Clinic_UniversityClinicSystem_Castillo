@@ -343,7 +343,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
             <div id="nav-div-1" class="nav-div" style="display: block;">
                 <div class="tabs">
                     <div class="tabs-child">
-                        <?php if (!$showLimitedTabs): ?>
+                        <?php if (!$showAnnualTabs && !$showLimitedTabs): ?>
                             <div id="visitHistoryTab" class="tab" data-target="visit-history">
                                 <img class="cp-btn-img"
                                     src="assets/images/time-past 2.svg"
@@ -414,6 +414,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <?php endif; ?>
 
 
+
                         <div class="tab" data-target="medical-cert">
                             <img class="cp-btn-img"
                                 src="assets/images/medcert2.svg"
@@ -465,7 +466,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                     }
                 </style>
 
-                <?php if (!$showLimitedTabs): ?>
+                <?php if (!$showAnnualTabs && !$showLimitedTabs): ?>
                     <div id="visit-history" class="history-table-container" style="display: none;">
                         <div class="filter-container" style="height: 80%;">
 
@@ -2120,7 +2121,9 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
 
                 </div>
-                <div id="np_medical-history" style="display: none; height: 85%">
+                <div id="np_medical-history"
+                    style="display: <?php echo ($clienttype === 'NewPersonnel') ? 'flex' : 'none'; ?>; height: 85%">
+
                     <div class="form-container">
                         <form id="medicalForm" method="post">
                             <input type="hidden" name="client_id" value="<?= htmlspecialchars($clientID ?? '') ?>">
