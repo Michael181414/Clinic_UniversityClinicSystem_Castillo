@@ -65,7 +65,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
             <img id="btnicon" src="UC-Client/assets/images/menu.png">
         </button>
         <div class="page-title">
-            <h4>Personnel Profile</h4>
+            <h4>Home</h4>
         </div>
 
         <div class="profile-container">
@@ -75,7 +75,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                     <i class="fas fa-envelope"></i> <?= htmlspecialchars($client['Email']) ?>
                 </div>
                 <a href="settings.php">
-                    <div class="profile-item"><i class="fas fa-cog"></i> Settings</div>
+                    <div class="fixed-profile-item"><i class="fas fa-cog"></i> Settings</div>
                 </a>
                 <div class="profile-item" onclick="document.getElementById('logoutForm').submit()">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -91,7 +91,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                 <button class="active-buttons"><i class="fas fa-home"></i><span class="nav-text">Home</span></button>
             </a>
             <a href="settings.php">
-                <button class="buttons"><i class="fas fa-cog"></i><span class="nav-text">Profile Settings</span></button>
+                <button class="buttons"><i class="fas fa-cog"></i><span class="nav-text">Settings</span></button>
             </a>
         </nav>
 

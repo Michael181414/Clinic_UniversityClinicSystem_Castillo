@@ -93,7 +93,7 @@ if ($clientId) {
             <img id="btnicon" src="UC-Client/assets/images/menu.png">
         </button>
         <div class="page-title">
-            <h4>Profile</h4>
+            <h4>Medical Form</h4>
         </div>
 
         <!-- Profile dropdown -->
@@ -106,9 +106,7 @@ if ($clientId) {
                     <i class="fas fa-envelope"></i> user@email.com
                 </div>
                 <a href="settings.php">
-                    <div class="profile-item">
-                        <i class="fas fa-cog"></i> Settings
-                    </div>
+                    <div class="profile-item"><i class="fas fa-cog"></i> Settings</div>
                 </a>
                 <div class="profile-item" onclick="document.getElementById('logoutForm').submit()">
                     <i class="fas fa-sign-out-alt"></i> Logout

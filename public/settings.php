@@ -149,7 +149,7 @@ try {
                     <i class="fas fa-cog"></i>
 
                     <?php if ($userType === "Faculty" || $userType === "Personnel"): ?>
-                        <span class="nav-text">Profile Settings</span>
+                        <span class="nav-text">Settings</span>
                     <?php else: ?>
                         <span class="nav-text">Settings</span>
                     <?php endif; ?>
