@@ -91,6 +91,8 @@ if (!empty($clientType)) {
     $clients = getFilteredClients($clientType, $idFilter) ?? [];
 
     foreach ($clients as $client): ?>
+        <tr class="client-row" data-href="ClientProfile.php?id=<?= $client['ClientID'] ?>">
+
         <tr class="client-row">
             <td class="searchable-id"><?= htmlspecialchars($client['ClientID']) ?></td>
             <td>
@@ -116,6 +118,7 @@ if (!empty($clientType)) {
                     </a>
                 </div>
             </td>
+        </tr>
         </tr>
 <?php endforeach;
     exit;

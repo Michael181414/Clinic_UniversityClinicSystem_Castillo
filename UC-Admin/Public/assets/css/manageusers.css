@@ -559,17 +559,17 @@ body {
 
   border: none;
   border-radius: 3px;
-  background-color: #397dda;
-  color: white;
+  background-color: white;
+  color: #397dda;
   font-size: 14px;
   font-weight: 500;
   height: 45px; /* set consistent height */
   line-height: 45px; /* vertically centers the text */
-  padding: 0 36px 0 40px; /* remove vertical padding, keep side spacing */
+  padding: 0 40px 0 40px; /* remove vertical padding, keep side spacing */
   width: 220px;
   cursor: pointer;
 
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='blue' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 12px;
@@ -577,6 +577,7 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: all 0.25s ease;
   text-align: left;
+  border: solid #dfdfdf 1px;
 }
 
 /* the white filter icon inside */
@@ -585,19 +586,14 @@ body {
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: white;
+  color: #397dda;
   font-size: 16px;
   pointer-events: none;
 }
 
-/* hover and focus */
-.client-type-dropdown:hover {
-  background-color: #2f6fca;
-}
-
 .client-type-dropdown:focus {
   outline: none;
-  background-color: #316dc2;
+  background-color: #ffffff;
   box-shadow: 0 0 0 2px rgba(57, 125, 218, 0.3);
 }
 
@@ -622,9 +618,12 @@ body {
   color: #0056b3;
   background-color: #fff;
   border: none;
-  border-radius: 3px;
+  border-radius: 10px;
   padding: 8px 12px;
-  font-size: 14px;
+  font-size: clamp(1rem, 1vw, 1.5rem);
+  outline: none;
+  background-color: #ffffff;
+  border: solid #eeeeee 1px;
 }
 
 .client-type-dropdown option:checked,

@@ -95,30 +95,42 @@ try {
 
         <main class="content">
             <div class="content-body">
-                <div class="data-management-options">
+                <div class="top-div-body">
+                    <div class="data-management-options">
 
-                    <!-- Backup Card -->
-                    <a href="javascript:void(0);" onclick="showBackupModal()" class="data-management-link">
-                        <div class="data-management-card">
-                            <span class="icon-span"><i class="fas fa-file-export"></i>
-                                <p>Backup Data</p>
-                            </span>
-                            <p class="p-tag">Create a backup of the database to ensure data safety and recovery options.</p>
-                        </div>
-                    </a>
+                        <!-- Backup Card -->
+                        <a href="javascript:void(0);" onclick="showBackupModal()" class="data-management-link">
+                            <div class="data-management-card">
+                                <span class="icon-span"><i class="fas fa-file-export"></i>
+                                    <p>Backup Data</p>
+                                </span>
+                                <p class="p-tag">Create a backup of the database to ensure data safety and recovery options.</p>
+                            </div>
+                        </a>
 
-                    <!-- Restore Card -->
-                    <a href="javascript:void(0);" onclick="showRestoreModal()" class="data-management-link">
-                        <div class="data-management-card">
-                            <span class="icon-span"><i class="fas fa-database"></i>
-                                <p>Restore Data</p>
-                            </span>
-                            <p class="p-tag">Restore the database from a previously created backup file.</p>
+                        <!-- Restore Card -->
+                        <a href="javascript:void(0);" onclick="showRestoreModal()" class="data-management-link">
+                            <div class="data-management-card">
+                                <span class="icon-span"><i class="fas fa-database"></i>
+                                    <p>Restore Data</p>
+                                </span>
+                                <p class="p-tag">Restore the database from a previously created backup file.</p>
+                            </div>
+                        </a>
+                        <div id="loading-modal" class="modal">
+                            <div class="modal-content">
+                                <div id="loadingDiv">
+                                    <div class="spinner"></div>
+                                    <p>Restoring data, please wait...</p>
+                                    <div class="progress-bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </a>
-                    <div id="loading-modal" class="modal">
-                        <div class="modal-content">
-                            <div id="loadingDiv">
+
+                        <div id="loading-modal">
+                            <div class="modal-content">
                                 <div class="spinner"></div>
                                 <p>Restoring data, please wait...</p>
                                 <div class="progress-bar">
@@ -126,33 +138,23 @@ try {
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div id="loading-modal">
-                        <div class="modal-content">
-                            <div class="spinner"></div>
-                            <p>Restoring data, please wait...</p>
-                            <div class="progress-bar">
-                                <div class="progress"></div>
+                        <div id="success-modal" class="modal">
+                            <div class="modal-content">
+                                <h3>Success</h3>
+                                <p id="success-message">Database restored successfully!</p>
+                                <button id="close-success" class="btn">OK</button>
                             </div>
                         </div>
+                        <!-- Hidden Restore Form -->
+                        <form id="restoreForm" action="restore.php" method="post" enctype="multipart/form-data" style="display:none;">
+                            <input type="file" id="restoreInput" name="backup_file" accept=".sql">
+                            <input type="hidden" name="restore" value="1">
+                            <button type="submit">Restore</button>
+                        </form>
+
+
+
                     </div>
-                    <div id="success-modal" class="modal">
-                        <div class="modal-content">
-                            <h3>Success</h3>
-                            <p id="success-message">Database restored successfully!</p>
-                            <button id="close-success" class="btn">OK</button>
-                        </div>
-                    </div>
-                    <!-- Hidden Restore Form -->
-                    <form id="restoreForm" action="restore.php" method="post" enctype="multipart/form-data" style="display:none;">
-                        <input type="file" id="restoreInput" name="backup_file" accept=".sql">
-                        <input type="hidden" name="restore" value="1">
-                        <button type="submit">Restore</button>
-                    </form>
-
-
-
                 </div>
 
             </div>

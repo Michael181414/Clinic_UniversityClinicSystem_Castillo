@@ -414,14 +414,14 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <?php endif; ?>
 
 
-
-                        <div class="tab" data-target="medical-cert">
+                        <button id="medrec-open-modal-btn" class="tab" style="border: none;">
                             <img class="cp-btn-img"
                                 src="assets/images/medcert2.svg"
                                 data-active="assets/images/medcert1.svg"
                                 data-inactive="assets/images/medcert2.svg">
                             Medical Certificate Request
-                        </div>
+                        </button>
+
                     </div>
                     <script>
                         const tabs = document.querySelectorAll('.tab');
@@ -631,7 +631,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                                 visitTab.classList.add('active');
                                             }
 
-                                            document.querySelectorAll('#personal-info-div, #medical-history, #medical-cert, #visit-history,#examFilesTab')
+                                            document.querySelectorAll('#personal-info-div, #medical-history, #visit-history,#examFilesTab')
                                                 .forEach(content => content.style.display = 'none');
 
                                             const visitSection = document.getElementById('visit-history');
@@ -1432,116 +1432,124 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                             </p>
                         </div>
 
-                        <div id="personal-info-input" class="scroll-input-div" style="display: none;">
-                            <form class="form-in-forms" id="personalInfoForm" autocomplete="off">
-                                <input type="hidden" name="ClientID" value="<?= htmlspecialchars($clientID) ?>">
-                                <div class="reminder-banner">
-                                    ⚠️ Please be careful when editing the patient's personal information.
-                                    Use edit mode **only if the patient is unable to update it themselves**.
-                                </div>
 
-                                <div class="form-row">
-                                    <div>
-                                        <label for="Surname"><i class="fa-solid fa-user"></i> Surname</label>
-                                        <input type="text" id="Surname" name="Surname" placeholder="Surname" value="<?= htmlspecialchars($personalInfo['Surname'] ?? '') ?>" required>
-                                    </div>
-                                    <div>
-                                        <label for="GivenName"><i class="fa-solid fa-user"></i> Given Name</label>
-                                        <input type="text" id="GivenName" name="GivenName" placeholder="Given Name" value="<?= htmlspecialchars($personalInfo['GivenName'] ?? '') ?>" required>
-                                    </div>
-                                    <div>
-                                        <label for="MiddleName"><i class="fa-solid fa-user"></i> Middle Name</label>
-                                        <input type="text" id="MiddleName" name="MiddleName" placeholder="Middle Name" value="<?= htmlspecialchars($personalInfo['MiddleName'] ?? '') ?>">
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div>
-                                        <label for="Age"><i class="fa-solid fa-hourglass-half"></i> Age</label>
-                                        <input type="number" id="Age" name="Age" placeholder="Age" min="1" max="120" value="<?= htmlspecialchars($personalInfo['Age'] ?? '') ?>" required>
-                                    </div>
-                                    <div>
-                                        <label for="genderSelect"><i class="fa-solid fa-venus-mars"></i> Sex</label>
-                                        <select id="genderSelect" name="Gender" required>
-                                            <option value="">Gender</option>
-                                            <option value="male" <?= (isset($personalInfo['Gender']) && $personalInfo['Gender'] === 'male') ? 'selected' : '' ?>>Male</option>
-                                            <option value="female" <?= (isset($personalInfo['Gender']) && $personalInfo['Gender'] === 'female') ? 'selected' : '' ?>>Female</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label for="DateOfBirth"><i class="fa-solid fa-calendar-day"></i> Date of Birth</label>
-                                        <input type="date" id="DateOfBirth" name="DateOfBirth" value="<?= htmlspecialchars($personalInfo['DateOfBirth'] ?? '') ?>" required>
-                                    </div>
-                                    <div>
-                                        <label for="Status"><i class="fa-solid fa-ring"></i> Status</label>
-                                        <select id="Status" name="Status" required>
-                                            <option value="">Status</option>
-                                            <option value="single" <?= (isset($personalInfo['Status']) && $personalInfo['Status'] === 'single') ? 'selected' : '' ?>>Single</option>
-                                            <option value="married" <?= (isset($personalInfo['Status']) && $personalInfo['Status'] === 'married') ? 'selected' : '' ?>>Married</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div>
-                                        <label for="Course"><i class="fa-solid fa-book"></i> Course</label>
-                                        <input type="text" id="Course" name="Course" placeholder="Course" value="<?= htmlspecialchars($personalInfo['Course'] ?? '') ?>">
-                                    </div>
-                                    <div>
-                                        <label for="SchoolYearEntered"><i class="fa-solid fa-calendar-alt"></i> School Year Entered</label>
-                                        <input type="text" id="SchoolYearEntered" name="SchoolYearEntered" placeholder="School Year Entered" value="<?= htmlspecialchars($personalInfo['SchoolYearEntered'] ?? '') ?>">
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div>
-                                        <label for="CurrentAddress"><i class="fa-solid fa-house"></i> Current Address</label>
-                                        <input type="text" id="CurrentAddress" name="CurrentAddress" placeholder="Current Address" value="<?= htmlspecialchars($personalInfo['CurrentAddress'] ?? '') ?>" required>
-                                    </div>
-                                    <div>
-                                        <label for="ContactNumber"><i class="fa-solid fa-phone"></i> Contact Number</label>
-                                        <input type="text" id="ContactNumber" name="ContactNumber" placeholder="Contact Number" value="<?= htmlspecialchars($personalInfo['ContactNumber'] ?? '') ?>" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div>
-                                        <label for="MothersName"><i class="fa-solid fa-person-dress"></i> Mother's Name</label>
-                                        <input type="text" id="MothersName" name="MothersName" placeholder="Mother's Name" value="<?= htmlspecialchars($personalInfo['MothersName'] ?? '') ?>">
-                                    </div>
-                                    <div>
-                                        <label for="FathersName"><i class="fa-solid fa-person"></i> Father's Name</label>
-                                        <input type="text" id="FathersName" name="FathersName" placeholder="Father's Name" value="<?= htmlspecialchars($personalInfo['FathersName'] ?? '') ?>">
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div>
-                                        <label for="GuardiansName"><i class="fa-solid fa-user-shield"></i> Guardian's Name</label>
-                                        <input type="text" id="GuardiansName" name="GuardiansName" placeholder="Guardian's Name" value="<?= htmlspecialchars($personalInfo['GuardiansName'] ?? '') ?>">
-                                    </div>
-                                    <div>
-                                        <label for="EmergencyContactName"><i class="fa-solid fa-triangle-exclamation"></i> Emergency Contact Name</label>
-                                        <input type="text" id="EmergencyContactName" name="EmergencyContactName" placeholder="Emergency Contact Name" value="<?= htmlspecialchars($personalInfo['EmergencyContactName'] ?? '') ?>" required>
-                                    </div>
-                                    <div>
-                                        <label for="EmergencyContactRelationship"><i class="fa-solid fa-people-arrows"></i> Emergency Contact Relationship</label>
-                                        <input type="text" id="EmergencyContactRelationship" name="EmergencyContactRelationship" placeholder="Relationship" value="<?= htmlspecialchars($personalInfo['EmergencyContactRelationship'] ?? '') ?>" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div>
-                                        <label for="EmergencyGuardiansName"><i class="fa-solid fa-user-shield"></i> Name of Contact Person in CASE OF EMERGENCY</label>
-                                        <input type="text" id="EmergencyContactPerson" name="EmergencyContactPerson" placeholder="(REQUIRED)" value="<?= htmlspecialchars($personalInfo['EmergencyContactPerson'] ?? '') ?>">
-
-                                    </div>
-                                </div>
-                                <button class="form-buttons" type="submit">Save</button>
-                            </form>
-
-                        </div>
                     <?php endif; ?>
+                    <div id="Edit-modal-overlay" class="edit-modal-overlay">
+                        <div class="edit-modal-content">
+                            <div class="header-modal">
+                                <h3>Edit User Info</h3> <span id="close-edit-btn" class="close">&times;</span>
+                            </div>
+                            <div id="personal-info-input" class="scroll-input-div">
+                                <form class="form-in-forms" id="personalInfoForm" autocomplete="off">
+                                    <input type="hidden" name="ClientID" value="<?= htmlspecialchars($clientID) ?>">
+                                    <div class="reminder-banner">
+                                        ⚠️ Please be careful when editing the patient's personal information.
+                                        Use edit mode **only if the patient is unable to update it themselves**.
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div>
+                                            <label for="Surname"><i class="fa-solid fa-user"></i> Surname</label>
+                                            <input type="text" id="Surname" name="Surname" placeholder="Surname" value="<?= htmlspecialchars($personalInfo['Surname'] ?? '') ?>" required>
+                                        </div>
+                                        <div>
+                                            <label for="GivenName"><i class="fa-solid fa-user"></i> Given Name</label>
+                                            <input type="text" id="GivenName" name="GivenName" placeholder="Given Name" value="<?= htmlspecialchars($personalInfo['GivenName'] ?? '') ?>" required>
+                                        </div>
+                                        <div>
+                                            <label for="MiddleName"><i class="fa-solid fa-user"></i> Middle Name</label>
+                                            <input type="text" id="MiddleName" name="MiddleName" placeholder="Middle Name" value="<?= htmlspecialchars($personalInfo['MiddleName'] ?? '') ?>">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div>
+                                            <label for="Age"><i class="fa-solid fa-hourglass-half"></i> Age</label>
+                                            <input type="number" id="Age" name="Age" placeholder="Age" min="1" max="120" value="<?= htmlspecialchars($personalInfo['Age'] ?? '') ?>" required>
+                                        </div>
+                                        <div>
+                                            <label for="genderSelect"><i class="fa-solid fa-venus-mars"></i> Sex</label>
+                                            <select id="genderSelect" name="Gender" required>
+                                                <option value="">Gender</option>
+                                                <option value="male" <?= (isset($personalInfo['Gender']) && $personalInfo['Gender'] === 'male') ? 'selected' : '' ?>>Male</option>
+                                                <option value="female" <?= (isset($personalInfo['Gender']) && $personalInfo['Gender'] === 'female') ? 'selected' : '' ?>>Female</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="DateOfBirth"><i class="fa-solid fa-calendar-day"></i> Date of Birth</label>
+                                            <input type="date" id="DateOfBirth" name="DateOfBirth" value="<?= htmlspecialchars($personalInfo['DateOfBirth'] ?? '') ?>" required>
+                                        </div>
+                                        <div>
+                                            <label for="Status"><i class="fa-solid fa-ring"></i> Status</label>
+                                            <select id="Status" name="Status" required>
+                                                <option value="">Status</option>
+                                                <option value="single" <?= (isset($personalInfo['Status']) && $personalInfo['Status'] === 'single') ? 'selected' : '' ?>>Single</option>
+                                                <option value="married" <?= (isset($personalInfo['Status']) && $personalInfo['Status'] === 'married') ? 'selected' : '' ?>>Married</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div>
+                                            <label for="Course"><i class="fa-solid fa-book"></i> Course</label>
+                                            <input type="text" id="Course" name="Course" placeholder="Course" value="<?= htmlspecialchars($personalInfo['Course'] ?? '') ?>">
+                                        </div>
+                                        <div>
+                                            <label for="SchoolYearEntered"><i class="fa-solid fa-calendar-alt"></i> School Year Entered</label>
+                                            <input type="text" id="SchoolYearEntered" name="SchoolYearEntered" placeholder="School Year Entered" value="<?= htmlspecialchars($personalInfo['SchoolYearEntered'] ?? '') ?>">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div>
+                                            <label for="CurrentAddress"><i class="fa-solid fa-house"></i> Current Address</label>
+                                            <input type="text" id="CurrentAddress" name="CurrentAddress" placeholder="Current Address" value="<?= htmlspecialchars($personalInfo['CurrentAddress'] ?? '') ?>" required>
+                                        </div>
+                                        <div>
+                                            <label for="ContactNumber"><i class="fa-solid fa-phone"></i> Contact Number</label>
+                                            <input type="text" id="ContactNumber" name="ContactNumber" placeholder="Contact Number" value="<?= htmlspecialchars($personalInfo['ContactNumber'] ?? '') ?>" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div>
+                                            <label for="MothersName"><i class="fa-solid fa-person-dress"></i> Mother's Name</label>
+                                            <input type="text" id="MothersName" name="MothersName" placeholder="Mother's Name" value="<?= htmlspecialchars($personalInfo['MothersName'] ?? '') ?>">
+                                        </div>
+                                        <div>
+                                            <label for="FathersName"><i class="fa-solid fa-person"></i> Father's Name</label>
+                                            <input type="text" id="FathersName" name="FathersName" placeholder="Father's Name" value="<?= htmlspecialchars($personalInfo['FathersName'] ?? '') ?>">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div>
+                                            <label for="GuardiansName"><i class="fa-solid fa-user-shield"></i> Guardian's Name</label>
+                                            <input type="text" id="GuardiansName" name="GuardiansName" placeholder="Guardian's Name" value="<?= htmlspecialchars($personalInfo['GuardiansName'] ?? '') ?>">
+                                        </div>
+                                        <div>
+                                            <label for="EmergencyContactName"><i class="fa-solid fa-triangle-exclamation"></i> Emergency Contact Name</label>
+                                            <input type="text" id="EmergencyContactName" name="EmergencyContactName" placeholder="Emergency Contact Name" value="<?= htmlspecialchars($personalInfo['EmergencyContactName'] ?? '') ?>" required>
+                                        </div>
+                                        <div>
+                                            <label for="EmergencyContactRelationship"><i class="fa-solid fa-people-arrows"></i> Emergency Contact Relationship</label>
+                                            <input type="text" id="EmergencyContactRelationship" name="EmergencyContactRelationship" placeholder="Relationship" value="<?= htmlspecialchars($personalInfo['EmergencyContactRelationship'] ?? '') ?>" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div>
+                                            <label for="EmergencyGuardiansName"><i class="fa-solid fa-user-shield"></i> Name of Contact Person in CASE OF EMERGENCY</label>
+                                            <input type="text" id="EmergencyContactPerson" name="EmergencyContactPerson" placeholder="(REQUIRED)" value="<?= htmlspecialchars($personalInfo['EmergencyContactPerson'] ?? '') ?>">
+
+                                        </div>
+                                    </div>
+                                    <button class="form-buttons" type="submit">Save</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
                     <script>
                         document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
                             e.preventDefault(); // Prevent full page reload
@@ -1565,12 +1573,13 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                     </script>
                     <script>
                         document.getElementById('editButton').addEventListener('click', function() {
-                            document.querySelector('.info-grid').style.display = 'none';
-                            document.getElementById('personal-info-input').style.display = 'block';
-                            document.getElementById('editButton').style.display = 'none';
-                            document.getElementById('backButton').style.display = 'inline-block';
+                            document.getElementById("Edit-modal-overlay").style.display = "flex";
+                            document.body.style.overflow = 'hidden';
                         });
-
+                        document.getElementById("close-edit-btn").addEventListener('click', function() {
+                            document.getElementById("Edit-modal-overlay").style.display = "none";
+                            document.body.style.overflow = "auto";
+                        })
                         document.getElementById('backButton').addEventListener('click', function() {
                             document.querySelector('.info-grid').style.display = 'grid';
                             document.getElementById('personal-info-input').style.display = 'none';
@@ -1591,6 +1600,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <div class="medtab" data-target="menstrualHistory">Mentrual History</div>
                         <div class="medtab" data-target="physicalExamination">Physical Examination</div>
                         <div class="medtab" data-target="diagnosticResults">Diagnostic Results</div>
+
                         <a href="manageclients.dbf/medrecords_generatepdf.php?ClientID=<?= $clientID ?>" target="_blank">
                             <button style="background-color: #3498db; color: white; border: none;" class="medtab" type="button">
                                 Save as PDF
@@ -2525,127 +2535,145 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
 
                 </div>
+
                 <!--  <button type="button" id="toggle-form-btn">Show Medical Certificate Form</button>-->
-                <div id="medical-cert" style="display: none; height: 85%">
-                    <div id="med-cert-form">
-                        <form method="POST" action="manageclients.dbf/save_medical_certificate.php" id="medical-cert-form">
-                            <input type="hidden" name="client_id" id="client-id" value="<?= htmlspecialchars($clientid['ClientID']) ?>">
+                <div id="Medcert-modal" class="medcert-modal">
+                    <div class="medcer-modal-content">
+                        <div class="header-modal">
+                            <h3>Medical certificate</h3> <span id="medcert-close-edit-btn" onclick="backto(<?= htmlspecialchars($clientID) ?>)" class="close">&times;</span>
+                        </div>
+                        <div id="medical-cert" class="MedCert-Issuance">
+                            <div id="med-cert-form">
+                                <form method="POST" action="manageclients.dbf/save_medical_certificate.php" id="medical-cert-form">
+                                    <input type="hidden" name="client_id" id="client-id" value="<?= htmlspecialchars($clientid['ClientID']) ?>">
 
-                            <div style="text-align: center; margin-bottom: 10px; width: 90%;">
-                                <img src="assets/images/LSPU-HEADER.svg" alt="LSPU Logo" style="width:400px; height: 110px;">
-                            </div>
+                                    <div style="text-align: center; margin-bottom: 10px; width: 90%;">
+                                        <img src="assets/images/LSPU-HEADER.svg" alt="LSPU Logo" style="width:400px; height: 110px;">
+                                    </div>
 
-                            <div style="text-align: center; font-weight: bold; margin: 20px 0;">MEDICAL CERTIFICATE</div>
+                                    <div style="text-align: center; font-weight: bold; margin: 20px 0;">MEDICAL CERTIFICATE</div>
 
-                            <div style="margin-bottom: 15px;">
-                                This is to certify that <span class="underline cert-field" contenteditable="true" id="patient-name" style="display: inline-block; min-width: 200px; border-bottom: 1px solid black;"></span>,
-                                a <span class="underline cert-field" contenteditable="true" id="patient-age" style="display: inline-block; min-width: 30px; border-bottom: 1px solid black;"></span> year old F/M, has been seen and examined on
-                                <input type="date" class="cert-field" id="exam-date" style="border: none; border-bottom: 1px solid black; display: inline-block; width: 120px;"></span> at the Medical Clinic.
-                            </div>
+                                    <div style="margin-bottom: 15px;">
+                                        This is to certify that <span class="underline cert-field" contenteditable="true" id="patient-name" style="display: inline-block; min-width: 200px; border-bottom: 1px solid black;"></span>,
+                                        a <span class="underline cert-field" contenteditable="true" id="patient-age" style="display: inline-block; min-width: 30px; border-bottom: 1px solid black;"></span> year old F/M, has been seen and examined on
+                                        <input type="date" class="cert-field" id="exam-date" style="border: none; border-bottom: 1px solid black; display: inline-block; width: 120px;"></span> at the Medical Clinic.
+                                    </div>
 
-                            <div style="margin-bottom: 10px;">
-                                Pertinent findings: <span class="underline cert-field" contenteditable="true" id="findings" style="display: inline-block; min-width: 400px; border-bottom: 1px solid black;"></span>
-                            </div>
+                                    <div style="margin-bottom: 10px;">
+                                        Pertinent findings: <span class="underline cert-field" contenteditable="true" id="findings" style="display: inline-block; min-width: 400px; border-bottom: 1px solid black;"></span>
+                                    </div>
 
-                            <div style="margin-bottom: 10px;">
-                                Impression on examination: <span class="underline cert-field" contenteditable="true" id="impression" style="display: inline-block; min-width: 400px; border-bottom: 1px solid black;"></span>
-                            </div>
+                                    <div style="margin-bottom: 10px;">
+                                        Impression on examination: <span class="underline cert-field" contenteditable="true" id="impression" style="display: inline-block; min-width: 400px; border-bottom: 1px solid black;"></span>
+                                    </div>
 
-                            <div style="margin-bottom: 20px;">
-                                NOTE: <span class="underline cert-field" contenteditable="true" id="note" style="display: inline-block; min-width: 400px; border-bottom: 1px solid black;"></span>
-                            </div>
+                                    <div style="margin-bottom: 20px;">
+                                        NOTE: <span class="underline cert-field" contenteditable="true" id="note" style="display: inline-block; min-width: 400px; border-bottom: 1px solid black;"></span>
+                                    </div>
 
-                            <div style="margin-top: 50px;">
-                                Visiting Physician/University Nurse<br>
-                                License No. <span class="underline cert-field" contenteditable="true" id="license-no" style="display: inline-block; min-width: 100px; border-bottom: 1px solid black;"></span><br>
-                                Date Issued: <input type="date" class="cert-field" id="date-issued" style="border: none; border-bottom: 1px solid black;">
-                            </div>
+                                    <div style="margin-top: 50px;">
+                                        Visiting Physician/University Nurse<br>
+                                        License No. <span class="underline cert-field" contenteditable="true" id="license-no" style="display: inline-block; min-width: 100px; border-bottom: 1px solid black;"></span><br>
+                                        Date Issued: <input type="date" class="cert-field" id="date-issued" style="border: none; border-bottom: 1px solid black;">
+                                    </div>
 
-                            <div style="text-align: left; font-size: 12px; margin-top: 30px; display: flex; flex-direction: row; justify-content: space-between">
-                                <p>LSPU-OSAS-SF-M08</p>
-                                <p> Rev. 0</p>
-                                <p>10 Aug. 2016</p>
-                            </div>
+                                    <div style="text-align: left; font-size: 12px; margin-top: 30px; display: flex; flex-direction: row; justify-content: space-between">
+                                        <p>LSPU-OSAS-SF-M08</p>
+                                        <p> Rev. 0</p>
+                                        <p>10 Aug. 2016</p>
+                                    </div>
 
-                            <!-- Hidden fields for submission -->
-                            <input type="hidden" name="patient_name" id="hidden-patient-name">
-                            <input type="hidden" name="patient_age" id="hidden-patient-age">
-                            <input type="hidden" name="exam_date" id="hidden-exam-date">
-                            <input type="hidden" name="findings" id="hidden-findings">
-                            <input type="hidden" name="impression" id="hidden-impression">
-                            <input type="hidden" name="note" id="hidden-note">
-                            <input type="hidden" name="license_no" id="hidden-license-no">
-                            <input type="hidden" name="date_issued" id="hidden-date-issued">
+                                    <!-- Hidden fields for submission -->
+                                    <input type="hidden" name="patient_name" id="hidden-patient-name">
+                                    <input type="hidden" name="patient_age" id="hidden-patient-age">
+                                    <input type="hidden" name="exam_date" id="hidden-exam-date">
+                                    <input type="hidden" name="findings" id="hidden-findings">
+                                    <input type="hidden" name="impression" id="hidden-impression">
+                                    <input type="hidden" name="note" id="hidden-note">
+                                    <input type="hidden" name="license_no" id="hidden-license-no">
+                                    <input type="hidden" name="date_issued" id="hidden-date-issued">
 
-                            <div class="cert-controls" style="margin-top: 20px; text-align: center;">
-                                <button class="buttonsdp" type="button" onclick="downloadMedicalCertPDF()">Download Certificate as PDF</button>
-                                <button class="buttonsdp" type="button" onclick="clearMedicalCert()">Clear Form</button>
-                                <button class="buttonsdp" type="submit">Save</button>
-                            </div>
-                        </form>
+                                    <div class="cert-controls" style="margin-top: 20px; text-align: center;">
+                                        <button class="buttonsdp" type="button" onclick="downloadMedicalCertPDF()">Download Certificate as PDF</button>
+                                        <button class="buttonsdp" type="button" onclick="clearMedicalCert()">Clear Form</button>
+                                        <button class="buttonsdp" type="submit">Save</button>
+                                    </div>
+                                </form>
 
-                        <script>
-                            function downloadMedicalCertPDF() {
-                                const patientName = document.getElementById('patient-name').innerText.trim();
-                                const patientAge = document.getElementById('patient-age').innerText.trim();
-                                const examDate = document.getElementById('exam-date').value;
-                                const findings = document.getElementById('findings').innerText.trim();
-                                const impression = document.getElementById('impression').innerText.trim();
-                                const note = document.getElementById('note').innerText.trim();
-                                const licenseNo = document.getElementById('license-no').innerText.trim();
-                                const dateIssued = document.getElementById('date-issued').value;
-                                const clientId = document.getElementById('client-id').value;
+                                <script>
+                                    function downloadMedicalCertPDF() {
+                                        const patientName = document.getElementById('patient-name').innerText.trim();
+                                        const patientAge = document.getElementById('patient-age').innerText.trim();
+                                        const examDate = document.getElementById('exam-date').value;
+                                        const findings = document.getElementById('findings').innerText.trim();
+                                        const impression = document.getElementById('impression').innerText.trim();
+                                        const note = document.getElementById('note').innerText.trim();
+                                        const licenseNo = document.getElementById('license-no').innerText.trim();
+                                        const dateIssued = document.getElementById('date-issued').value;
+                                        const clientId = document.getElementById('client-id').value;
 
-                                const params = new URLSearchParams({
-                                    client_id: clientId,
-                                    patient_name: patientName,
-                                    patient_age: patientAge,
-                                    exam_date: examDate,
-                                    findings: findings,
-                                    impression: impression,
-                                    note: note,
-                                    license_no: licenseNo,
-                                    date_issued: dateIssued
-                                });
+                                        const params = new URLSearchParams({
+                                            client_id: clientId,
+                                            patient_name: patientName,
+                                            patient_age: patientAge,
+                                            exam_date: examDate,
+                                            findings: findings,
+                                            impression: impression,
+                                            note: note,
+                                            license_no: licenseNo,
+                                            date_issued: dateIssued
+                                        });
 
-                                window.open('manageclients.dbf/generate_pdf_admin.php?' + params.toString(), '_blank');
-                            }
-                        </script>
+                                        window.open('manageclients.dbf/generate_pdf_admin.php?' + params.toString(), '_blank');
+                                    }
+                                </script>
 
 
-                        <script>
-                            document.getElementById('medical-cert-form').addEventListener('submit', function(event) {
-                                event.preventDefault();
+                                <script>
+                                    document.getElementById('medical-cert-form').addEventListener('submit', function(event) {
+                                        event.preventDefault();
 
-                                document.getElementById('hidden-patient-name').value = document.getElementById('patient-name').innerText.trim();
-                                document.getElementById('hidden-patient-age').value = document.getElementById('patient-age').innerText.trim();
-                                document.getElementById('hidden-exam-date').value = document.getElementById('exam-date').value; // Changed to .value
-                                document.getElementById('hidden-findings').value = document.getElementById('findings').innerText.trim();
-                                document.getElementById('hidden-impression').value = document.getElementById('impression').innerText.trim();
-                                document.getElementById('hidden-note').value = document.getElementById('note').innerText.trim();
-                                document.getElementById('hidden-license-no').value = document.getElementById('license-no').innerText.trim();
-                                document.getElementById('hidden-date-issued').value = document.getElementById('date-issued').value.trim();
+                                        document.getElementById('hidden-patient-name').value = document.getElementById('patient-name').innerText.trim();
+                                        document.getElementById('hidden-patient-age').value = document.getElementById('patient-age').innerText.trim();
+                                        document.getElementById('hidden-exam-date').value = document.getElementById('exam-date').value; // Changed to .value
+                                        document.getElementById('hidden-findings').value = document.getElementById('findings').innerText.trim();
+                                        document.getElementById('hidden-impression').value = document.getElementById('impression').innerText.trim();
+                                        document.getElementById('hidden-note').value = document.getElementById('note').innerText.trim();
+                                        document.getElementById('hidden-license-no').value = document.getElementById('license-no').innerText.trim();
+                                        document.getElementById('hidden-date-issued').value = document.getElementById('date-issued').value.trim();
 
-                                const formData = new FormData(this);
+                                        const formData = new FormData(this);
 
-                                fetch('manageclients.dbf/save_medical_certificate.php', {
-                                        method: 'POST',
-                                        body: formData
-                                    })
-                                    .then(response => response.text())
-                                    .then(data => {
-                                        console.log('Success:', data);
-                                        alert('Medical Certificate saved successfully!');
-                                    })
-                                    .catch(error => {
-                                        console.error('Error:', error);
-                                        alert('An error occurred while saving.');
+                                        fetch('manageclients.dbf/save_medical_certificate.php', {
+                                                method: 'POST',
+                                                body: formData
+                                            })
+                                            .then(response => response.text())
+                                            .then(data => {
+                                                console.log('Success:', data);
+                                                alert('Medical Certificate saved successfully!');
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                alert('An error occurred while saving.');
+                                            });
                                     });
-                            });
-                        </script>
-                    </div>
+                                </script>
 
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <script>
+                    document.getElementById("medrec-open-modal-btn").addEventListener("click", function() {
+                        document.getElementById("Medcert-modal").style.display = "flex";
+                        document.body.style.overflow = "hidden";
+                    });
+                    document.getElementById("medcert-close-edit-btn").addEventListener("click", function() {
+                        document.getElementById("Medcert-modal").style.display = "none";
+                        document.body.style.overflow = "auto";
+                    });
+                </script>
                 <script>
                     // Convert 24-hour time string to 12-hour AM/PM format
                     function convertTo12Hour(time24) {

@@ -115,8 +115,6 @@ if (isset($_GET['error'])) {
                                     <option value="newpersonnel-content">Newly Hired Personnels</option>
                                 </select>
                             </div>
-
-
                         </div>
 
                         <button type="button" class="btn-add-patient" onclick="openAddPatientModal()">
@@ -221,11 +219,47 @@ if (isset($_GET['error'])) {
                                     <i class="fas fa-save"></i> Save Patient
                                 </button>
                             </form>
+                            <script>
+                                function showLoader(text, progress) {
+                                    document.getElementById("loadingText").innerText = text;
+                                    document.getElementById("loadingModal").style.display = "flex";
+                                    document.querySelector(".progress-fill").style.width = progress + "%";
+                                }
+
+                                function showLoader(text) {
+                                    document.getElementById("loadingText").innerText = text;
+                                    document.getElementById("loadingModal").style.display = "flex";
+                                }
+
+                                function updateProgress(percent) {
+                                    document.querySelector(".progress-fill").style.width = percent + "%";
+                                }
+                                document.getElementById("addPatientForm").addEventListener("submit", function(e) {
+
+                                    const email = document.getElementById("emailInput").value;
+                                    const type = document.getElementById("clientTypeSelect").value;
+
+                                    document.getElementById("previewEmail").innerText = email;
+                                    document.getElementById("previewType").innerText = type;
+
+                                    showLoader("Creating user account...");
+                                    updateProgress(20);
+
+                                    setTimeout(() => {
+                                        showLoader("Sending email to user...");
+                                        updateProgress(60);
+                                    }, 1000);
+
+                                    setTimeout(() => {
+                                        showLoader("Finalizing...");
+                                        updateProgress(90);
+                                    }, 2000);
+
+                                    document.getElementById("saveButton").disabled = true;
+                                });
+                            </script>
                         </div>
                     </div>
-
-
-
                 </div>
                 <script>
                     document.getElementById("emailInput").addEventListener("blur", generateAutoPassword);
@@ -295,6 +329,135 @@ if (isset($_GET['error'])) {
                         }
                     }
                 </script>
+                <div id="loadingModal" class="loading-overlay">
+                    <div class="loading-box">
+                        <div class="user-preview">
+                            <img id="previewImage" src='../../uploads/profilepic2.png' alt="Profile">
+                            <div class="user-info">
+                                <p id="previewEmail">email@example.com</p>
+                                <p id="previewType">User Type</p>
+                            </div>
+                        </div>
+
+                        <!-- <div class="spinner"></div>-->
+
+                        <p id="loadingText">Processing, please wait...</p>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <style>
+                    .user-preview {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        margin: 10px 0;
+                        background: #f5f7fa;
+                        padding: 10px;
+                        border-radius: 10px;
+                        height: 40%;
+                    }
+
+                    .user-preview img {
+                        width: 45px;
+                        height: 45px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                        margin-right: 10px;
+                        border: 2px solid #e3e7ee;
+                    }
+
+                    .user-info p {
+                        margin: 0;
+                        font-size: 14px;
+                        color: #333;
+                    }
+
+                    #previewEmail {
+                        font-weight: 600;
+                    }
+
+                    #previewType {
+                        font-size: 13px;
+                        color: #777;
+                    }
+
+                    .loading-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.55);
+                        display: none;
+                        justify-content: center;
+                        align-items: center;
+                        backdrop-filter: blur(5px);
+                        z-index: 99999;
+                    }
+
+                    .loading-box {
+                        background: white;
+                        width: 420px;
+                        padding: 25px;
+                        border-radius: 18px;
+                        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+                        text-align: center;
+                    }
+
+                    .spinner {
+                        width: 42px;
+                        height: 42px;
+                        border: 5px solid #d1d1d1;
+                        border-top-color: #2e68cc;
+                        border-radius: 50%;
+                        margin: 0 auto 15px;
+                        animation: spin 0.8s linear infinite;
+                    }
+
+                    @keyframes spin {
+                        to {
+                            transform: rotate(360deg);
+                        }
+                    }
+
+                    .progress-bar {
+                        width: 100%;
+                        height: 12px;
+                        background: #e5e5e5;
+                        border-radius: 10px;
+                        margin-top: 10px;
+                        overflow: hidden;
+                    }
+
+                    .progress-fill {
+                        width: 0%;
+                        height: 100%;
+                        background: #2e68cc;
+                        transition: width 0.5s ease;
+                    }
+
+
+                    @keyframes barLoad {
+                        0% {
+                            width: 0%;
+                        }
+
+                        60% {
+                            width: 90%;
+                        }
+
+                        100% {
+                            width: 100%;
+                        }
+                    }
+                </style>
 
                 <div class="clients-table-container">
                     <div class="tabs">
