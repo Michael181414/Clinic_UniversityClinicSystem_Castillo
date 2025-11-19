@@ -3,7 +3,6 @@ session_start();
 include 'config/database.php';
 
 $pdo = pdo_connect_mysql();
-
 header('Content-Type: application/json');
 
 if (!isset($_POST['client_id']) || empty($_POST['client_id'])) {
@@ -39,31 +38,42 @@ foreach ($fields as $field) {
 }
 
 try {
-    // Get or create history ID
-    $getHistory = $pdo->prepare("SELECT historyID FROM history WHERE ClientID = ? AND progress = 'inprogress' Order By historyID Desc LIMIT 1");
+    // Get latest history for the client
+    $getHistory = $pdo->prepare("
+        SELECT historyID 
+        FROM history 
+        WHERE ClientID = ? 
+        ORDER BY historyID DESC 
+        LIMIT 1
+    ");
     $getHistory->execute([$data['client_id']]);
     $historyID = $getHistory->fetchColumn();
 
+    // If no history exists → create new one
     if (!$historyID) {
-        $insertHistory = $pdo->prepare("INSERT INTO history (ClientID, actionDate, progress) VALUES (?, NOW(), 'inprogress')");
+        $insertHistory = $pdo->prepare("
+            INSERT INTO history (ClientID, actionDate) 
+            VALUES (?, NOW())
+        ");
         $insertHistory->execute([$data['client_id']]);
         $historyID = $pdo->lastInsertId();
     }
 
-    // Check if physical examination already exists
+    // Check if physical examination record exists
     $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM physicalexamination WHERE historyID = ?");
     $checkStmt->execute([$historyID]);
     $exists = $checkStmt->fetchColumn();
 
     if ($exists) {
-        $sql = "UPDATE physicalexamination SET 
+        // UPDATE existing record
+        $sql = "UPDATE physicalexamination SET
             Height = ?, Weight = ?, BMI = ?, BP = ?, HR = ?, RR = ?, Temp = ?,
             GenAppearanceAndSkinNormal = ?, GenAppearanceAndSkinFindings = ?,
             HeadAndNeckNormal = ?, HeadAndNeckFindings = ?,
             ChestAndBackNormal = ?, ChestAndBackFindings = ?,
             AbdomenNormal = ?, AbdomenFindings = ?,
             ExtremitiesNormal = ?, ExtremitiesFindings = ?,
-            OthersNormal = ?, OthersFindings = ? 
+            OthersNormal = ?, OthersFindings = ?
             WHERE historyID = ?";
 
         $params = [
@@ -89,6 +99,7 @@ try {
             $historyID
         ];
     } else {
+        // INSERT new physical examination data
         $sql = "INSERT INTO physicalexamination (
             ClientID, historyID, Height, Weight, BMI, BP, HR, RR, Temp,
             GenAppearanceAndSkinNormal, GenAppearanceAndSkinFindings,

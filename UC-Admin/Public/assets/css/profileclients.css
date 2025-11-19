@@ -565,7 +565,7 @@ img {
 }
 
 .history-table th {
-  background-color: #2980b9;
+  background-color: #397dda;
   color: white;
   font-weight: 600;
   padding: 14px 16px;
@@ -614,7 +614,7 @@ img {
 
 /* Header cells */
 .physical-exam-table th {
-  background-color: #2980b9;
+  background-color: #397dda;
   color: #fff;
   font-weight: 600;
   padding: 14px 16px;
@@ -649,6 +649,9 @@ img {
 }
 
 .form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   height: 100%;
   background-color: rgb(255, 255, 255);
   border-radius: 8px;
@@ -660,131 +663,132 @@ img {
   overflow: auto;
 }
 
-h2 {
-  color: #2c3e50;
-  border-bottom: 2px solid #3498db;
-  padding-bottom: 10px;
-  margin-top: 30px;
+.form-container h1 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #397dda;
+  font-weight: 700;
 }
 
+.form-container h2 {
+  margin-top: 35px;
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #397dda;
+  border-left: 5px solid #397dda;
+  padding-left: 10px;
+}
+
+/* ===== Sections (Card style) ===== */
 .form-section {
+  padding: 20px;
+  background: #f7faff;
+  border: 1px solid #d9e7ff;
+  border-radius: 10px;
   margin-bottom: 25px;
 }
 
+/* ===== Input Groups ===== */
 .form-group {
   margin-bottom: 15px;
 }
 
-label {
+.form-group label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
   display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
 }
-input,
-input[type="text"],
+
+.custom-input,
 input[type="date"],
 textarea {
   width: 100%;
-  padding: 6px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: clamp(10px, 1vw, 16px);
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #b8c6d6;
+  background: #fff;
+  transition: 0.2s ease;
+  font-size: 14px;
 }
 
-textarea {
+.custom-input:focus,
+textarea:focus,
+input[type="date"]:focus {
+  border-color: #397dda;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+  outline: none;
+}
+
+/* ===== Textarea ===== */
+.custom-textarea {
   min-height: 80px;
   resize: vertical;
 }
 
-.check-box-parent-div {
-  display: flex;
-  width: 100%;
-  height: 20%;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-}
+/* ===== Checkbox & Radio Styling ===== */
 .checkbox-group {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 50%);
-  grid-template-rows: repeat(auto-fill, 33.33%);
-  width: 80%;
-  height: 20%;
-}
-.checkboxes {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 15px;
+  margin-bottom: 20px;
 }
 
-.checkbox-label {
+.checkbox-label,
+.radio-label {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  color: #333;
 }
 
-.checkbox-label input {
-  margin-right: 10px;
+input[type="checkbox"],
+input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #397dda;
 }
 
+/* ===== Signature Section ===== */
 .signature-section {
-  margin-top: 30px;
-  border-top: 1px solid #eee;
-  padding-top: 20px;
+  padding: 20px;
+  background: #eef4ff;
+  border: 1px solid #cddcff;
+  border-radius: 10px;
 }
 
-.footer {
-  margin-top: 30px;
-  font-size: clamp(10px, 1vw, 14px);
-  color: #777;
-  text-align: center;
-}
-
+/* ===== Submit Button ===== */
 .buttonsdp {
-  background-color: #007bff;
-  color: white;
+  width: 100%;
+  padding: 14px;
+  background: #397dda;
   border: none;
-  padding: 12px 20px;
-  border-radius: 4px;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 700;
   cursor: pointer;
-  font-size: clamp(10px, 1vw, 14px);
   margin-top: 20px;
-}
-
-.buttonsdp2 {
-  background-color: #ffffff;
-  color: #0d3e89;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: clamp(10px, 1vw, 14px);
-  margin-top: 20px;
-}
-
-textarea {
-  overflow-y: hidden;
-  resize: none;
-  outline: none;
-  border: none;
-  background-color: rgb(245, 250, 255);
+  transition: 0.2s ease;
 }
 
 .buttonsdp:hover {
-  background-color: #2980b9;
+  background: #397dda;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
 }
 
-.physical-exam-table input {
-  width: 100%;
-  height: 100%;
-  color: rgb(46, 46, 46);
-  font-size: clamp(10px, 1vw, 18px);
-  outline: none;
-  border: none;
-  border-radius: 3px;
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 20px;
+  }
+
+  .form-group,
+  .checkbox-group {
+    width: 100%;
+  }
 }
 
 /*===========================================================================*/
@@ -892,7 +896,7 @@ textarea {
 }
 
 .percentage-bar {
-  background-color: #3498db;
+  background-color: #397dda;
   height: 100%;
   border-radius: 5px;
   transition: width 0.3s ease;
@@ -1377,7 +1381,7 @@ textarea {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.664);
   justify-content: center;
   align-items: center;
 }
@@ -1395,6 +1399,38 @@ textarea {
   padding: 20px;
   border-radius: 5px;
   animation: slideDown 0.3s ease;
+}
+.medical-history-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 90%;
+  height: 90%;
+  max-width: 1500px;
+  max-height: 1100px;
+  background-color: white;
+  font-family: "Poppins", sans-serif;
+  padding: 20px;
+  border-radius: 5px;
+  animation: slideDown 0.3s ease;
+}
+.medical-history-content-tables {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+.med-history-modal-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+}
+.med-history-modal-header h3 {
+  font-size: clamp(1.5rem, 1vw, 1.75rem);
 }
 .success {
   display: flex;
@@ -1864,8 +1900,25 @@ span {
   font-size: clamp(1rem, 1vw, 1.5rem);
 }
 
+.modal-tab-btn {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #6b7280;
+  background-color: white;
+  cursor: pointer;
+  transition: color 0.25s ease;
+  padding: 15px 22px;
+  border-radius: 3px;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(0.75rem, 1vw, 1rem);
+}
 /* Tab Hover and Active Colors */
-.tab:hover {
+.tab:hover,
+.modal-tab-btn:hover {
   color: #111827;
   background-color: #f0f4ff;
   border: #c3d4ff solid 1px;
@@ -1992,16 +2045,16 @@ span {
   width: 8px;
 }
 #client-history-container::-webkit-scrollbar-thumb {
-  background: #357fd3;
+  background: #397dda;
   border-radius: 0px;
 }
 /* Heading */
 #client-history-container h3 {
   font-size: 26px;
   font-weight: 600;
-  color: #0b4f8a;
+  color: #397dda;
   margin-bottom: 20px;
-  border-left: 6px solid #0b4f8a;
+  border-left: 6px solid #397dda;
   padding-left: 12px;
 }
 
@@ -2344,7 +2397,8 @@ body.modal-open {
 }
 
 .edit-modal-overlay,
-.medcert-modal {
+.medcert-modal,
+#med-history-modal-overlay {
   top: 0;
   left: 0;
   z-index: 1000;
@@ -2354,7 +2408,7 @@ body.modal-open {
   align-items: center;
   width: 100%;
   height: 100vh;
-  background-color: rgba(59, 59, 59, 0.164);
+  background: rgba(0, 0, 0, 0.664);
 }
 
 .edit-modal-content,

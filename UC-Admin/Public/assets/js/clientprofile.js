@@ -5,7 +5,7 @@ document.querySelectorAll(".tab").forEach((tab) => {
       .forEach((t) => t.classList.remove("active"));
     document
       .querySelectorAll(
-        "#personal-info-div, #medical-history, #visit-history, #medrec, #rx, #np_medical-history, #examFilesTab"
+        "#personal-info-div, #visit-history, #medrec, #rx, #np_medical-history, #examFilesTab"
       )
       .forEach((content) => {
         content.style.display = "none";
@@ -268,3 +268,5 @@ function printPdf() {
   const url = `manageclients.dbf/patients_rec_genpdf.php?${params.toString()}`;
   window.open(url, "_blank");
 }
+//================================================================
+//=============Medical-History-Modal==============================

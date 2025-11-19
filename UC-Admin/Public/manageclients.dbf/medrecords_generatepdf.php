@@ -120,12 +120,13 @@ function checkMark($value)
 }
 function FamMedCheckMark($value)
 {
-    return ($value == 1) ? '<span style="font-family: dejavusans; font-weight: bolder;">✓</span>' : '';
+    // Accept 1, '1', 'yes', 'Yes', true as checked
+    $checkedValues = [1, '1', 'yes', 'Yes', true];
+    return in_array($value, $checkedValues, true)
+        ? '<span style="font-family: dejavusans; font-weight: bolder;">✓</span>'
+        : '';
 }
-function SocialCheckMark($value, $target)
-{
-    return ($value === $target) ? '<span style="font-family: dejavusans; font-weight: bold;">✓</span>' : '';
-}
+
 function diagnosticCheckMark($value)
 {
     return ($value == 1) ? '<span style="font-family: dejavusans; font-weight: bolder;">✓</span>' : '';
@@ -146,20 +147,41 @@ $check_CurrentMedicines    = checkMark($medDental['CurrentMedicines']    ?? null
 $check_DentalProblems      = checkMark($medDental['DentalProblems']      ?? null);
 $check_PrimaryPhysician    = checkMark($medDental['PrimaryPhysician']    ?? null);
 
-$check_allergy         = FamMedCheckMark($familyHistory['Allergy']        ?? null);
-$check_cancer          = FamMedCheckMark($familyHistory['Cancer']         ?? null);
-$check_asthma          = FamMedCheckMark($familyHistory['Asthma']         ?? null);
-$check_tuberculosis    = FamMedCheckMark($familyHistory['Tuberculosis']   ?? null);
-$check_hypertension    = FamMedCheckMark($familyHistory['Hypertension']   ?? null);
-$check_bloodDisease    = FamMedCheckMark($familyHistory['BloodDisease']   ?? null);
-$check_stroke          = FamMedCheckMark($familyHistory['Stroke']         ?? null);
-$check_diabetes        = FamMedCheckMark($familyHistory['Diabetes']       ?? null);
-$check_liverDisease    = FamMedCheckMark($familyHistory['LiverDisease']   ?? null);
-$check_kidneyBladder   = FamMedCheckMark($familyHistory['KidneyBladder']  ?? null);
-$check_bloodDisorder   = FamMedCheckMark($familyHistory['BloodDisorder']  ?? null);
-$check_epilepsy        = FamMedCheckMark($familyHistory['Epilepsy']       ?? null);
-$check_mentalDisorder  = FamMedCheckMark($familyHistory['MentalDisorder'] ?? null);
-$check_others          = FamMedCheckMark($familyHistory['OtherIllness']   ?? null);
+function normalize($value)
+{
+    if ($value === null || $value === '') return null;
+
+    $value = strtolower(trim($value));
+
+    // Convert DB values like 1/0 to yes/no
+    if ($value === '1' || $value === 'yes' || $value === 'y') return 'yes';
+    if ($value === '0' || $value === 'no'  || $value === 'n') return 'no';
+
+    if ($value === 'former' || $value === 'used before') return 'former';
+
+    return $value; // fallback
+}
+function SocialCheckMark($value, $option)
+{
+    // $value = stored value from DB: 'yes', 'no', 'former'
+    return ($value === $option) ? '✔' : '';
+}
+
+$check_allergy       = FamMedCheckMark(normalize($familyHistory['Allergy'] ?? null));
+$check_cancer        = FamMedCheckMark(normalize($familyHistory['Cancer'] ?? null));
+$check_asthma        = FamMedCheckMark(normalize($familyHistory['Asthma'] ?? null));
+$check_tuberculosis  = FamMedCheckMark(normalize($familyHistory['Tuberculosis'] ?? null));
+$check_hypertension  = FamMedCheckMark(normalize($familyHistory['Hypertension'] ?? null));
+$check_bloodDisease  = FamMedCheckMark(normalize($familyHistory['BloodDisease'] ?? null));
+$check_stroke        = FamMedCheckMark(normalize($familyHistory['Stroke'] ?? null));
+$check_diabetes      = FamMedCheckMark(normalize($familyHistory['Diabetes'] ?? null));
+$check_liverDisease  = FamMedCheckMark(normalize($familyHistory['LiverDisease'] ?? null));
+$check_kidneyBladder = FamMedCheckMark(normalize($familyHistory['KidneyBladder'] ?? null));
+$check_bloodDisorder = FamMedCheckMark(normalize($familyHistory['BloodDisorder'] ?? null));
+$check_epilepsy      = FamMedCheckMark(normalize($familyHistory['Epilepsy'] ?? null));
+$check_mentalDisorder = FamMedCheckMark(normalize($familyHistory['MentalDisorder'] ?? null));
+$check_others        = FamMedCheckMark(normalize($familyHistory['OtherIllness'] ?? null));
+
 
 // Social history
 $alcohol = $socialHistory['AlcoholIntake'] ?? null;
@@ -528,73 +550,73 @@ try {
 <table width="100%" style="font-size: 8.5px; margin-bottom: 10px; border-collapse: collapse;">
     <tr>
         <br>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_allergy ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_allergy</td>
         <td style="width: 7%;">Allergy</td>
-        <td style="width: 34%; border-bottom: 1px solid black;"><span class="value"><?= $allergyDetails ?></span></td>
+        <td style="width: 34%; border-bottom: 1px solid black;"><span class="value">$allergyDetails</span></td>
         <td style="width: 14%;"></td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_cancer ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_cancer</td>
         <td style="width: 7%;">Cancer</td>
-        <td style="width: 33%; border-bottom: 1px solid black;"><span class="value"><?= $cancerDetails ?></span></td>
+        <td style="width: 33%; border-bottom: 1px solid black;"><span class="value">$cancerDetails</span></td>
     </tr>
     <tr><td colspan="7" style="font-size: 2.5px;"></td></tr>
     <tr>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_asthma ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_asthma</td>
         <td style="width: 12%;">Asthma/"hika"</td>
-        <td style="width: 29%; border-bottom: 1px solid black;"><span class="value"><?= $asthmaDetails ?></span></td>
+        <td style="width: 29%; border-bottom: 1px solid black;"><span class="value">$asthmaDetails</span></td>
         <td style="width: 14%;"></td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_liverDisease ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_liverDisease</td>
         <td style="width: 11%;">Liver disease</td>
-        <td style="width: 29%; border-bottom: 1px solid black;"><span class="value"><?= $liverDiseaseDetails ?></span></td>
+        <td style="width: 29%; border-bottom: 1px solid black;"><span class="value">$liverDiseaseDetails</span></td>
     </tr>
     <tr><td colspan="7" style="font-size: 2.5px;"></td></tr>
     <tr>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_tuberculosis ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_tuberculosis</td>
         <td style="width: 14%;">Tuberculosis/ TB</td>
-        <td style="width: 27%; border-bottom: 1px solid black;"><span class="value"><?= $tuberculosisDetails ?></span></td>
+        <td style="width: 27%; border-bottom: 1px solid black;"><span class="value">$tuberculosisDetails</span></td>
         <td style="width: 14%;"></td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_kidneyBladder ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_kidneyBladder</td>
         <td style="width: 21%;">Kidney or bladder disease</td>
-        <td style="width: 19%; border-bottom: 1px solid black;"><span class="value"><?= $kidneyBladderDetails ?></span></td>
+        <td style="width: 19%; border-bottom: 1px solid black;"><span class="value">$kidneyBladderDetails</span></td>
     </tr>
     <tr><td colspan="7" style="font-size: 2.5px;"></td></tr>
     <tr>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_hypertension ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_hypertension</td>
         <td style="width: 21%;">Hypertension/ "high blood"</td>
-        <td style="width: 20%; border-bottom: 1px solid black;"><span class="value"><?= $hypertensionDetails ?></span></td>
+        <td style="width: 20%; border-bottom: 1px solid black;"><span class="value">$hypertensionDetails</span></td>
         <td style="width: 14%;"></td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_bloodDisease ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_bloodDisease</td>
         <td style="width: 12%;">Blood disease</td>
-        <td style="width: 28%; border-bottom: 1px solid black;"><span class="value"><?= $bloodDiseaseDetails ?></span></td>
+        <td style="width: 28%; border-bottom: 1px solid black;"><span class="value">$bloodDiseaseDetails</span></td>
     </tr>
     <tr><td colspan="7" style="font-size: 2.5px;"></td></tr>
     <tr>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_stroke ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_stroke</td>
         <td style="width: 6%;">Stroke</td>
-        <td style="width: 35%; border-bottom: 1px solid black;"><span class="value"><?= $strokeDetails ?></span></td>
+        <td style="width: 35%; border-bottom: 1px solid black;"><span class="value">$strokeDetails</span></td>
         <td style="width: 14%;"></td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_mentalDisorder ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_mentalDisorder</td>
         <td style="width: 13%;">Mental Disorder</td>
-        <td style="width: 27%; border-bottom: 1px solid black;"><span class="value"><?= $mentalDisorderDetails ?></span></td>
+        <td style="width: 27%; border-bottom: 1px solid black;"><span class="value">$mentalDisorderDetails</span></td>
     </tr>
     <tr><td colspan="7" style="font-size: 2.5px;"></td></tr>
     <tr>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_diabetes ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_diabetes</td>
         <td style="width: 8%;">Diabetes</td>
-        <td style="width: 33%; border-bottom: 1px solid black;"><span class="value"><?= $diabetesDetails ?></span></td>
+        <td style="width: 33%; border-bottom: 1px solid black;"><span class="value">$diabetesDetails</span></td>
         <td style="width: 14%;"></td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_others ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_others</td>
         <td style="width: 6%;">Others</td>
-        <td style="width: 34%; border-bottom: 1px solid black;"><span class="value"><?= $otherIllnessDetails ?></span></td>
+        <td style="width: 34%; border-bottom: 1px solid black;"><span class="value">otherIllnessDetails</span></td>
     </tr>
     <tr><td colspan="7" style="font-size: 2.5px;"></td></tr>
     <tr>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_bloodDisorder ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_bloodDisorder</td>
         <td style="width: 14%;">Blood disorder</td>
-        <td style="width: 27%; border-bottom: 1px solid black;"><span class="value"><?= $bloodDisorderDetails ?></span></td>
+        <td style="width: 27%; border-bottom: 1px solid black;"><span class="value">$bloodDisorderDetails</span></td>
         <td style="width: 14%;"></td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $check_epilepsy ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$check_epilepsy</td>
         <td style="width: 11%;">Epilepsy</td>
-        <td style="width: 29%; border-bottom: 1px solid black;"><span class="value"><?= $epilepsyDetails ?></span></td>
+        <td style="width: 29%; border-bottom: 1px solid black;"><span class="value">$epilepsyDetails</span></td>
     </tr>
 </table>
 
@@ -612,33 +634,33 @@ try {
     <tr>
         <br>
         <td style="width: 15%;">1. Alcohol Intake:</td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $alcohol_yes ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$alcohol_yes</td>
         <td style="width: 5%;">Yes</td>
-        <td style="width: 35%; border-bottom: 1px solid black;"><span class="value"><?= $alcoholDetails ?></span></td>
+        <td style="width: 35%; border-bottom: 1px solid black;"><span class="value">$alcoholDetails</span></td>
         <td style="width: 1%;"></td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $alcohol_no ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$alcohol_no</td>
         <td style="width: 10%;">No</td>
     </tr>
 
     <tr>
         <br>
         <td style="width: 15%;">2. Tobacco Use:</td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $tobacco_yes ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$tobacco_yes</td>
         <td style="width: 5%;">Yes</td>
-        <td style="width: 35%; border-bottom: 1px solid black;"><span class="value"><?= $tobaccoDetails ?></span></td>
+        <td style="width: 35%; border-bottom: 1px solid black;"><span class="value">$tobaccoDetails</span></td>
         <td style="width: 1%;"></td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $tobacco_no ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$tobacco_no</td>
         <td style="width: 10%;">No</td>
     </tr>
 
     <tr>
         <br>
         <td style="width: 15%;">3. Drug Use:</td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $drug_yes ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$drug_yes</td>
         <td style="width: 5%;">Yes</td>
-        <td style="width: 35%; border-bottom: 1px solid black;"><span class="value"><?= $drugDetails ?></span></td>
+        <td style="width: 35%; border-bottom: 1px solid black;"><span class="value">$drugDetails</span></td>
         <td style="width: 1%;"></td>
-        <td style="width: 2.6%; border: 1px solid black;"><?= $drug_no ?></td>
+        <td style="width: 2.6%; border: 1px solid black;">$drug_no</td>
         <td style="width: 10%;">No</td>
     </tr>
 
@@ -1013,14 +1035,7 @@ EOD;
     </tr>
 </table>
 <!-- Chest X-ray -->
-<table width="100%" style="font-size: 9pt; margin-bottom: 10px; border-collapse: collapse;">
-    <tr>
-       <br>
-        <td colspan="2" style="text-align:left; font-weight: bold; font-size: 10pt;">
-            V. DIAGNOSTIC RESULTS: (Pls. include date of examination)
-        </td>
-    </tr>
-</table>
+
 <table width="100%" style="font-size: 10pt; margin-bottom: 10px; border-collapse: collapse;">
     <tr>
        <td style="width: 4%"></td>

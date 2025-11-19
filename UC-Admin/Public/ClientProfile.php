@@ -394,13 +394,13 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         </div>
 
                         <?php if ($clienttype === 'Freshman'): ?>
-                            <div class="tab" data-target="medical-history">
+                            <button id="med-history-freshman" class="modal-tab-btn" style="border: none;">
                                 <img class="cp-btn-img"
                                     src="assets/images/medicalhistory2.svg"
                                     data-active="assets/images/medicalhistory1.svg"
                                     data-inactive="assets/images/medicalhistory2.svg">
                                 Medical Records
-                            </div>
+                            </button>
                         <?php endif; ?>
 
                         <?php if ($clienttype === 'NewPersonnel') : ?>
@@ -414,7 +414,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <?php endif; ?>
 
 
-                        <button id="medrec-open-modal-btn" class="tab" style="border: none;">
+                        <button id="medrec-open-modal-btn" class="modal-tab-btn" style="border: none;">
                             <img class="cp-btn-img"
                                 src="assets/images/medcert2.svg"
                                 data-active="assets/images/medcert1.svg"
@@ -631,7 +631,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                                 visitTab.classList.add('active');
                                             }
 
-                                            document.querySelectorAll('#personal-info-div, #medical-history, #visit-history,#examFilesTab')
+                                            document.querySelectorAll('#personal-info-div, #visit-history,#examFilesTab')
                                                 .forEach(content => content.style.display = 'none');
 
                                             const visitSection = document.getElementById('visit-history');
@@ -1579,7 +1579,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         document.getElementById("close-edit-btn").addEventListener('click', function() {
                             document.getElementById("Edit-modal-overlay").style.display = "none";
                             document.body.style.overflow = "auto";
-                        })
+                        });
                         document.getElementById('backButton').addEventListener('click', function() {
                             document.querySelector('.info-grid').style.display = 'grid';
                             document.getElementById('personal-info-input').style.display = 'none';
@@ -1591,545 +1591,565 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 </div>
 
+                <div id="med-history-modal-overlay" class="med-history-modal-overlay">
+                    <div class="medical-history-content">
+                        <div class="med-history-modal-header">
+                            <h3>Medical History</h3>
+                            <span id="close-med-history-btn" onclick="backto(<?= htmlspecialchars($clientID) ?>)" class="close">&times;</span>
+                        </div>
+                        <div id="medical-history" class="medical-history-content-tables">
+                            <div class="medtabs">
+                                <div class="medtab active" data-target="medicaldentalhistory">Medical & Dental History</div>
+                                <div class="medtab" data-target="familymedicalhistory">Family Medical History</div>
+                                <div class="medtab" data-target="personalsocialhistory">Personal & Social History</div>
+                                <div class="medtab" data-target="menstrualHistory">Mentrual History</div>
+                                <div class="medtab" data-target="physicalExamination">Physical Examination</div>
+                                <div class="medtab" data-target="diagnosticResults">Diagnostic Results</div>
 
-                <div id="medical-history" style="display: none; height: 85%">
-                    <div class="medtabs">
-                        <div class="medtab active" data-target="medicaldentalhistory">Medical & Dental History</div>
-                        <div class="medtab" data-target="familymedicalhistory">Family Medical History</div>
-                        <div class="medtab" data-target="personalsocialhistory">Personal & Social History</div>
-                        <div class="medtab" data-target="menstrualHistory">Mentrual History</div>
-                        <div class="medtab" data-target="physicalExamination">Physical Examination</div>
-                        <div class="medtab" data-target="diagnosticResults">Diagnostic Results</div>
+                                <a href="manageclients.dbf/medrecords_generatepdf.php?ClientID=<?= $clientID ?>" target="_blank">
+                                    <button style="background-color: #397dda; color: white; border: none;" class="medtab" type="button">
+                                        Save as PDF
+                                    </button>
+                                </a>
 
-                        <a href="manageclients.dbf/medrecords_generatepdf.php?ClientID=<?= $clientID ?>" target="_blank">
-                            <button style="background-color: #3498db; color: white; border: none;" class="medtab" type="button">
-                                Save as PDF
-                            </button>
-                        </a>
+                            </div>
+                            <div class="medinfotable-div" id="medicaldentalhistory" style="display: block;">
+                                <table class="history-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Medical History Item</th>
+                                            <th>Response</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Known Illness</td>
+                                            <td><?= !empty($medicalHistory['KnownIllness']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($medicalHistory['KnownIllnessDetails']) ? htmlspecialchars($medicalHistory['KnownIllnessDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hospitalization</td>
+                                            <td><?= !empty($medicalHistory['Hospitalization']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($medicalHistory['HospitalizationDetails']) ? htmlspecialchars($medicalHistory['HospitalizationDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Allergies</td>
+                                            <td><?= !empty($medicalHistory['Allergies']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($medicalHistory['AllergiesDetails']) ? htmlspecialchars($medicalHistory['AllergiesDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Childhood Immunization</td>
+                                            <td><?= !empty($medicalHistory['ChildImmunization']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($medicalHistory['ChildImmunizationDetails']) ? htmlspecialchars($medicalHistory['ChildImmunizationDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Current Immunizations</td>
+                                            <td><?= !empty($medicalHistory['PresentImmunizations']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($medicalHistory['PresentImmunizationsDetails']) ? htmlspecialchars($medicalHistory['PresentImmunizationsDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Current Medications</td>
+                                            <td><?= !empty($medicalHistory['CurrentMedicines']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($medicalHistory['CurrentMedicinesDetails']) ? htmlspecialchars($medicalHistory['CurrentMedicinesDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dental Problems</td>
+                                            <td><?= !empty($medicalHistory['DentalProblems']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($medicalHistory['DentalProblemsDetails']) ? htmlspecialchars($medicalHistory['DentalProblemsDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Primary Physician</td>
+                                            <td><?= !empty($medicalHistory['PrimaryPhysician']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($medicalHistory['PrimaryPhysicianDetails']) ? htmlspecialchars($medicalHistory['PrimaryPhysicianDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                    </div>
-                    <div class="medinfotable-div" id="medicaldentalhistory" style="display: block;">
-                        <table class="history-table">
-                            <thead>
-                                <tr>
-                                    <th>Medical History Item</th>
-                                    <th>Response</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Known Illness</td>
-                                    <td><?= !empty($medicalHistory['KnownIllness']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($medicalHistory['KnownIllnessDetails']) ? htmlspecialchars($medicalHistory['KnownIllnessDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Hospitalization</td>
-                                    <td><?= !empty($medicalHistory['Hospitalization']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($medicalHistory['HospitalizationDetails']) ? htmlspecialchars($medicalHistory['HospitalizationDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Allergies</td>
-                                    <td><?= !empty($medicalHistory['Allergies']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($medicalHistory['AllergiesDetails']) ? htmlspecialchars($medicalHistory['AllergiesDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Childhood Immunization</td>
-                                    <td><?= !empty($medicalHistory['ChildImmunization']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($medicalHistory['ChildImmunizationDetails']) ? htmlspecialchars($medicalHistory['ChildImmunizationDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Current Immunizations</td>
-                                    <td><?= !empty($medicalHistory['PresentImmunizations']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($medicalHistory['PresentImmunizationsDetails']) ? htmlspecialchars($medicalHistory['PresentImmunizationsDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Current Medications</td>
-                                    <td><?= !empty($medicalHistory['CurrentMedicines']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($medicalHistory['CurrentMedicinesDetails']) ? htmlspecialchars($medicalHistory['CurrentMedicinesDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Dental Problems</td>
-                                    <td><?= !empty($medicalHistory['DentalProblems']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($medicalHistory['DentalProblemsDetails']) ? htmlspecialchars($medicalHistory['DentalProblemsDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Primary Physician</td>
-                                    <td><?= !empty($medicalHistory['PrimaryPhysician']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($medicalHistory['PrimaryPhysicianDetails']) ? htmlspecialchars($medicalHistory['PrimaryPhysicianDetails']) : 'N/A' ?></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="fammedinfotable-div" id="familymedicalhistory" style="display: none;">
-                        <table class="history-table">
-                            <thead>
-                                <tr>
-                                    <th>Family Illness</th>
-                                    <th>Response</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Allergy</td>
-                                    <td><?= !empty($familymedicalHistory['Allergy']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['AllergyDetails']) ? htmlspecialchars($familymedicalHistory['AllergyDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Asthma</td>
-                                    <td><?= !empty($familymedicalHistory['Asthma']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['AsthmaDetails']) ? htmlspecialchars($familymedicalHistory['AsthmaDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Tuberculosis</td>
-                                    <td><?= !empty($familymedicalHistory['Tuberculosis']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['TuberculosisDetails']) ? htmlspecialchars($familymedicalHistory['TuberculosisDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Hypertension</td>
-                                    <td><?= !empty($familymedicalHistory['Hypertension']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['HypertensionDetails']) ? htmlspecialchars($familymedicalHistory['HypertensionDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Blood Disease</td>
-                                    <td><?= !empty($familymedicalHistory['BloodDisease']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['BloodDiseaseDetails']) ? htmlspecialchars($familymedicalHistory['BloodDiseaseDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Stroke</td>
-                                    <td><?= !empty($familymedicalHistory['Stroke']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['StrokeDetails']) ? htmlspecialchars($familymedicalHistory['StrokeDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Diabetes</td>
-                                    <td><?= !empty($familymedicalHistory['Diabetes']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['DiabetesDetails']) ? htmlspecialchars($familymedicalHistory['DiabetesDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Cancer</td>
-                                    <td><?= !empty($familymedicalHistory['Cancer']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['CancerDetails']) ? htmlspecialchars($familymedicalHistory['CancerDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Liver Disease</td>
-                                    <td><?= !empty($familymedicalHistory['LiverDisease']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['LiverDiseaseDetails']) ? htmlspecialchars($familymedicalHistory['LiverDiseaseDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Kidney/Bladder</td>
-                                    <td><?= !empty($familymedicalHistory['KidneyBladder']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['KidneyBladderDetails']) ? htmlspecialchars($familymedicalHistory['KidneyBladderDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Blood Disorder</td>
-                                    <td><?= !empty($familymedicalHistory['BloodDisorder']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['BloodDisorderDetails']) ? htmlspecialchars($familymedicalHistory['BloodDisorderDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Epilepsy</td>
-                                    <td><?= !empty($familymedicalHistory['Epilepsy']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['EpilepsyDetails']) ? htmlspecialchars($familymedicalHistory['EpilepsyDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Mental Disorder</td>
-                                    <td><?= !empty($familymedicalHistory['MentalDisorder']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['MentalDisorderDetails']) ? htmlspecialchars($familymedicalHistory['MentalDisorderDetails']) : 'N/A' ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Other Illness</td>
-                                    <td><?= !empty($familymedicalHistory['OtherIllness']) ? '✅ Yes' : '❌ No' ?></td>
-                                    <td><?= !empty($familymedicalHistory['OtherIllnessDetails']) ? htmlspecialchars($familymedicalHistory['OtherIllnessDetails']) : 'N/A' ?></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            <div class="fammedinfotable-div" id="familymedicalhistory" style="display: none;">
+                                <table class="history-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Family Illness</th>
+                                            <th>Response</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Allergy</td>
+                                            <td><?= !empty($familymedicalHistory['Allergy']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['AllergyDetails']) ? htmlspecialchars($familymedicalHistory['AllergyDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Asthma</td>
+                                            <td><?= !empty($familymedicalHistory['Asthma']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['AsthmaDetails']) ? htmlspecialchars($familymedicalHistory['AsthmaDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tuberculosis</td>
+                                            <td><?= !empty($familymedicalHistory['Tuberculosis']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['TuberculosisDetails']) ? htmlspecialchars($familymedicalHistory['TuberculosisDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hypertension</td>
+                                            <td><?= !empty($familymedicalHistory['Hypertension']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['HypertensionDetails']) ? htmlspecialchars($familymedicalHistory['HypertensionDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Blood Disease</td>
+                                            <td><?= !empty($familymedicalHistory['BloodDisease']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['BloodDiseaseDetails']) ? htmlspecialchars($familymedicalHistory['BloodDiseaseDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Stroke</td>
+                                            <td><?= !empty($familymedicalHistory['Stroke']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['StrokeDetails']) ? htmlspecialchars($familymedicalHistory['StrokeDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Diabetes</td>
+                                            <td><?= !empty($familymedicalHistory['Diabetes']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['DiabetesDetails']) ? htmlspecialchars($familymedicalHistory['DiabetesDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cancer</td>
+                                            <td><?= !empty($familymedicalHistory['Cancer']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['CancerDetails']) ? htmlspecialchars($familymedicalHistory['CancerDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Liver Disease</td>
+                                            <td><?= !empty($familymedicalHistory['LiverDisease']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['LiverDiseaseDetails']) ? htmlspecialchars($familymedicalHistory['LiverDiseaseDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kidney/Bladder</td>
+                                            <td><?= !empty($familymedicalHistory['KidneyBladder']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['KidneyBladderDetails']) ? htmlspecialchars($familymedicalHistory['KidneyBladderDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Blood Disorder</td>
+                                            <td><?= !empty($familymedicalHistory['BloodDisorder']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['BloodDisorderDetails']) ? htmlspecialchars($familymedicalHistory['BloodDisorderDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Epilepsy</td>
+                                            <td><?= !empty($familymedicalHistory['Epilepsy']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['EpilepsyDetails']) ? htmlspecialchars($familymedicalHistory['EpilepsyDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mental Disorder</td>
+                                            <td><?= !empty($familymedicalHistory['MentalDisorder']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['MentalDisorderDetails']) ? htmlspecialchars($familymedicalHistory['MentalDisorderDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Other Illness</td>
+                                            <td><?= !empty($familymedicalHistory['OtherIllness']) ? '✅ Yes' : '❌ No' ?></td>
+                                            <td><?= !empty($familymedicalHistory['OtherIllnessDetails']) ? htmlspecialchars($familymedicalHistory['OtherIllnessDetails']) : 'N/A' ?></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
 
-                    <div class="medinfotable-div" id="personalsocialhistory" style="display: none;">
-                        <table id="social-history-table" class="history-table">
-                            <tr>
-                                <th>Social History</th>
-                                <th>Status</th>
-                                <th>Description</th>
-                            </tr>
-                            <tr>
-                                <td>Alcohol Intake</td>
-                                <td>
-                                    <?php
-                                    $alcohol = $socialHistoryData['AlcoholIntake'] ?? 'no';
-                                    echo ($alcohol === 'no') ? '❌ No' : (($alcohol === 'former') ? '⏱ Former' : '✅ Yes');
-                                    ?>
-                                </td>
-                                <td>
-                                    <?php
-                                    echo !empty($socialHistoryData['AlcoholDetails']) ? htmlspecialchars($socialHistoryData['AlcoholDetails']) : '—';
-                                    ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Tobacco Use</td>
-                                <td>
-                                    <?php
-                                    $tobacco = $socialHistoryData['TobaccoUse'] ?? 'no';
-                                    echo ($tobacco === 'no') ? '❌ No' : (($tobacco === 'former') ? '⏱ Former' : '✅ Yes');
-                                    ?>
-                                </td>
-                                <td>
-                                    <?php
-                                    echo !empty($socialHistoryData['TobaccoDetails']) ? htmlspecialchars($socialHistoryData['TobaccoDetails']) : '—';
-                                    ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Illicit Drug Use</td>
-                                <td>
-                                    <?php
-                                    $drugs = $socialHistoryData['DrugUse'] ?? 'no';
-                                    echo ($drugs === 'no') ? '❌ No' : (($drugs === 'former') ? '⏱ Former' : '✅ Yes');
-                                    ?>
-                                </td>
-                                <td>
-                                    <?php
-                                    echo !empty($socialHistoryData['DrugDetails']) ? htmlspecialchars($socialHistoryData['DrugDetails']) : '—';
-                                    ?>
-                                </td>
-                            </tr>
-                        </table>
-
-                    </div>
-                    <div class="medinfotable-div" id="menstrualHistory" style="display: none;">
-                        <div class="mentrualhistorywrapper">
-                            <table class="history-table">
-                                <tr>
-                                    <th colspan="2">Menstrual History</th>
-                                </tr>
-                                <tr>
-                                    <td><strong>Last Period</strong></td>
-                                    <td><?= htmlspecialchars($data['LastPeriod'] ?? 'N/A') ?></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Regularity</strong></td>
-                                    <td><?= ucfirst(htmlspecialchars($data['Regularity'] ?? 'N/A')) ?></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Duration</strong></td>
-                                    <td><?= htmlspecialchars($data['Duration'] ?? 'N/A') ?></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>No. of pads/day</strong></td>
-                                    <td><?= htmlspecialchars($data['PadsPerDay'] ?? 'N/A') ?></td>
-                                </tr>
-
-                                <tr>
-                                    <th colspan="2">Dysmenorrhea</th>
-                                </tr>
-                                <tr>
-                                    <td><strong>History of Dysmenorrhea</strong></td>
-                                    <td><?= ucfirst(htmlspecialchars($data['Dysmenorrhea'] ?? 'N/A')) ?></td>
-                                </tr>
-                                <?php if (($data['Dysmenorrhea'] ?? '') == 'yes'): ?>
+                            <div class="medinfotable-div" id="personalsocialhistory" style="display: none;">
+                                <table id="social-history-table" class="history-table">
                                     <tr>
-                                        <td><strong>Severity</strong></td>
-                                        <td><?= ucfirst(htmlspecialchars($data['DysmenorrheaSeverity'] ?? 'N/A')) ?></td>
+                                        <th>Social History</th>
+                                        <th>Status</th>
+                                        <th>Description</th>
                                     </tr>
-                                <?php endif; ?>
-                                <tr>
-                                    <td><strong>Last OB-Gyne Checkup</strong></td>
-                                    <td><?= htmlspecialchars($data['LastOBVisit'] ?? 'N/A') ?></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Abnormal Bleeding</strong></td>
-                                    <td><?= ucfirst(htmlspecialchars($data['AbnormalBleeding'] ?? 'N/A')) ?></td>
-                                </tr>
+                                    <tr>
+                                        <td>Alcohol Intake</td>
+                                        <td>
+                                            <?php
+                                            $alcohol = $socialHistoryData['AlcoholIntake'] ?? 'no';
+                                            echo ($alcohol === 'no') ? '❌ No' : (($alcohol === 'former') ? '⏱ Former' : '✅ Yes');
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            echo !empty($socialHistoryData['AlcoholDetails']) ? htmlspecialchars($socialHistoryData['AlcoholDetails']) : '—';
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tobacco Use</td>
+                                        <td>
+                                            <?php
+                                            $tobacco = $socialHistoryData['TobaccoUse'] ?? 'no';
+                                            echo ($tobacco === 'no') ? '❌ No' : (($tobacco === 'former') ? '⏱ Former' : '✅ Yes');
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            echo !empty($socialHistoryData['TobaccoDetails']) ? htmlspecialchars($socialHistoryData['TobaccoDetails']) : '—';
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Illicit Drug Use</td>
+                                        <td>
+                                            <?php
+                                            $drugs = $socialHistoryData['DrugUse'] ?? 'no';
+                                            echo ($drugs === 'no') ? '❌ No' : (($drugs === 'former') ? '⏱ Former' : '✅ Yes');
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            echo !empty($socialHistoryData['DrugDetails']) ? htmlspecialchars($socialHistoryData['DrugDetails']) : '—';
+                                            ?>
+                                        </td>
+                                    </tr>
+                                </table>
 
-                                <tr>
-                                    <th colspan="2">Pregnancy</th>
-                                </tr>
-                                <tr>
-                                    <td><strong>Previous Pregnancy</strong></td>
-                                    <td><?= ucfirst(htmlspecialchars($data['PreviousPregnancy'] ?? 'N/A')) ?></td>
-                                </tr>
-                                <?php if (($data['PreviousPregnancy'] ?? '') == 'yes'): ?>
-                                    <tr>
-                                        <td><strong>Pregnancy Details</strong></td>
-                                        <td><?= htmlspecialchars($data['PregnancyDetails'] ?? 'N/A') ?></td>
-                                    </tr>
-                                <?php endif; ?>
-                                <tr>
-                                    <td><strong>Has Children</strong></td>
-                                    <td><?= ucfirst(htmlspecialchars($data['HasChildren'] ?? 'N/A')) ?></td>
-                                </tr>
-                                <?php if (($data['HasChildren'] ?? '') == 'yes'): ?>
-                                    <tr>
-                                        <td><strong>Number of Children</strong></td>
-                                        <td><?= htmlspecialchars($data['ChildrenCount'] ?? 'N/A') ?></td>
-                                    </tr>
-                                <?php endif; ?>
-                            </table>
+                            </div>
+                            <div class="medinfotable-div" id="menstrualHistory" style="display: none;">
+                                <div class="mentrualhistorywrapper">
+                                    <table class="history-table">
+                                        <tr>
+                                            <th colspan="2">Menstrual History</th>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Last Period</strong></td>
+                                            <td><?= htmlspecialchars($data['LastPeriod'] ?? 'N/A') ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Regularity</strong></td>
+                                            <td><?= ucfirst(htmlspecialchars($data['Regularity'] ?? 'N/A')) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Duration</strong></td>
+                                            <td><?= htmlspecialchars($data['Duration'] ?? 'N/A') ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>No. of pads/day</strong></td>
+                                            <td><?= htmlspecialchars($data['PadsPerDay'] ?? 'N/A') ?></td>
+                                        </tr>
+
+                                        <tr>
+                                            <th colspan="2">Dysmenorrhea</th>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>History of Dysmenorrhea</strong></td>
+                                            <td><?= ucfirst(htmlspecialchars($data['Dysmenorrhea'] ?? 'N/A')) ?></td>
+                                        </tr>
+                                        <?php if (($data['Dysmenorrhea'] ?? '') == 'yes'): ?>
+                                            <tr>
+                                                <td><strong>Severity</strong></td>
+                                                <td><?= ucfirst(htmlspecialchars($data['DysmenorrheaSeverity'] ?? 'N/A')) ?></td>
+                                            </tr>
+                                        <?php endif; ?>
+                                        <tr>
+                                            <td><strong>Last OB-Gyne Checkup</strong></td>
+                                            <td><?= htmlspecialchars($data['LastOBVisit'] ?? 'N/A') ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Abnormal Bleeding</strong></td>
+                                            <td><?= ucfirst(htmlspecialchars($data['AbnormalBleeding'] ?? 'N/A')) ?></td>
+                                        </tr>
+
+                                        <tr>
+                                            <th colspan="2">Pregnancy</th>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Previous Pregnancy</strong></td>
+                                            <td><?= ucfirst(htmlspecialchars($data['PreviousPregnancy'] ?? 'N/A')) ?></td>
+                                        </tr>
+                                        <?php if (($data['PreviousPregnancy'] ?? '') == 'yes'): ?>
+                                            <tr>
+                                                <td><strong>Pregnancy Details</strong></td>
+                                                <td><?= htmlspecialchars($data['PregnancyDetails'] ?? 'N/A') ?></td>
+                                            </tr>
+                                        <?php endif; ?>
+                                        <tr>
+                                            <td><strong>Has Children</strong></td>
+                                            <td><?= ucfirst(htmlspecialchars($data['HasChildren'] ?? 'N/A')) ?></td>
+                                        </tr>
+                                        <?php if (($data['HasChildren'] ?? '') == 'yes'): ?>
+                                            <tr>
+                                                <td><strong>Number of Children</strong></td>
+                                                <td><?= htmlspecialchars($data['ChildrenCount'] ?? 'N/A') ?></td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="medinfotable-div" id="physicalExamination" style="display: none;">
+                                <form id="phy-exam-form" action="manageclients.dbf/submit-phy-exam.php" method="POST">
+                                    <table class="physical-exam-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Height (m)</th>
+                                                <th>Weight (kg)</th>
+                                                <th>BMI (kg/m²)</th>
+                                                <th>BP (mmHg)</th>
+                                                <th>HR (bpm)</th>
+                                                <th>RR (cpm)</th>
+                                                <th>Temp (°C)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="text" class="custom-input" name="height" id="height" value="<?= htmlspecialchars($physicalExam['Height'] ?? '') ?>" /></td>
+                                                <td><input type="text" class="custom-input" name="weight" id="weight" value="<?= htmlspecialchars($physicalExam['Weight'] ?? '') ?>" /></td>
+                                                <td><input type="text" class="custom-input" name="bmi" id="bmi" value="<?= htmlspecialchars($physicalExam['BMI'] ?? '') ?>" /></td>
+                                                <td><input type="text" class="custom-input" name="bp" id="bp" value="<?= htmlspecialchars($physicalExam['BP'] ?? '') ?>" /></td>
+                                                <td><input type="text" class="custom-input" name="hr" id="hr" value="<?= htmlspecialchars($physicalExam['HR'] ?? '') ?>" /></td>
+                                                <td><input type="text" class="custom-input" name="rr" id="rr" value="<?= htmlspecialchars($physicalExam['RR'] ?? '') ?>" /></td>
+                                                <td><input type="text" class="custom-input" name="temp" id="temp" value="<?= htmlspecialchars($physicalExam['Temp'] ?? '') ?>" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="physical-exam-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Examination Area</th>
+                                                <th>Normal</th>
+                                                <th>Findings</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Gen. Appearance and Skin</td>
+                                                <td>
+                                                    <select name="skin_normal">
+                                                        <option value="1" <?= (isset($physicalExam['GenAppearanceAndSkinNormal']) && $physicalExam['GenAppearanceAndSkinNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
+                                                        <option value="0" <?= (isset($physicalExam['GenAppearanceAndSkinNormal']) && $physicalExam['GenAppearanceAndSkinNormal'] == '0') ? 'selected' : '' ?>>No</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="text" class="custom-input" name="skin_findings" value="<?= htmlspecialchars($physicalExam['GenAppearanceAndSkinFindings'] ?? '') ?>" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Head and Neck</td>
+                                                <td>
+                                                    <select name="head_normal">
+                                                        <option value="1" <?= (isset($physicalExam['HeadAndNeckNormal']) && $physicalExam['HeadAndNeckNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
+                                                        <option value="0" <?= (isset($physicalExam['HeadAndNeckNormal']) && $physicalExam['HeadAndNeckNormal'] == '0') ? 'selected' : '' ?>>No</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="text" class="custom-input" name="head_findings" value="<?= htmlspecialchars($physicalExam['HeadAndNeckFindings'] ?? '') ?>" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Chest and Back</td>
+                                                <td>
+                                                    <select name="chest_normal">
+                                                        <option value="1" <?= (isset($physicalExam['ChestAndBackNormal']) && $physicalExam['ChestAndBackNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
+                                                        <option value="0" <?= (isset($physicalExam['ChestAndBackNormal']) && $physicalExam['ChestAndBackNormal'] == '0') ? 'selected' : '' ?>>No</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="text" class="custom-input" name="chest_findings" value="<?= htmlspecialchars($physicalExam['ChestAndBackFindings'] ?? '') ?>" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Abdomen</td>
+                                                <td>
+                                                    <select name="abdomen_normal">
+                                                        <option value="1" <?= (isset($physicalExam['AbdomenNormal']) && $physicalExam['AbdomenNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
+                                                        <option value="0" <?= (isset($physicalExam['AbdomenNormal']) && $physicalExam['AbdomenNormal'] == '0') ? 'selected' : '' ?>>No</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="text" class="custom-input" name="abdomen_findings" value="<?= htmlspecialchars($physicalExam['AbdomenFindings'] ?? '') ?>" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Extremities</td>
+                                                <td>
+                                                    <select name="extremities_normal">
+                                                        <option value="1" <?= (isset($physicalExam['ExtremitiesNormal']) && $physicalExam['ExtremitiesNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
+                                                        <option value="0" <?= (isset($physicalExam['ExtremitiesNormal']) && $physicalExam['ExtremitiesNormal'] == '0') ? 'selected' : '' ?>>No</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="text" class="custom-input" name="extremities_findings" value="<?= htmlspecialchars($physicalExam['ExtremitiesFindings'] ?? '') ?>" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Others</td>
+                                                <td>
+                                                    <select name="others_normal">
+                                                        <option value="1" <?= (isset($physicalExam['OthersNormal']) && $physicalExam['OthersNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
+                                                        <option value="0" <?= (isset($physicalExam['OthersNormal']) && $physicalExam['OthersNormal'] == '0') ? 'selected' : '' ?>>No</option>
+                                                    </select>
+                                                </td>
+                                                <td><input type="text" class="custom-input" name="others_findings" value="<?= htmlspecialchars($physicalExam['OthersFindings'] ?? '') ?>" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <input type="hidden" name="client_id" value="<?= htmlspecialchars($clientID) ?>" />
+                                    <button class="buttonsdp" type="button" onclick="submitForm()">Submit Exam</button>
+                                </form>
+
+                            </div>
+
+                            <div class="medinfotable-div" id="diagnosticResults" style="display: none;">
+                                <div class="form-container">
+                                    <h1>Medical Diagnostic Form</h1>
+
+                                    <form id="diagnosticform" method="POST" action="manageclients.dbf/submit_diagnostic.php">
+                                        <h2>V. Diagnostic Results</h2>
+                                        <div class="form-section">
+                                            <div class="form-group">
+                                                <label>Date of Examination:</label>
+                                                <input type="date" name="exam_date" value="<?= $diagnostic['ExamDate'] ?? '' ?>">
+                                            </div>
+
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="chest_xray" <?= !empty($diagnostic['ChestXrayPerformed']) ? 'checked' : '' ?>> Chest X-ray performed
+                                                </label>
+                                                <div class="form-group">
+                                                    <label>Findings:</label>
+                                                    <textarea class="custom-textarea" name="xray_findings"><?= htmlspecialchars($diagnostic['XrayFindings'] ?? '') ?></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <h2>VI. Impression</h2>
+                                        <div class="form-section">
+                                            <div class="form-group">
+                                                <textarea class="custom-textarea" name="impression"><?= htmlspecialchars($diagnostic['Impression'] ?? '') ?></textarea>
+                                            </div>
+                                        </div>
+
+                                        <h2>VII. Plan</h2>
+                                        <div class="form-section">
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="discussions" <?= !empty($diagnostic['Discussions']) ? 'checked' : '' ?>> Discussions with patient
+                                                </label>
+                                                <div class="form-group">
+                                                    <textarea class="custom-textarea" name="discussion_details"><?= htmlspecialchars($diagnostic['DiscussionDetails'] ?? '') ?></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="home_medication" <?= !empty($diagnostic['HomeMedication']) ? 'checked' : '' ?>> Home medication prescribed
+                                                </label>
+                                                <div class="form-group">
+                                                    <textarea class="custom-textarea" name="medication_details"><?= htmlspecialchars($diagnostic['MedicationDetails'] ?? '') ?></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="home_instructions" <?= !empty($diagnostic['HomeInstructions']) ? 'checked' : '' ?>> Home instructions given
+                                                </label>
+                                                <div class="form-group">
+                                                    <textarea class="custom-textarea" name="instruction_details"><?= htmlspecialchars($diagnostic['InstructionDetails'] ?? '') ?></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-section">
+                                            <div class="form-group">
+                                                <label>Abbreviations Used:</label>
+                                                <input type="text" class="custom-input" name="abbreviations" value="<?= htmlspecialchars($diagnostic['AbbreviationsUsed'] ?? '') ?>">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>F-f (Date):</label>
+                                                <input type="date" name="f1_date" value="<?= $diagnostic['F1Date'] ?? '' ?>">
+                                            </div>
+
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" name="med_cert_issued" <?= !empty($diagnostic['MedicalCertIssued']) ? 'checked' : '' ?>> Medical Certificate issued
+                                                </label>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Referred to:</label>
+                                                <input type="text" class="custom-input" name="referred_to" value="<?= htmlspecialchars($diagnostic['ReferredTo'] ?? '') ?>">
+                                            </div>
+                                        </div>
+
+                                        <h2>Recommendation</h2>
+                                        <div class="form-section">
+                                            <div class="checkbox-group">
+                                                <label class="checkbox-label">
+                                                    <input type="radio" name="recommendation" value="fit" <?= ($diagnostic['Recommendation'] ?? '') === 'fit' ? 'checked' : '' ?>> Fit to Work/Enroll
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="radio" name="recommendation" value="fit_sports" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_sports' ? 'checked' : '' ?>> Fit to Participate in Sports
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="radio" name="recommendation" value="fit_enroll" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_enroll' ? 'checked' : '' ?>> Fit to Enroll but requires further evaluation
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="radio" name="recommendation" value="fit_work_eval" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_work_eval' ? 'checked' : '' ?>> Fit to Work but requires further evaluation
+                                                </label>
+                                                <label class="checkbox-label">
+                                                    <input type="radio" name="recommendation" value="fit_sports_eval" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_sports_eval' ? 'checked' : '' ?>> Fit to Participate in Sports but requires further evaluation
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="signature-section">
+                                            <div class="form-group">
+                                                <label>Physician's Name:</label>
+                                                <input type="text" class="custom-input" name="physician_name" value="<?= htmlspecialchars($diagnostic['PhysicianName'] ?? '') ?>">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>License Number:</label>
+                                                <input type="text" class="custom-input" name="license_no" value="<?= htmlspecialchars($diagnostic['LicenseNo'] ?? '') ?>">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Date:</label>
+                                                <input type="date" class="custom-input" name="signature_date" value="<?= $diagnostic['SignatureDate'] ?? '' ?>">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Institution:</label>
+                                                <input type="text" class="custom-input" name="institution" value="LAGUNA STATE POLYTECHNIC UNIVERSITY, UNIVERSITY CLINIC" readonly>
+                                            </div>
+                                        </div>
+
+                                        <input type="hidden" name="client_id" value="<?= htmlspecialchars($clientID) ?>" />
+                                        <button class="buttonsdp" type="submit">Submit Form</button>
+                                    </form>
+                                    <script>
+                                        $('#diagnosticform').on('submit', function(e) {
+                                            e.preventDefault();
+                                            $.ajax({
+                                                type: 'POST',
+                                                url: $(this).attr('action'),
+                                                data: $(this).serialize(),
+                                                dataType: 'json',
+                                                success: function(response) {
+                                                    if (response.status === 'success') {
+                                                        alert(response.message);
+
+                                                    } else {
+                                                        alert('Error: ' + response.message);
+                                                    }
+                                                },
+                                                error: function(xhr, status, error) {
+                                                    console.error('AJAX Error:', error);
+                                                    alert('An error occurred while submitting the form.');
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="medinfotable-div" id="physicalExamination" style="display: none;">
-                        <form id="phy-exam-form" action="manageclients.dbf/submit-phy-exam.php" method="POST">
-                            <table class="physical-exam-table">
-                                <thead>
-                                    <tr>
-                                        <th>Height (m)</th>
-                                        <th>Weight (kg)</th>
-                                        <th>BMI (kg/m²)</th>
-                                        <th>BP (mmHg)</th>
-                                        <th>HR (bpm)</th>
-                                        <th>RR (cpm)</th>
-                                        <th>Temp (°C)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><input type="text" class="custom-input" name="height" id="height" value="<?= htmlspecialchars($physicalExam['Height'] ?? '') ?>" /></td>
-                                        <td><input type="text" class="custom-input" name="weight" id="weight" value="<?= htmlspecialchars($physicalExam['Weight'] ?? '') ?>" /></td>
-                                        <td><input type="text" class="custom-input" name="bmi" id="bmi" value="<?= htmlspecialchars($physicalExam['BMI'] ?? '') ?>" /></td>
-                                        <td><input type="text" class="custom-input" name="bp" id="bp" value="<?= htmlspecialchars($physicalExam['BP'] ?? '') ?>" /></td>
-                                        <td><input type="text" class="custom-input" name="hr" id="hr" value="<?= htmlspecialchars($physicalExam['HR'] ?? '') ?>" /></td>
-                                        <td><input type="text" class="custom-input" name="rr" id="rr" value="<?= htmlspecialchars($physicalExam['RR'] ?? '') ?>" /></td>
-                                        <td><input type="text" class="custom-input" name="temp" id="temp" value="<?= htmlspecialchars($physicalExam['Temp'] ?? '') ?>" /></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <table class="physical-exam-table">
-                                <thead>
-                                    <tr>
-                                        <th>Examination Area</th>
-                                        <th>Normal</th>
-                                        <th>Findings</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Gen. Appearance and Skin</td>
-                                        <td>
-                                            <select name="skin_normal">
-                                                <option value="1" <?= (isset($physicalExam['GenAppearanceAndSkinNormal']) && $physicalExam['GenAppearanceAndSkinNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
-                                                <option value="0" <?= (isset($physicalExam['GenAppearanceAndSkinNormal']) && $physicalExam['GenAppearanceAndSkinNormal'] == '0') ? 'selected' : '' ?>>No</option>
-                                            </select>
-                                        </td>
-                                        <td><input type="text" class="custom-input" name="skin_findings" value="<?= htmlspecialchars($physicalExam['GenAppearanceAndSkinFindings'] ?? '') ?>" /></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Head and Neck</td>
-                                        <td>
-                                            <select name="head_normal">
-                                                <option value="1" <?= (isset($physicalExam['HeadAndNeckNormal']) && $physicalExam['HeadAndNeckNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
-                                                <option value="0" <?= (isset($physicalExam['HeadAndNeckNormal']) && $physicalExam['HeadAndNeckNormal'] == '0') ? 'selected' : '' ?>>No</option>
-                                            </select>
-                                        </td>
-                                        <td><input type="text" class="custom-input" name="head_findings" value="<?= htmlspecialchars($physicalExam['HeadAndNeckFindings'] ?? '') ?>" /></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Chest and Back</td>
-                                        <td>
-                                            <select name="chest_normal">
-                                                <option value="1" <?= (isset($physicalExam['ChestAndBackNormal']) && $physicalExam['ChestAndBackNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
-                                                <option value="0" <?= (isset($physicalExam['ChestAndBackNormal']) && $physicalExam['ChestAndBackNormal'] == '0') ? 'selected' : '' ?>>No</option>
-                                            </select>
-                                        </td>
-                                        <td><input type="text" class="custom-input" name="chest_findings" value="<?= htmlspecialchars($physicalExam['ChestAndBackFindings'] ?? '') ?>" /></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Abdomen</td>
-                                        <td>
-                                            <select name="abdomen_normal">
-                                                <option value="1" <?= (isset($physicalExam['AbdomenNormal']) && $physicalExam['AbdomenNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
-                                                <option value="0" <?= (isset($physicalExam['AbdomenNormal']) && $physicalExam['AbdomenNormal'] == '0') ? 'selected' : '' ?>>No</option>
-                                            </select>
-                                        </td>
-                                        <td><input type="text" class="custom-input" name="abdomen_findings" value="<?= htmlspecialchars($physicalExam['AbdomenFindings'] ?? '') ?>" /></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Extremities</td>
-                                        <td>
-                                            <select name="extremities_normal">
-                                                <option value="1" <?= (isset($physicalExam['ExtremitiesNormal']) && $physicalExam['ExtremitiesNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
-                                                <option value="0" <?= (isset($physicalExam['ExtremitiesNormal']) && $physicalExam['ExtremitiesNormal'] == '0') ? 'selected' : '' ?>>No</option>
-                                            </select>
-                                        </td>
-                                        <td><input type="text" class="custom-input" name="extremities_findings" value="<?= htmlspecialchars($physicalExam['ExtremitiesFindings'] ?? '') ?>" /></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Others</td>
-                                        <td>
-                                            <select name="others_normal">
-                                                <option value="1" <?= (isset($physicalExam['OthersNormal']) && $physicalExam['OthersNormal'] == '1') ? 'selected' : '' ?>>Yes</option>
-                                                <option value="0" <?= (isset($physicalExam['OthersNormal']) && $physicalExam['OthersNormal'] == '0') ? 'selected' : '' ?>>No</option>
-                                            </select>
-                                        </td>
-                                        <td><input type="text" class="custom-input" name="others_findings" value="<?= htmlspecialchars($physicalExam['OthersFindings'] ?? '') ?>" /></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <input type="hidden" name="client_id" value="<?= htmlspecialchars($clientID) ?>" />
-                            <button class="buttonsdp" type="button" onclick="submitForm()">Submit Exam</button>
-                        </form>
-
-                    </div>
-
-                    <div class="medinfotable-div" id="diagnosticResults" style="display: none;">
-                        <div class="form-container">
-                            <h1>Medical Diagnostic Form</h1>
-
-                            <form id="diagnosticform" method="POST" action="manageclients.dbf/submit_diagnostic.php">
-                                <h2>V. Diagnostic Results</h2>
-                                <div class="form-section">
-                                    <div class="form-group">
-                                        <label>Date of Examination:</label>
-                                        <input type="date" name="exam_date" value="<?= $diagnostic['ExamDate'] ?? '' ?>">
-                                    </div>
-
-                                    <div class="checkbox-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="chest_xray" <?= !empty($diagnostic['ChestXrayPerformed']) ? 'checked' : '' ?>> Chest X-ray performed
-                                        </label>
-                                        <div class="form-group">
-                                            <label>Findings:</label>
-                                            <textarea class="custom-textarea" name="xray_findings"><?= htmlspecialchars($diagnostic['XrayFindings'] ?? '') ?></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h2>VI. Impression</h2>
-                                <div class="form-section">
-                                    <div class="form-group">
-                                        <textarea class="custom-textarea" name="impression"><?= htmlspecialchars($diagnostic['Impression'] ?? '') ?></textarea>
-                                    </div>
-                                </div>
-
-                                <h2>VII. Plan</h2>
-                                <div class="form-section">
-                                    <div class="checkbox-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="discussions" <?= !empty($diagnostic['Discussions']) ? 'checked' : '' ?>> Discussions with patient
-                                        </label>
-                                        <div class="form-group">
-                                            <textarea class="custom-textarea" name="discussion_details"><?= htmlspecialchars($diagnostic['DiscussionDetails'] ?? '') ?></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="checkbox-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="home_medication" <?= !empty($diagnostic['HomeMedication']) ? 'checked' : '' ?>> Home medication prescribed
-                                        </label>
-                                        <div class="form-group">
-                                            <textarea class="custom-textarea" name="medication_details"><?= htmlspecialchars($diagnostic['MedicationDetails'] ?? '') ?></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="checkbox-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="home_instructions" <?= !empty($diagnostic['HomeInstructions']) ? 'checked' : '' ?>> Home instructions given
-                                        </label>
-                                        <div class="form-group">
-                                            <textarea class="custom-textarea" name="instruction_details"><?= htmlspecialchars($diagnostic['InstructionDetails'] ?? '') ?></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-section">
-                                    <div class="form-group">
-                                        <label>Abbreviations Used:</label>
-                                        <input type="text" class="custom-input" name="abbreviations" value="<?= htmlspecialchars($diagnostic['AbbreviationsUsed'] ?? '') ?>">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>F-f (Date):</label>
-                                        <input type="date" name="f1_date" value="<?= $diagnostic['F1Date'] ?? '' ?>">
-                                    </div>
-
-                                    <div class="checkbox-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" name="med_cert_issued" <?= !empty($diagnostic['MedicalCertIssued']) ? 'checked' : '' ?>> Medical Certificate issued
-                                        </label>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Referred to:</label>
-                                        <input type="text" class="custom-input" name="referred_to" value="<?= htmlspecialchars($diagnostic['ReferredTo'] ?? '') ?>">
-                                    </div>
-                                </div>
-
-                                <h2>Recommendation</h2>
-                                <div class="form-section">
-                                    <div class="checkbox-group">
-                                        <label class="checkbox-label">
-                                            <input type="radio" name="recommendation" value="fit" <?= ($diagnostic['Recommendation'] ?? '') === 'fit' ? 'checked' : '' ?>> Fit to Work/Enroll
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="radio" name="recommendation" value="fit_sports" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_sports' ? 'checked' : '' ?>> Fit to Participate in Sports
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="radio" name="recommendation" value="fit_enroll" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_enroll' ? 'checked' : '' ?>> Fit to Enroll but requires further evaluation
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="radio" name="recommendation" value="fit_work_eval" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_work_eval' ? 'checked' : '' ?>> Fit to Work but requires further evaluation
-                                        </label>
-                                        <label class="checkbox-label">
-                                            <input type="radio" name="recommendation" value="fit_sports_eval" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_sports_eval' ? 'checked' : '' ?>> Fit to Participate in Sports but requires further evaluation
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="signature-section">
-                                    <div class="form-group">
-                                        <label>Physician's Name:</label>
-                                        <input type="text" class="custom-input" name="physician_name" value="<?= htmlspecialchars($diagnostic['PhysicianName'] ?? '') ?>">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>License Number:</label>
-                                        <input type="text" class="custom-input" name="license_no" value="<?= htmlspecialchars($diagnostic['LicenseNo'] ?? '') ?>">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Date:</label>
-                                        <input type="date" class="custom-input" name="signature_date" value="<?= $diagnostic['SignatureDate'] ?? '' ?>">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Institution:</label>
-                                        <input type="text" class="custom-input" name="institution" value="LAGUNA STATE POLYTECHNIC UNIVERSITY, UNIVERSITY CLINIC" readonly>
-                                    </div>
-                                </div>
-
-                                <input type="hidden" name="client_id" value="<?= htmlspecialchars($clientID) ?>" />
-                                <button class="buttonsdp" type="submit">Submit Form</button>
-                            </form>
-                            <script>
-                                $('#diagnosticform').on('submit', function(e) {
-                                    e.preventDefault();
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: $(this).attr('action'),
-                                        data: $(this).serialize(),
-                                        dataType: 'json',
-                                        success: function(response) {
-                                            if (response.status === 'success') {
-                                                alert(response.message);
-
-                                            } else {
-                                                alert('Error: ' + response.message);
-                                            }
-                                        },
-                                        error: function(xhr, status, error) {
-                                            console.error('AJAX Error:', error);
-                                            alert('An error occurred while submitting the form.');
-                                        }
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-
+                    <script>
+                        document
+                            .getElementById("med-history-freshman")
+                            .addEventListener("click", function() {
+                                document.getElementById("med-history-modal-overlay").style.display = "flex";
+                                document.body.style.overflow = "hidden";
+                            });
+                        document
+                            .getElementById("close-med-history-btn")
+                            .addEventListener("click", function() {
+                                document.getElementById("med-history-modal-overlay").style.display = "none";
+                                document.body.style.overflow = "auto";
+                            });
+                    </script>
                 </div>
                 <div id="np_medical-history"
                     style="display: <?php echo ($clienttype === 'NewPersonnel') ? 'flex' : 'none'; ?>; height: 85%">

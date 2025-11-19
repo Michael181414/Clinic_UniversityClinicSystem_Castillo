@@ -10,20 +10,33 @@ function getCheckboxValue($name)
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $client_id = $_POST['client_id'] ?? null;
 
-    $getHistory = $pdo->prepare("SELECT historyID FROM history WHERE ClientID = ? AND progress = 'inprogress' Order By historyID Desc LIMIT 1");
+    // Get latest history ID (no progress filter)
+    $getHistory = $pdo->prepare("
+        SELECT historyID 
+        FROM history 
+        WHERE ClientID = ? 
+        ORDER BY historyID DESC 
+        LIMIT 1
+    ");
     $getHistory->execute([$client_id]);
     $historyID = $getHistory->fetchColumn();
 
+    // Create new history if none exists
     if (!$historyID) {
-        $insertHistory = $pdo->prepare("INSERT INTO history (ClientID, actionDate, progress) VALUES (?, NOW(), 'inprogress')");
+        $insertHistory = $pdo->prepare("
+            INSERT INTO history (ClientID, actionDate)
+            VALUES (?, NOW())
+        ");
         $insertHistory->execute([$client_id]);
         $historyID = $pdo->lastInsertId();
     }
 
     $history_id = $historyID;
 
+    // Collect POST values
     $exam_date           = $_POST['exam_date'] ?? null;
     $chest_xray          = getCheckboxValue('chest_xray');
     $xray_findings       = htmlspecialchars($_POST['xray_findings'] ?? '');
@@ -44,15 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $signature_date      = $_POST['signature_date'] ?? null;
     $institution         = htmlspecialchars($_POST['institution'] ?? '');
 
+    // Check if record exists
     $stmt_check = $pdo->prepare("SELECT COUNT(*) FROM diagnosticresults WHERE historyID = ?");
     $stmt_check->execute([$history_id]);
     $recordExists = $stmt_check->fetchColumn() > 0;
 
-    $updateHistoryCompleted = $pdo->prepare("UPDATE history SET progress = 'completed' WHERE historyID = ?");
-    $updateHistoryCompleted->execute([$history_id]);
-
     try {
         if ($recordExists) {
+            // UPDATE existing record
             $stmt = $pdo->prepare("UPDATE diagnosticresults SET 
                 ExamDate = :exam_date,
                 ChestXrayPerformed = :chest_xray,
@@ -77,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 WHERE historyID = :history_id
             ");
         } else {
+            // INSERT new record
             $stmt = $pdo->prepare("INSERT INTO diagnosticresults (
                 ClientID, historyID, ExamDate, ChestXrayPerformed, XrayFindings, Impression,
                 Discussions, DiscussionDetails, HomeMedication, MedicationDetails,
@@ -92,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             )");
         }
 
+        // Execute with parameters
         $stmt->execute([
             ':history_id'          => $history_id,
             ':client_id'           => $client_id,

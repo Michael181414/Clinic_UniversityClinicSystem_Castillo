@@ -266,6 +266,7 @@ require 'dashboard.dbf/recent_consultations.php';
                         </div>
                     </div>
                 </div>
+
                 <div class="calendar-div">
                     <div id="calendar-app">
 
