@@ -163,9 +163,9 @@ function normalize($value)
 }
 function SocialCheckMark($value, $option)
 {
-    // $value = stored value from DB: 'yes', 'no', 'former'
     return ($value === $option) ? '✔' : '';
 }
+
 
 $check_allergy       = FamMedCheckMark(normalize($familyHistory['Allergy'] ?? null));
 $check_cancer        = FamMedCheckMark(normalize($familyHistory['Cancer'] ?? null));
@@ -190,15 +190,12 @@ $drug    = $socialHistory['DrugUse']       ?? null;
 
 $alcohol_yes    = SocialCheckMark($alcohol, 'yes');
 $alcohol_no     = SocialCheckMark($alcohol, 'no');
-$alcohol_former = SocialCheckMark($alcohol, 'former');
 
 $tobacco_yes    = SocialCheckMark($tobacco, 'yes');
 $tobacco_no     = SocialCheckMark($tobacco, 'no');
-$tobacco_former = SocialCheckMark($tobacco, 'former');
 
 $drug_yes       = SocialCheckMark($drug, 'yes');
 $drug_no        = SocialCheckMark($drug, 'no');
-$drug_former    = SocialCheckMark($drug, 'former');
 
 $alcoholDetails = $socialHistory['AlcoholDetails'] ?? '';
 $tobaccoDetails = $socialHistory['TobaccoDetails'] ?? '';
@@ -289,16 +286,18 @@ try {
     $pdf->SetMargins(12, 12, 12);
     $pdf->SetAutoPageBreak(true, 20);
     $pdf->AddPage();
+
+    // Use Unicode font
     $pdf->SetFont('dejavusans', '', 10);
 
-    // Load image
+
+    // Load image header
     $imagePath = realpath(__DIR__ . '/../assets/images/Lspu-Header.jpg');
     $imageHtml = '';
     if (file_exists($imagePath)) {
         $imageData = base64_encode(file_get_contents($imagePath));
         $imageHtml = '<img src="data:image/jpeg;base64,' . $imageData . '" height="70">';
     }
-
     // Start HTML
     $html = <<<EOD
 <style>

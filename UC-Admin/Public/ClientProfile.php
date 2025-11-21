@@ -1598,20 +1598,20 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                             <span id="close-med-history-btn" onclick="backto(<?= htmlspecialchars($clientID) ?>)" class="close">&times;</span>
                         </div>
                         <div id="medical-history" class="medical-history-content-tables">
-                            <div class="medtabs">
-                                <div class="medtab active" data-target="medicaldentalhistory">Medical & Dental History</div>
-                                <div class="medtab" data-target="familymedicalhistory">Family Medical History</div>
-                                <div class="medtab" data-target="personalsocialhistory">Personal & Social History</div>
-                                <div class="medtab" data-target="menstrualHistory">Mentrual History</div>
-                                <div class="medtab" data-target="physicalExamination">Physical Examination</div>
-                                <div class="medtab" data-target="diagnosticResults">Diagnostic Results</div>
-
+                            <div class="med-his-header-tab">
+                                <div class="medtabs">
+                                    <div class="medtab active" data-target="medicaldentalhistory">Medical & Dental History</div>
+                                    <div class="medtab" data-target="familymedicalhistory">Family Medical History</div>
+                                    <div class="medtab" data-target="personalsocialhistory">Personal & Social History</div>
+                                    <div class="medtab" data-target="menstrualHistory">Mentrual History</div>
+                                    <div class="medtab" data-target="physicalExamination">Physical Examination</div>
+                                    <div class="medtab" data-target="diagnosticResults">Diagnostic Results</div>
+                                </div>
                                 <a href="manageclients.dbf/medrecords_generatepdf.php?ClientID=<?= $clientID ?>" target="_blank">
-                                    <button style="background-color: #397dda; color: white; border: none;" class="medtab" type="button">
+                                    <button class="medtab-btn" type="button">
                                         Save as PDF
                                     </button>
                                 </a>
-
                             </div>
                             <div class="medinfotable-div" id="medicaldentalhistory" style="display: block;">
                                 <table class="history-table">
