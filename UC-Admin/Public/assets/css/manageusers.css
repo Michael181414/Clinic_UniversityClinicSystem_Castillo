@@ -210,6 +210,7 @@ body {
 }
 
 .table thead {
+  text-align: center;
   background-color: #397dda;
   color: #fff;
   border-radius: 5px 0px 0px 0px;
@@ -218,7 +219,7 @@ body {
 
 .table thead th {
   padding: 14px 18px;
-  text-align: left;
+  text-align: center;
   font-size: 15px;
   font-weight: 500;
 }
@@ -454,7 +455,7 @@ body {
 }
 
 .actions-column {
-  width: 150px;
+  width: 80px;
   min-width: 150px;
   max-width: 150px;
   text-align: center;
@@ -786,7 +787,9 @@ body {
     background-color: white;
   }
 }
-
+.formsection {
+  padding: 32px;
+}
 /* Close Button */
 .close-btn {
   position: absolute;
@@ -1013,4 +1016,23 @@ label {
 input,
 select {
   color: #666666;
+}
+.loading-sec {
+  position: sticky;
+  top: 0;
+  left: 0;
+  padding-bottom: 3px;
+  height: 8px;
+  background-color: white;
+}
+.form-progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #007bff; /* Blue color, change as needed */
+  z-index: 10;
+  transition: width 0.3s ease;
+}
+
+#add-patient-modal {
+  padding: 0px;
 }

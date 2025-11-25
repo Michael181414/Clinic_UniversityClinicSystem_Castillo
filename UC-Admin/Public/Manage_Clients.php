@@ -123,139 +123,179 @@ if (isset($_GET['error'])) {
                     </div>
 
                     <div id="addPatientModal" class="modal">
-                        <div class="modal-content">
-                            <span onclick="closeAddPatientModal()" class="close-btn">&times;</span>
-                            <h3 class="modal-title">
-                                <i class="fas fa-user-plus title-icon"></i> Add Patient
-                            </h3>
-                            <form method="POST" action="manageclients.dbf/add-patient.php" id="addPatientForm">
-                                <div class="form-group-row" style="display: flex; gap: 15px;">
-                                    <div id="fname" class="form-group" style="flex: 1;">
-                                        <label><i class="fas fa-user icon-blue"></i> First Name</label>
+                        <div id="add-patient-modal" class="modal-content">
+                            <div class="loading-sec">
+                                <div id="formProgressBar" class="form-progress-bar"></div>
+                            </div>
 
-                                        <input type="text" name="firstname" placeholder="Ex: Juan" class="form-control" required autocomplete="off">
+                            <div class="formsection">
+                                <span onclick="closeAddPatientModal()" class="close-btn">&times;</span>
+                                <h3 class="modal-title">
+                                    <i class="fas fa-user-plus title-icon"></i> Add Patient
+                                </h3>
+
+                                <form method="POST" action="manageclients.dbf/add-patient.php" id="addPatientForm">
+                                    <div class="form-group-row" style="display: flex; gap: 15px;">
+                                        <div id="fname" class="form-group" style="flex: 1;">
+                                            <label><i class="fas fa-user icon-blue"></i> First Name</label>
+
+                                            <input type="text" name="firstname" placeholder="Ex: Juan" class="form-control" required autocomplete="off">
+                                        </div>
+
+                                        <div id="lname" class="form-group" style="flex: 1;">
+                                            <label><i class="fas fa-user icon-blue"></i> Last Name</label>
+
+                                            <input type="text" name="lastname" placeholder="Ex: Cruz" class="form-control" required autocomplete="off">
+                                        </div>
                                     </div>
 
-                                    <div id="lname" class="form-group" style="flex: 1;">
-                                        <label><i class="fas fa-user icon-blue"></i> Last Name</label>
+                                    <div class="form-group-row" style="display: flex; gap: 15px;">
+                                        <div class="form-group" style="flex: 1;">
+                                            <label><i class="fas fa-venus-mars icon-blue"></i> Gender</label>
+                                            <select name="sex" class="form-control" required>
+                                                <option value="">Select Gender</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </div>
 
-                                        <input type="text" name="lastname" placeholder="Ex: Cruz" class="form-control" required autocomplete="off">
+                                        <div class="form-group" style="flex: 1;">
+                                            <label><i class="fas fa-calendar-alt icon-blue"></i> Birthdate</label>
+                                            <input type="date" name="birthdate" class="form-control" required>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="form-group-row" style="display: flex; gap: 15px;">
-                                    <div class="form-group" style="flex: 1;">
-                                        <label><i class="fas fa-venus-mars icon-blue"></i> Gender</label>
-                                        <select name="sex" class="form-control" required>
-                                            <option value="">Select Gender</option>
-                                            <option value="Male">Male</option>
-                                            <option value="Female">Female</option>
+                                    <div class="form-group">
+                                        <label><i class="fas fa-envelope icon-blue"></i> Email</label>
+                                        <div id="emailError" class="error-message">
+                                            <i class="fas fa-exclamation-triangle"></i> Email already exists
+                                        </div>
+                                        <div class="input-wrapper">
+                                            <i class="fas fa-envelope input-icon"></i>
+                                            <input type="email" name="email" id="emailInput" class="form-control" required autocomplete="off" placeholder="Enter patient's email">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label><i class="fas fa-lock icon-blue"></i> Password</label>
+                                        <div class="pass-input-wrapper">
+                                            <i class="fas fa-lock input-icon"></i>
+                                            <input type="password" name="password" id="passwordInput" class="form-control" required minlength="8" placeholder="Enter a strong password">
+                                            <i id="togglePassword" class="fas fa-eye toggle-password"></i>
+                                        </div>
+                                        <div id="passwordStrength" class="password-strength">
+                                            Password will be automatically generated based on user input (e.g., name or email).
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label><i class="fas fa-users icon-blue"></i> Client Type</label>
+                                        <select name="client_type" id="clientTypeSelect" class="form-control" onchange="toggleDepartment()" required>
+                                            <option value="">Select Type</option>
+                                            <option value="Freshman">Incoming Freshman Student</option>
+                                            <option value="Student">Student (Enrolled/Regular)</option>
+                                            <option value="Faculty">Teaching Personnel</option>
+                                            <option value="Personnel">Non-Teaching Personnel</option>
+                                            <option value="NewPersonnel">New Personnel</option>
+                                            <option value="Default">Default</option>
                                         </select>
                                     </div>
 
-                                    <div class="form-group" style="flex: 1;">
-                                        <label><i class="fas fa-calendar-alt icon-blue"></i> Birthdate</label>
-                                        <input type="date" name="birthdate" class="form-control" required>
+                                    <div id="departmentField" class="form-group" style="display: none;">
+                                        <label for="department"><i class="fas fa-building-columns icon-blue"></i> Department</label>
+                                        <select id="department" name="department" class="form-control">
+                                            <option value="">Select a Department</option>
+                                            <option value="None">None</option>
+                                            <option value="College of Computer Studies">College of Computer Studies</option>
+                                            <option value="College of Food Nutrition and Dietetics">College of Food Nutrition and Dietetics</option>
+                                            <option value="College of Industrial Technology">College of Industrial Technology</option>
+                                            <option value="College of Teacher Education">College of Teacher Education</option>
+                                            <option value="College of Agriculture">College of Agriculture</option>
+                                            <option value="College of Arts and Sciences">College of Arts and Sciences</option>
+                                            <option value="College of Business Administration and Accountancy">College of Business Administration and Accountancy</option>
+                                            <option value="College of Engineering">College of Engineering</option>
+                                            <option value="College of Criminal Justice Education">College of Criminal Justice Education</option>
+                                            <option value="College of Fisheries">College of Fisheries</option>
+                                            <option value="College of Hospitality Management and Tourism">College of Hospitality Management and Tourism</option>
+                                            <option value="College of Nursing and Allied Health">College of Nursing and Allied Health</option>
+                                        </select>
                                     </div>
-                                </div>
 
-                                <div class="form-group">
-                                    <label><i class="fas fa-envelope icon-blue"></i> Email</label>
-                                    <div id="emailError" class="error-message">
-                                        <i class="fas fa-exclamation-triangle"></i> Email already exists
-                                    </div>
-                                    <div class="input-wrapper">
-                                        <i class="fas fa-envelope input-icon"></i>
-                                        <input type="email" name="email" id="emailInput" class="form-control" required autocomplete="off" placeholder="Enter patient's email">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label><i class="fas fa-lock icon-blue"></i> Password</label>
-                                    <div class="pass-input-wrapper">
-                                        <i class="fas fa-lock input-icon"></i>
-                                        <input type="password" name="password" id="passwordInput" class="form-control" required minlength="8" placeholder="Enter a strong password">
-                                        <i id="togglePassword" class="fas fa-eye toggle-password"></i>
-                                    </div>
-                                    <div id="passwordStrength" class="password-strength">
-                                        Password will be automatically generated based on user input (e.g., name or email).
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label><i class="fas fa-users icon-blue"></i> Client Type</label>
-                                    <select name="client_type" id="clientTypeSelect" class="form-control" onchange="toggleDepartment()" required>
-                                        <option value="">Select Type</option>
-                                        <option value="Freshman">Incoming Freshman Student</option>
-                                        <option value="Student">Student (Enrolled/Regular)</option>
-                                        <option value="Faculty">Teaching Personnel</option>
-                                        <option value="Personnel">Non-Teaching Personnel</option>
-                                        <option value="NewPersonnel">New Personnel</option>
-                                        <option value="Default">Default</option>
-                                    </select>
-                                </div>
-
-                                <div id="departmentField" class="form-group" style="display: none;">
-                                    <label for="department"><i class="fas fa-building-columns icon-blue"></i> Department</label>
-                                    <select id="department" name="department" class="form-control">
-                                        <option value="">Select a Department</option>
-                                        <option value="None">None</option>
-                                        <option value="College of Computer Studies">College of Computer Studies</option>
-                                        <option value="College of Food Nutrition and Dietetics">College of Food Nutrition and Dietetics</option>
-                                        <option value="College of Industrial Technology">College of Industrial Technology</option>
-                                        <option value="College of Teacher Education">College of Teacher Education</option>
-                                        <option value="College of Agriculture">College of Agriculture</option>
-                                        <option value="College of Arts and Sciences">College of Arts and Sciences</option>
-                                        <option value="College of Business Administration and Accountancy">College of Business Administration and Accountancy</option>
-                                        <option value="College of Engineering">College of Engineering</option>
-                                        <option value="College of Criminal Justice Education">College of Criminal Justice Education</option>
-                                        <option value="College of Fisheries">College of Fisheries</option>
-                                        <option value="College of Hospitality Management and Tourism">College of Hospitality Management and Tourism</option>
-                                        <option value="College of Nursing and Allied Health">College of Nursing and Allied Health</option>
-                                    </select>
-                                </div>
-
-                                <button type="submit" id="saveButton" class="btn-save">
-                                    <i class="fas fa-save"></i> Save Patient
-                                </button>
-                            </form>
+                                    <button type="submit" id="saveButton" class="btn-save">
+                                        <i class="fas fa-save"></i> Save Patient
+                                    </button>
+                                </form>
+                            </div>
                             <script>
-                                function showLoader(text, progress) {
-                                    document.getElementById("loadingText").innerText = text;
-                                    document.getElementById("loadingModal").style.display = "flex";
-                                    document.querySelector(".progress-fill").style.width = progress + "%";
+                                const clientDropdown = document.getElementById('clientTypeDropdown');
+
+                                clientDropdown.addEventListener('change', function() {
+                                    localStorage.setItem('lastClientTab', this.value);
+                                });
+                                window.addEventListener('DOMContentLoaded', () => {
+                                    const lastTab = localStorage.getItem('lastClientTab');
+                                    if (lastTab) {
+                                        clientDropdown.value = lastTab;
+
+                                        // Optionally, trigger change event to update content
+                                        clientDropdown.dispatchEvent(new Event('change'));
+                                    }
+                                });
+
+                                const form = document.getElementById("addPatientForm");
+                                const progressBar = document.getElementById("formProgressBar");
+                                const saveButton = document.getElementById("saveButton");
+
+                                function startProgress() {
+                                    progressBar.style.width = "0%";
+                                    progressBar.style.display = "block";
+                                    let width = 0;
+                                    const interval = setInterval(() => {
+                                        if (width < 90) {
+                                            width += Math.random() * 10;
+                                            progressBar.style.width = width + "%";
+                                        }
+                                    }, 200);
+                                    return interval;
                                 }
 
-                                function showLoader(text) {
-                                    document.getElementById("loadingText").innerText = text;
-                                    document.getElementById("loadingModal").style.display = "flex";
-                                }
-
-                                function updateProgress(percent) {
-                                    document.querySelector(".progress-fill").style.width = percent + "%";
-                                }
-                                document.getElementById("addPatientForm").addEventListener("submit", function(e) {
-
-                                    const email = document.getElementById("emailInput").value;
-                                    const type = document.getElementById("clientTypeSelect").value;
-
-                                    document.getElementById("previewEmail").innerText = email;
-                                    document.getElementById("previewType").innerText = type;
-
-                                    showLoader("Creating user account...");
-                                    updateProgress(20);
-
+                                function finishProgress(interval) {
+                                    clearInterval(interval);
+                                    progressBar.style.width = "100%";
                                     setTimeout(() => {
-                                        showLoader("Sending email to user...");
-                                        updateProgress(60);
-                                    }, 1000);
+                                        progressBar.style.width = "0%";
+                                    }, 500);
+                                }
 
-                                    setTimeout(() => {
-                                        showLoader("Finalizing...");
-                                        updateProgress(90);
-                                    }, 2000);
+                                form.addEventListener("submit", function(e) {
+                                    e.preventDefault(); // stay on the same page
+                                    saveButton.disabled = true;
 
-                                    document.getElementById("saveButton").disabled = true;
+                                    const interval = startProgress();
+                                    const formData = new FormData(form);
+
+                                    fetch(form.action, {
+                                            method: "POST",
+                                            body: formData
+                                        })
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            finishProgress(interval);
+                                            saveButton.disabled = false;
+
+                                            if (data.success) {
+                                                alert(data.message);
+                                                form.reset();
+                                                window.location.href = "Manage_Clients.php";
+                                            } else {
+                                                alert(data.message);
+                                            }
+                                        })
+                                        .catch(err => {
+                                            finishProgress(interval);
+                                            saveButton.disabled = false;
+                                            alert("Submission failed: " + err);
+                                        });
                                 });
                             </script>
                         </div>
@@ -542,7 +582,6 @@ if (isset($_GET['error'])) {
                                 <th>Profile</th>
                                 <th>Full Name</th>
                                 <th>Email</th>
-                                <th>Course</th>
                                 <th>Department</th>
                                 <th>Client Type</th>
                                 <th class="actions-column">Actions</th>
@@ -563,9 +602,6 @@ if (isset($_GET['error'])) {
                                     </td>
                                     <td class="email-td">
                                         <?= htmlspecialchars($newpersonnel['Email']) ?>
-                                    </td>
-                                    <td>
-                                        <?= htmlspecialchars($newpersonnel['Course']) ?>
                                     </td>
                                     <td>
                                         <?= htmlspecialchars($newpersonnel['Department']) ?>
@@ -661,7 +697,6 @@ if (isset($_GET['error'])) {
                                 <th>ID</th>
                                 <th>Profile</th>
                                 <th>Full Name</th>
-                                <th>Email</th>
                                 <th>Course</th>
                                 <th>Department</th>
                                 <th>Client Type</th>
@@ -683,9 +718,6 @@ if (isset($_GET['error'])) {
                                     </td>
                                     <td class="email-td">
                                         <?= htmlspecialchars($faculties['Email']) ?>
-                                    </td>
-                                    <td>
-                                        <?= htmlspecialchars($faculties['Course']) ?>
                                     </td>
                                     <td>
                                         <?= htmlspecialchars($faculties['Department']) ?>
@@ -721,7 +753,6 @@ if (isset($_GET['error'])) {
                                 <th>Profile</th>
                                 <th>Full Name</th>
                                 <th>Email</th>
-                                <th>Course</th>
                                 <th>Client Type</th>
                                 <th class="actions-column">Actions</th>
                             </tr>
@@ -742,9 +773,7 @@ if (isset($_GET['error'])) {
                                     <td class="email-td">
                                         <?= htmlspecialchars($personnel['Email']) ?>
                                     </td>
-                                    <td>
-                                        <?= htmlspecialchars($personnel['Course']) ?>
-                                    </td>
+
                                     <td>
                                         <?= htmlspecialchars($personnel['ClientType']) ?>
                                     </td>
