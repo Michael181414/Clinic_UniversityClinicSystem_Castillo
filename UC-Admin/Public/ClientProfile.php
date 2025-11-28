@@ -404,7 +404,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <?php endif; ?>
 
                         <?php if ($clienttype === 'NewPersonnel') : ?>
-                            <div class="tab" data-target="np_medical-history">
+                            <div id="newpersonnel_medform" class="modal-tab-btn">
                                 <img class="cp-btn-img"
                                     src="assets/images/medicalhistory2.svg"
                                     data-active="assets/images/medicalhistory1.svg"
@@ -471,19 +471,19 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <div class="filter-container" style="height: 80%;">
 
                             <div class="filter-container-header">
-                                <div class="filter-group" style="display: none">
+                                <!--  <div class="filter-group" style="display: none">
                                     <label class="person-value-label-history" for="idSearch">Search by ID:</label>
                                     <input class="history-filter" type="text" id="idSearch" placeholder="Enter ID">
-                                </div>
+                                </div> -->
                                 <div class="filter-group">
                                     <label class="person-value-label-history" for="dateSearch">Search by Date:</label>
                                     <input class="history-filter" type="date" id="dateSearch" style="width: 250px">
                                 </div>
-
-                                <button class="add-btn" onclick="OpenModal()">
-                                    <i class="fas fa-plus"></i> Add Consultation
-                                </button>
-
+                                <div id="filter-group-btn" class="filter-group">
+                                    <button class="add-btn" onclick="OpenModal()">
+                                        <i class="fas fa-plus"></i> Add Consultation
+                                    </button>
+                                </div>
                             </div>
                             <script>
                                 function OpenModal() {
@@ -678,22 +678,22 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                                     <h3 style="margin-bottom: 15px;">Patient's Info</h3>
                                                     <div class=" info-row">
                                                         <span class="info-label">Name:</span>
-                                                        <input id="name" contenteditable="true" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
+                                                        <input type="text" id="name" contenteditable="true" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
                                                         <span class="info-label">Age:</span>
-                                                        <input id="age" contenteditable="true" value="<?= htmlspecialchars($age) ?: ''; ?>" />
+                                                        <input type="text" id="age" contenteditable="true" value="<?= htmlspecialchars($age) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
                                                         <span class="info-label">Address:</span>
-                                                        <input id="address" contenteditable="true" value="<?= htmlspecialchars($address) ?: ''; ?>" />
+                                                        <input type="text" id="address" contenteditable="true" value="<?= htmlspecialchars($address) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
                                                         <span class="info-label">Course:</span>
-                                                        <input id="course" contenteditable="true" value="<?= htmlspecialchars($course) ?: ''; ?>" />
+                                                        <input type="text" id="course" contenteditable="true" value="<?= htmlspecialchars($course) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
@@ -905,17 +905,17 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                                                     </div>
 
                                                     <div class="info-row">
-                                                        <span class="info-label">Age/Sex:</span>
-                                                        <input id="age" value="<?= htmlspecialchars($age) ?>" />
-                                                        <p>/</p>
-                                                        <input type="hidden" name="patient_sex" id="input_patient_sex" value="<?= htmlspecialchars($gender) ?>" />
-                                                        <span><?= htmlspecialchars($gender) ?></span> <!-- still shows on screen -->
+                                                        <span class="info-label">Age:</span>
+                                                        <input type="text" id="age" contenteditable="true" value=<?= htmlspecialchars($age) ?: ''; ?>>
                                                     </div>
-
+                                                    <div class="info-row">
+                                                        <span class="info-label">Sex:</span>
+                                                        <input type="text" id="gender" contenteditable="true" value=<?= htmlspecialchars($gender) ?: '';  ?>>
+                                                    </div>
                                                     <!-- Removed Address -->
 
                                                     <div class="info-row">
-                                                        <span class="info-label">Impression:</span>
+                                                        <span class="info-label">Impression</span>
                                                         <input name="p-impression" id="impression" type="text" />
                                                     </div>
 
@@ -2065,22 +2065,24 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
                                         <h2>Recommendation</h2>
                                         <div class="form-section">
-                                            <div class="checkbox-group">
-                                                <label class="checkbox-label">
-                                                    <input type="radio" name="recommendation" value="fit" <?= ($diagnostic['Recommendation'] ?? '') === 'fit' ? 'checked' : '' ?>> Fit to Work/Enroll
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="radio" name="recommendation" value="fit_sports" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_sports' ? 'checked' : '' ?>> Fit to Participate in Sports
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="radio" name="recommendation" value="fit_enroll" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_enroll' ? 'checked' : '' ?>> Fit to Enroll but requires further evaluation
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="radio" name="recommendation" value="fit_work_eval" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_work_eval' ? 'checked' : '' ?>> Fit to Work but requires further evaluation
-                                                </label>
-                                                <label class="checkbox-label">
-                                                    <input type="radio" name="recommendation" value="fit_sports_eval" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_sports_eval' ? 'checked' : '' ?>> Fit to Participate in Sports but requires further evaluation
-                                                </label>
+                                            <div class="check-box-parent-div">
+                                                <div class="checkbox-group">
+                                                    <label class="checkbox-label">
+                                                        <input type="radio" name="recommendation" value="fit" <?= ($diagnostic['Recommendation'] ?? '') === 'fit' ? 'checked' : '' ?>> Fit to Work/Enroll
+                                                    </label>
+                                                    <label class="checkbox-label">
+                                                        <input type="radio" name="recommendation" value="fit_sports" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_sports' ? 'checked' : '' ?>> Fit to Participate in Sports
+                                                    </label>
+                                                    <label class="checkbox-label">
+                                                        <input type="radio" name="recommendation" value="fit_enroll" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_enroll' ? 'checked' : '' ?>> Fit to Enroll but requires further evaluation
+                                                    </label>
+                                                    <label class="checkbox-label">
+                                                        <input type="radio" name="recommendation" value="fit_work_eval" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_work_eval' ? 'checked' : '' ?>> Fit to Work but requires further evaluation
+                                                    </label>
+                                                    <label class="checkbox-label">
+                                                        <input type="radio" name="recommendation" value="fit_sports_eval" <?= ($diagnostic['Recommendation'] ?? '') === 'fit_sports_eval' ? 'checked' : '' ?>> Fit to Participate in Sports but requires further evaluation
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -2151,411 +2153,243 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                             });
                     </script>
                 </div>
-                <div id="np_medical-history"
-                    style="display: <?php echo ($clienttype === 'NewPersonnel') ? 'flex' : 'none'; ?>; height: 85%">
+                <div id="newpersonnel-modal-overlay" class="Newpersonnel-modal-overlay">
+                    <div id="np_medical-history" class="new-personnel-modal-content">
+                        <div class="medform-modal-header">
+                            <h3>Medical Form</h3>
+                            <span id="close-medform-btn" onclick="backto(<?= htmlspecialchars($clientID) ?>)" class="close">&times;</span>
+                        </div>
+                        <div class="form-container">
+                            <form id="medicalForm" method="post">
+                                <input type="hidden" name="client_id" value="<?= htmlspecialchars($clientID ?? '') ?>">
+                                <input type="hidden" id="print_action" name="print_action" value="">
 
-                    <div class="form-container">
-                        <form id="medicalForm" method="post">
-                            <input type="hidden" name="client_id" value="<?= htmlspecialchars($clientID ?? '') ?>">
-                            <input type="hidden" id="print_action" name="print_action" value="">
+                                <div style="display: flex; width: 100%; justify-content: right; align-items: center;">
+                                    <button type="button" class="buttonsdp" onclick="printMedicalForm()">Print</button>
+                                </div>
+                                <div class="form-header">
+                                    <h1>CS Form No. 211</h1>
+                                    <h2>Revised 2018</h2>
+                                    <h1>MEDICAL CERTIFICATE</h1>
+                                    <h2>(For Employment)</h2>
+                                </div>
 
-                            <div style="display: flex; width: 100%; justify-content: right; align-items: center;">
-                                <button type="button" class="buttonsdp" onclick="printMedicalForm()">Print</button>
-                            </div>
-                            <div class="form-header">
-                                <h1>CS Form No. 211</h1>
-                                <h2>Revised 2018</h2>
-                                <h1>MEDICAL CERTIFICATE</h1>
-                                <h2>(For Employment)</h2>
-                            </div>
+                                <div class="section">
+                                    <div class="section-title">INSTRUCTIONS</div>
+                                    <p>a. This medical certificate should be accomplished by a licensed government physician.</p>
+                                    <p>b. Attach this certificate to original appointment, transfer and reemployment.</p>
+                                    <p>c. The results of the following pre-employment medical/physical must be attached to this form:</p>
 
-                            <div class="section">
-                                <div class="section-title">INSTRUCTIONS</div>
-                                <p>a. This medical certificate should be accomplished by a licensed government physician.</p>
-                                <p>b. Attach this certificate to original appointment, transfer and reemployment.</p>
-                                <p>c. The results of the following pre-employment medical/physical must be attached to this form:</p>
+                                    <div class="check-box-parent-div">
+                                        <div class="checkbox-group">
+                                            <div class="checkboxes">
+                                                <input type="checkbox" id="blood-test" name="blood_test" value="1" <?= !empty($blood_test) ? 'checked' : '' ?>>
+                                                <label for="blood-test">Blood Test</label>
+                                            </div>
+                                            <div class="checkboxes">
+                                                <input type="checkbox" id="urinalysis" name="urinalysis" value="1" <?= !empty($urinalysis) ? 'checked' : '' ?>>
+                                                <label for="urinalysis">Urinalysis</label>
 
-                                <div class="check-box-parent-div">
-                                    <div class="checkbox-group">
-                                        <div class="checkboxes">
-                                            <input type="checkbox" id="blood-test" name="blood_test" value="1" <?= !empty($blood_test) ? 'checked' : '' ?>>
-                                            <label for="blood-test">Blood Test</label>
+                                            </div>
+                                            <div class="checkboxes">
+                                                <input type="checkbox" id="xray" name="chest_xray" value="1" <?= !empty($chest_xray) ? 'checked' : '' ?>>
+                                                <label for="xray">Chest X-Ray</label>
+                                            </div>
+                                            <div class="checkboxes">
+                                                <input type="checkbox" id="drug-test" name="drug_test" value="1" <?= !empty($drug_test) ? 'checked' : '' ?>>
+                                                <label for="drug-test">Drug Test</label>
+                                            </div>
+                                            <div class="checkboxes">
+                                                <input type="checkbox" id="psych-test" name="psych_test" value="1" <?= !empty($psych_test) ? 'checked' : '' ?>>
+                                                <label for="psych-test">Psychological Test</label>
+                                            </div>
+                                            <div class="checkboxes">
+                                                <input type="checkbox" id="neuro-test" name="neuro_test" value="1" <?= !empty($neuro_test) ? 'checked' : '' ?>>
+                                                <label for="neuro-test">Neuro-Psychiatric Examination</label>
+                                            </div>
                                         </div>
-                                        <div class="checkboxes">
-                                            <input type="checkbox" id="urinalysis" name="urinalysis" value="1" <?= !empty($urinalysis) ? 'checked' : '' ?>>
-                                            <label for="urinalysis">Urinalysis</label>
+                                    </div>
+                                </div>
 
-                                        </div>
-                                        <div class="checkboxes">
-                                            <input type="checkbox" id="xray" name="chest_xray" value="1" <?= !empty($chest_xray) ? 'checked' : '' ?>>
-                                            <label for="xray">Chest X-Ray</label>
-                                        </div>
-                                        <div class="checkboxes">
-                                            <input type="checkbox" id="drug-test" name="drug_test" value="1" <?= !empty($drug_test) ? 'checked' : '' ?>>
-                                            <label for="drug-test">Drug Test</label>
-                                        </div>
-                                        <div class="checkboxes">
-                                            <input type="checkbox" id="psych-test" name="psych_test" value="1" <?= !empty($psych_test) ? 'checked' : '' ?>>
-                                            <label for="psych-test">Psychological Test</label>
-                                        </div>
-                                        <div class="checkboxes">
-                                            <input type="checkbox" id="neuro-test" name="neuro_test" value="1" <?= !empty($neuro_test) ? 'checked' : '' ?>>
-                                            <label for="neuro-test">Neuro-Psychiatric Examination</label>
+                                <div class="section">
+                                    <div class="section-title">FOR THE PROPOSED APPOINTEE</div>
+
+                                    <div class="form-group">
+                                        <label for="name">NAME</label>
+                                        <input type="text" id="personnel-name" name="name" value="<?= htmlspecialchars($name ?? '') ?>" required>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="agency">AGENCY / ADDRESS</label>
+                                            <input type="text" id="agency" name="agency" value="<?= htmlspecialchars($agency ?? '') ?>" required>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <div class="section">
-                                <div class="section-title">FOR THE PROPOSED APPOINTEE</div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="address">ADDRESS</label>
+                                            <input type="text" id="personnel-address" name="address" value="<?= htmlspecialchars($npaddress ?? '') ?>" required>
+                                        </div>
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="name">NAME</label>
-                                    <input type="text" id="personnel-name" name="name" value="<?= htmlspecialchars($name ?? '') ?>" required>
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="agency">AGENCY / ADDRESS</label>
-                                        <input type="text" id="agency" name="agency" value="<?= htmlspecialchars($agency ?? '') ?>" required>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="age">AGE</label>
+                                            <input type="number" id="personnel-age" name="age" value="<?= htmlspecialchars($npage ?? '') ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sex">SEX</label>
+                                            <select id="sex" name="sex" required>
+                                                <option value="">Select</option>
+                                                <option value="Male" <?= ($sex ?? '') === 'Male' ? 'selected' : '' ?>>Male</option>
+                                                <option value="Female" <?= ($sex ?? '') === 'Female' ? 'selected' : '' ?>>Female</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="civil-status">CIVIL STATUS</label>
+                                            <select id="civil-status" name="civil-status" required>
+                                                <option value="">Select</option>
+                                                <option value="Single" <?= ($civil_status ?? '') === 'Single' ? 'selected' : '' ?>>Single</option>
+                                                <option value="Married" <?= ($civil_status ?? '') === 'Married' ? 'selected' : '' ?>>Married</option>
+                                                <option value="Divorced" <?= ($civil_status ?? '') === 'Divorced' ? 'selected' : '' ?>>Divorced</option>
+                                                <option value="Widowed" <?= ($civil_status ?? '') === 'Widowed' ? 'selected' : '' ?>>Widowed</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="position">PROPOSED POSITION</label>
+                                            <input type="text" id="position" name="position" value="<?= htmlspecialchars($position ?? '') ?>" required>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="address">ADDRESS</label>
-                                        <input type="text" id="personnel-address" name="address" value="<?= htmlspecialchars($npaddress ?? '') ?>" required>
+                                <div class="section">
+
+                                    <div class="section-title">FOR THE LICENSED GOVERNMENT PHYSICIAN</div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <p>I hereby certify that I have reviewed and evaluated the attached examination results, personally examined the above named individual and found him/her to be physically and medically □FIT / □UNFIT for employment.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="physician_signature">SIGNATURE over PRINTED NAME:</label>
+                                            <input type="text" id="physician_signature" name="physician_signature" value="<?= htmlspecialchars($physician_signature ?? '') ?>" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="physician_agency">AGENCY/Affiliation:</label>
+                                            <input type="text" id="physician_agency" name="physician_agency" value="<?= htmlspecialchars($physician_agency ?? '') ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="otherinfo">Other Information About The Proposed Appointee:</label>
+                                            <input type="text" id="otherinfo" name="otherinfo" value="<?= htmlspecialchars($other_info ?? '') ?>">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="license_no">LICENSE NO.</label>
+                                            <input type="text" id="license_no" name="license_no" value="<?= htmlspecialchars($license_no ?? '') ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="height">HEIGHT (M)</label>
+                                            <input type="text" id="height" name="height" value="<?= htmlspecialchars($height ?? '') ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="weight">WEIGHT (KG)</label>
+                                            <input type="text" id="weight" name="weight" value="<?= htmlspecialchars($weight ?? '') ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="blood-type">BLOOD TYPE</label>
+                                            <input type="text" id="blood-type" name="blood-type" value="<?= htmlspecialchars($blood_type ?? '') ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="official_designation">OFFICIAL DESIGNATION</label>
+                                            <input type="text" id="official_designation" name="official_designation" value="<?= htmlspecialchars($official_designation ?? '') ?>" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="date_created">Date:</label>
+                                            <input type="date" id="date_created" name="date_created" value="<?= htmlspecialchars($date_created ?? date('Y-m-d')) ?>" required>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="age">AGE</label>
-                                        <input type="number" id="personnel-age" name="age" value="<?= htmlspecialchars($npage ?? '') ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="sex">SEX</label>
-                                        <select id="sex" name="sex" required>
-                                            <option value="">Select</option>
-                                            <option value="Male" <?= ($sex ?? '') === 'Male' ? 'selected' : '' ?>>Male</option>
-                                            <option value="Female" <?= ($sex ?? '') === 'Female' ? 'selected' : '' ?>>Female</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="civil-status">CIVIL STATUS</label>
-                                        <select id="civil-status" name="civil-status" required>
-                                            <option value="">Select</option>
-                                            <option value="Single" <?= ($civil_status ?? '') === 'Single' ? 'selected' : '' ?>>Single</option>
-                                            <option value="Married" <?= ($civil_status ?? '') === 'Married' ? 'selected' : '' ?>>Married</option>
-                                            <option value="Divorced" <?= ($civil_status ?? '') === 'Divorced' ? 'selected' : '' ?>>Divorced</option>
-                                            <option value="Widowed" <?= ($civil_status ?? '') === 'Widowed' ? 'selected' : '' ?>>Widowed</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="position">PROPOSED POSITION</label>
-                                        <input type="text" id="position" name="position" value="<?= htmlspecialchars($position ?? '') ?>" required>
-                                    </div>
+                                <div class="form-footer" style="padding: 30px">
+                                    <button type="submit" class="buttonsdp" id="submitBtn">Submit</button>
                                 </div>
-                            </div>
-
-                            <div class="section">
-
-                                <div class="section-title">FOR THE LICENSED GOVERNMENT PHYSICIAN</div>
-
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <p>I hereby certify that I have reviewed and evaluated the attached examination results, personally examined the above named individual and found him/her to be physically and medically □FIT / □UNFIT for employment.</p>
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="physician_signature">SIGNATURE over PRINTED NAME:</label>
-                                        <input type="text" id="physician_signature" name="physician_signature" value="<?= htmlspecialchars($physician_signature ?? '') ?>" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="physician_agency">AGENCY/Affiliation:</label>
-                                        <input type="text" id="physician_agency" name="physician_agency" value="<?= htmlspecialchars($physician_agency ?? '') ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="otherinfo">Other Information About The Proposed Appointee:</label>
-                                        <input type="text" id="otherinfo" name="otherinfo" value="<?= htmlspecialchars($other_info ?? '') ?>">
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="license_no">LICENSE NO.</label>
-                                        <input type="text" id="license_no" name="license_no" value="<?= htmlspecialchars($license_no ?? '') ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="height">HEIGHT (M)</label>
-                                        <input type="text" id="height" name="height" value="<?= htmlspecialchars($height ?? '') ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="weight">WEIGHT (KG)</label>
-                                        <input type="text" id="weight" name="weight" value="<?= htmlspecialchars($weight ?? '') ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="blood-type">BLOOD TYPE</label>
-                                        <input type="text" id="blood-type" name="blood-type" value="<?= htmlspecialchars($blood_type ?? '') ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="official_designation">OFFICIAL DESIGNATION</label>
-                                        <input type="text" id="official_designation" name="official_designation" value="<?= htmlspecialchars($official_designation ?? '') ?>" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="date_created">Date:</label>
-                                        <input type="date" id="date_created" name="date_created" value="<?= htmlspecialchars($date_created ?? date('Y-m-d')) ?>" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-footer" style="padding: 30px">
-                                <button type="submit" class="buttonsdp" id="submitBtn">Submit</button>
-                            </div>
-                        </form>
-                        <script>
-                            function printMedicalForm() {
-                                document.getElementById('print_action').value = '1'; // set to "1" to trigger printing
-                                document.getElementById('medicalForm').action = 'manageclients.dbf/generate_np_medform.php'; // send to PHP file
-                                document.getElementById('medicalForm').submit();
-                            }
-                        </script>
-
-                        <script>
-                            document.getElementById('medicalForm').addEventListener('submit', async function(e) {
-                                e.preventDefault();
-
-                                const form = e.target;
-                                const formData = new FormData(form);
-
-                                // Disable submit button to prevent multiple submissions
-                                const submitBtn = document.getElementById('submitBtn');
-                                submitBtn.disabled = true;
-                                submitBtn.textContent = 'Submitting...';
-
-                                try {
-                                    const response = await fetch('manageclients.dbf/submit_np_form.php', {
-                                        method: 'POST',
-                                        body: formData
+                            </form>
+                            <script>
+                                document
+                                    .getElementById("newpersonnel_medform")
+                                    .addEventListener("click", function() {
+                                        document.getElementById("newpersonnel-modal-overlay").style.display = "flex";
+                                        document.body.style.overflow = "hidden";
                                     });
-                                    const result = await response.json();
+                                document
+                                    .getElementById("close-medform-btn")
+                                    .addEventListener("click", function() {
+                                        document.getElementById("newpersonnel-modal-overlay").style.display = "none";
+                                        document.body.style.overflow = "auto";
+                                    });
 
-                                    if (result.success) {
-                                        alert(result.message);
-                                        form.reset();
-                                    } else {
-                                        alert('Error: ' + (result.message || 'Unknown error'));
-                                        if (result.missing_fields) {
-                                            console.warn('Missing fields:', result.missing_fields);
+
+                                function printMedicalForm() {
+                                    document.getElementById('print_action').value = '1'; // set to "1" to trigger printing
+                                    document.getElementById('medicalForm').action = 'manageclients.dbf/generate_np_medform.php'; // send to PHP file
+                                    document.getElementById('medicalForm').submit();
+                                }
+                            </script>
+
+                            <script>
+                                document.getElementById('medicalForm').addEventListener('submit', async function(e) {
+                                    e.preventDefault();
+
+                                    const form = e.target;
+                                    const formData = new FormData(form);
+
+                                    // Disable submit button to prevent multiple submissions
+                                    const submitBtn = document.getElementById('submitBtn');
+                                    submitBtn.disabled = true;
+                                    submitBtn.textContent = 'Submitting...';
+
+                                    try {
+                                        const response = await fetch('manageclients.dbf/submit_np_form.php', {
+                                            method: 'POST',
+                                            body: formData
+                                        });
+                                        const result = await response.json();
+
+                                        if (result.success) {
+                                            alert(result.message);
+                                            form.reset();
+                                        } else {
+                                            alert('Error: ' + (result.message || 'Unknown error'));
+                                            if (result.missing_fields) {
+                                                console.warn('Missing fields:', result.missing_fields);
+                                            }
                                         }
+                                    } catch (error) {
+                                        alert('Failed to submit form. Please try again.');
+                                        console.error(error);
+                                    } finally {
+                                        submitBtn.disabled = false;
+                                        submitBtn.textContent = 'Submit';
                                     }
-                                } catch (error) {
-                                    alert('Failed to submit form. Please try again.');
-                                    console.error(error);
-                                } finally {
-                                    submitBtn.disabled = false;
-                                    submitBtn.textContent = 'Submit';
-                                }
-                            });
-                        </script>
+                                });
+                            </script>
 
-                        <!--=====================================================-->
-                        <style>
-                            :root {
-                                --primary-color: #3498db;
-                                --secondary-color: #2980b9;
-                                --accent-color: #e74c3c;
-                                --light-gray: #f8f9fa;
-                                --medium-gray: #e9ecef;
-                                --dark-gray: #6c757d;
-                                --text-color: #212529;
-                                --border-radius: 8px;
-                                --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                            }
-
-                            .form-container {
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: flex-start;
-                                width: 100%;
-                                height: 100%;
-                                overflow: auto;
-                                max-height: 600px;
-                                background-color: white;
-                                padding: 30px;
-                                border-radius: 5px;
-                                gap: 15px;
-                            }
-
-                            .form-header {
-                                text-align: center;
-                                margin-bottom: 40px;
-                                padding-bottom: 20px;
-                                border-bottom: 2px solid var(--medium-gray);
-                            }
-
-                            .form-header h1 {
-                                font-size: 24px;
-                                margin: 0;
-                                font-weight: 600;
-                                color: var(--primary-color);
-                            }
-
-                            .form-header h2 {
-                                font-size: 18px;
-                                margin: 10px 0 0 0;
-                                font-weight: 500;
-                                color: var(--dark-gray);
-                            }
-
-                            .section {
-                                margin-bottom: 30px;
-                                padding: 25px;
-                                background-color: var(--light-gray);
-                                border-radius: var(--border-radius);
-                            }
-
-                            .section-title {
-                                font-weight: 600;
-                                margin-bottom: 20px;
-                                color: var(--primary-color);
-                                font-size: 18px;
-                                padding-bottom: 8px;
-                                border-bottom: 2px solid var(--medium-gray);
-                            }
-
-                            .form-row {
-                                display: flex;
-                                flex-wrap: wrap;
-                                gap: 20px;
-                                margin-bottom: 20px;
-                            }
-
-                            .form-group {
-                                flex: 1;
-                                min-width: 200px;
-                            }
-
-                            label {
-                                display: block;
-                                margin-bottom: 8px;
-                                font-weight: 500;
-                                color: var(--dark-gray);
-                            }
-
-                            input[type="text"],
-                            input[type="number"],
-                            select {
-                                width: 100%;
-                                padding: 12px;
-                                border: 1px solid var(--medium-gray);
-                                border-radius: var(--border-radius);
-                                background-color: white;
-                                transition: border-color 0.3s, box-shadow 0.3s;
-                            }
-
-                            input[type="text"]:focus,
-                            input[type="number"]:focus,
-                            select:focus {
-                                outline: none;
-                                border-color: var(--primary-color);
-                                box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-                            }
-
-                            .checkbox-group {
-                                display: grid;
-                                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                                gap: 15px;
-                                margin-bottom: 20px;
-                            }
-
-                            .checkbox-item {
-                                display: flex;
-                                align-items: center;
-                                gap: 10px;
-                            }
-
-                            .checkbox-item input[type="checkbox"] {
-                                width: 18px;
-                                height: 18px;
-                                accent-color: var(--primary-color);
-                            }
-
-                            .checkbox-item label {
-                                margin: 0;
-                                font-weight: 400;
-                            }
-
-                            .display-text {
-                                padding: 12px;
-                                background-color: var(--medium-gray);
-                                border: 1px solid var(--medium-gray);
-                                border-radius: var(--border-radius);
-                                min-height: 20px;
-                                color: var(--dark-gray);
-                            }
-
-                            .signature-section {
-                                margin-top: 40px;
-                                padding-top: 20px;
-                                border-top: 2px solid var(--medium-gray);
-                            }
-
-                            .signature-line {
-                                width: 300px;
-                                margin: 40px auto 0;
-                                text-align: center;
-                            }
-
-                            .signature-line::before {
-                                content: "";
-                                display: block;
-                                width: 100%;
-                                height: 1px;
-                                background-color: var(--text-color);
-                                margin-bottom: 5px;
-                            }
-
-                            .text-center {
-                                text-align: center;
-                            }
-
-                            .text-muted {
-                                color: var(--dark-gray);
-                                font-size: 0.9em;
-                            }
-
-                            @media (max-width: 768px) {
-                                .form-container {
-                                    padding: 20px;
-                                }
-
-                                .section {
-                                    padding: 15px;
-                                }
-
-                                .form-row {
-                                    flex-direction: column;
-                                    gap: 15px;
-                                }
-
-                                .form-group {
-                                    min-width: 100%;
-                                }
-                            }
-                        </style>
+                            <!--=====================================================-->
+                        </div>
                     </div>
-
                 </div>
-
                 <!--  <button type="button" id="toggle-form-btn">Show Medical Certificate Form</button>-->
                 <div id="Medcert-modal" class="medcert-modal">
                     <div class="medcer-modal-content">

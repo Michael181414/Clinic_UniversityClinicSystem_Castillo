@@ -90,9 +90,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
             <a href="All_Personnel_Profile.php">
                 <button class="active-buttons"><i class="fas fa-home"></i><span class="nav-text">Home</span></button>
             </a>
-            <a href="settings.php">
-                <button class="buttons"><i class="fas fa-cog"></i><span class="nav-text">Settings</span></button>
-            </a>
+
         </nav>
 
         <div class="content">

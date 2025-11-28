@@ -124,12 +124,7 @@ if ($clientId) {
                 <span class="nav-text">Medical Forms</span>
             </button>
 
-            <a href="settings.php">
-                <button class="buttons" id="settingBtn">
-                    <i class="fas fa-cog"></i>
-                    <span class="nav-text">Settings</span>
-                </button>
-            </a>
+
         </nav>
 
         <main class="content" loading="lazy">

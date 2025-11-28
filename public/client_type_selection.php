@@ -100,14 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_type_modal'])) {
             gap: 20px;
             justify-content: center;
             width: 100%;
-            max-width: 900px;
+            max-width: 1100px;
         }
 
         .user-card {
             background: #fff;
-            border-radius: 16px;
-            width: 160px;
-            height: 160px;
+            border-radius: 8px;
+            width: 190px;
+            height: 190px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -117,6 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_type_modal'])) {
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
+            padding: 8px;
         }
 
         .user-card.selected {
@@ -133,11 +134,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_type_modal'])) {
             font-size: 36px;
             color: #397dda;
             margin-bottom: 10px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .user-card span {
             font-size: 15px;
             font-weight: 500;
+            height: 100%;
         }
 
         .user-card button {
@@ -145,10 +151,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_type_modal'])) {
             width: 100%;
             height: 100%;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: repeat(2, 60% 10%);
             justify-content: center;
-            align-items: center;
+            align-items: flex-end;
         }
 
         /* Modal styles */
@@ -275,11 +281,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_type_modal'])) {
     <p class="subtitle">Select the category that matches your status at the clinic.</p>
 
     <div class="card-container">
-        <div class="user-card"><button data-type="Student"><i class="fas fa-user-graduate"></i><span>Student</span></button></div>
-        <div class="user-card"><button data-type="Freshman"><i class="fas fa-user-graduate"></i><span>Incoming Freshman Students</span></button></div>
-        <div class="user-card"><button data-type="Faculty"><i class="fas fa-chalkboard-teacher"></i><span>Faculty</span></button></div>
-        <div class="user-card"><button data-type="Personnel"><i class="fas fa-user-tie"></i><span>Personnel</span></button></div>
-        <div class="user-card"><button data-type="NewPersonnel"><i class="fas fa-user-plus"></i><span>New Personnel</span></button></div>
+        <div class="user-card">
+            <button data-type="Student">
+                <i class="fas fa-user-graduate"></i>
+                <span>Student</span>
+            </button>
+        </div>
+        <div class="user-card">
+            <button data-type="Freshman">
+                <i class="fas fa-user-graduate"></i>
+                <span>Incoming Freshman Students</span>
+            </button>
+        </div>
+        <div class="user-card">
+            <button data-type="Faculty">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Teaching-Personnel</span>
+            </button>
+        </div>
+        <div class="user-card">
+            <button data-type="Personnel">
+                <i class="fas fa-user-tie"></i>
+                <span>Non Teaching-Personnel</span>
+            </button>
+        </div>
+        <div class="user-card">
+            <button data-type="NewPersonnel">
+                <i class="fas fa-user-plus"></i>
+                <span>Newly Hired Personnel</span>
+            </button>
+        </div>
     </div>
 
     <!-- Modal -->

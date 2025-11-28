@@ -31,6 +31,21 @@ if (isset($_GET['error'])) {
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
         rel="stylesheet" />
+    <style>
+        @font-face {
+            font-family: "Montserrat";
+            src: url("assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("woff2");
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Poppins";
+            src: url("assets/fonts/Poppins/Poppins-Medium.ttf") format("woff2");
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
     <title>Manage Profile</title>
 </head>
 </head>
@@ -511,7 +526,6 @@ if (isset($_GET['error'])) {
                                 <th>Email</th>
                                 <th>Course</th>
                                 <th>Department</th>
-                                <th>Client Type</th>
                                 <th class="actions-column">Actions</th>
                             </tr>
                         </thead>
@@ -537,9 +551,7 @@ if (isset($_GET['error'])) {
                                     <td>
                                         <?= htmlspecialchars($freshman['Department']) ?>
                                     </td>
-                                    <td>
-                                        <?= htmlspecialchars($freshman['ClientType']) ?>
-                                    </td>
+
                                     <td class="actions-column">
                                         <div class="action-buttons">
                                             <a href="ClientProfile.php?id=<?= $freshman['ClientID'] ?>" title="Edit User">
@@ -583,7 +595,6 @@ if (isset($_GET['error'])) {
                                 <th>Full Name</th>
                                 <th>Email</th>
                                 <th>Department</th>
-                                <th>Client Type</th>
                                 <th class="actions-column">Actions</th>
                             </tr>
                         </thead>
@@ -606,9 +617,7 @@ if (isset($_GET['error'])) {
                                     <td>
                                         <?= htmlspecialchars($newpersonnel['Department']) ?>
                                     </td>
-                                    <td>
-                                        <?= htmlspecialchars($newpersonnel['ClientType']) ?>
-                                    </td>
+
                                     <td class="actions-column">
                                         <div class="action-buttons">
                                             <a href="ClientProfile.php?id=<?= $newpersonnel['ClientID'] ?>" title="Edit User">
@@ -641,7 +650,6 @@ if (isset($_GET['error'])) {
                                 <th>Email</th>
                                 <th>Course</th>
                                 <th>Department</th>
-                                <th>Client Type</th>
                                 <th class="actions-column">Actions</th>
                             </tr>
                         </thead>
@@ -667,9 +675,7 @@ if (isset($_GET['error'])) {
                                     <td>
                                         <?= htmlspecialchars($students['Department']) ?>
                                     </td>
-                                    <td>
-                                        <?= htmlspecialchars($students['ClientType']) ?>
-                                    </td>
+
                                     <td class="actions-column">
                                         <div class="action-buttons">
                                             <a href="ClientProfile.php?id=<?= $students['ClientID'] ?>" title="Edit User">
@@ -697,9 +703,8 @@ if (isset($_GET['error'])) {
                                 <th>ID</th>
                                 <th>Profile</th>
                                 <th>Full Name</th>
-                                <th>Course</th>
+                                <th>Email</th>
                                 <th>Department</th>
-                                <th>Client Type</th>
                                 <th class="actions-column">Actions</th>
                             </tr>
                         </thead>
@@ -722,9 +727,7 @@ if (isset($_GET['error'])) {
                                     <td>
                                         <?= htmlspecialchars($faculties['Department']) ?>
                                     </td>
-                                    <td>
-                                        <?= htmlspecialchars($faculties['ClientType']) ?>
-                                    </td>
+
                                     <td class="actions-column">
                                         <div class="action-buttons">
                                             <a href="ClientProfile.php?id=<?= $faculties['ClientID'] ?>" title="Edit User">
@@ -753,7 +756,7 @@ if (isset($_GET['error'])) {
                                 <th>Profile</th>
                                 <th>Full Name</th>
                                 <th>Email</th>
-                                <th>Client Type</th>
+                                <th>Department</th>
                                 <th class="actions-column">Actions</th>
                             </tr>
                         </thead>
@@ -773,9 +776,8 @@ if (isset($_GET['error'])) {
                                     <td class="email-td">
                                         <?= htmlspecialchars($personnel['Email']) ?>
                                     </td>
-
                                     <td>
-                                        <?= htmlspecialchars($personnel['ClientType']) ?>
+                                        <?= htmlspecialchars($faculties['Department']) ?>
                                     </td>
                                     <td class="actions-column">
                                         <div class="action-buttons">

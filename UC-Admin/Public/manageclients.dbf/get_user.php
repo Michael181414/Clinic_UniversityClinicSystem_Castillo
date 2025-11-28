@@ -103,7 +103,9 @@ if (!empty($clientType)) {
             </td>
             <td class="searchable-name"><?= htmlspecialchars($client['FullName']) ?></td>
             <td><?= htmlspecialchars($client['Email']) ?></td>
-            <td><?= htmlspecialchars($client['Course']) ?></td>
+            <?php if ($clientType === 'Freshman' || $clientType === 'Students'): ?>
+                <td><?= htmlspecialchars($client['Course']) ?></td>
+            <?php endif; ?>
             <td><?= htmlspecialchars($client['Department']) ?></td>
             <td><?= htmlspecialchars($client['ClientType']) ?></td>
             <td class="actions-column">
