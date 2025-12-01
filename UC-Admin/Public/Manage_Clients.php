@@ -545,7 +545,7 @@ if (isset($_GET['error'])) {
                                     <td class="email-td">
                                         <?= htmlspecialchars($freshman['Email']) ?>
                                     </td>
-                                    <td>
+                                    <td class="course-td">
                                         <?= htmlspecialchars($freshman['Course']) ?>
                                     </td>
                                     <td>
@@ -669,7 +669,7 @@ if (isset($_GET['error'])) {
                                     <td class="email-td">
                                         <?= htmlspecialchars($students['Email']) ?>
                                     </td>
-                                    <td>
+                                    <td class="course-td">
                                         <?= htmlspecialchars($students['Course']) ?>
                                     </td>
                                     <td>

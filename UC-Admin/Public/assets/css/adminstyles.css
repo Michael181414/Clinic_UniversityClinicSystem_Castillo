@@ -81,7 +81,7 @@ body {
   position: fixed;
   top: 70px;
   left: 0px;
-  width: 220px;
+  width: 250px;
   height: 95vh;
   border-radius: 0px;
   /*background: linear-gradient(to top, #2e68cc, #52affd);*/
@@ -103,8 +103,8 @@ body {
 }
 
 .navbar.collapsed ~ .content {
-  margin-left: 60px;
-  width: calc(100% - 60px);
+  margin-left: 70px;
+  width: calc(100% - 70px);
 }
 
 .navbar.collapsed .buttons {
@@ -126,7 +126,7 @@ body {
   transition: 300ms ease-in-out;
 }
 .navbar:hover {
-  width: 220px;
+  width: 250px;
 }
 .navbar:hover .buttons {
   width: 100%;
