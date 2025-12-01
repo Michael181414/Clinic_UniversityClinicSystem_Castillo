@@ -5,6 +5,8 @@ require '../config/database.php';
 
 $pdo = pdo_connect_mysql();
 $message = '';
+$password_error = '';
+$confirm_error = '';
 
 if (!isset($_SESSION['reset_email'])) {
     header('Location: request_reset.php'); // If no email stored, go back
@@ -14,11 +16,14 @@ if (!isset($_SESSION['reset_email'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_SESSION['reset_email'];
     $reset_code = $_POST['reset_code'];
-    $new_password = $_POST['new_password'];
-    $confirm_password = $_POST['confirm_password'];
+    $new_password = trim($_POST['new_password']);
+    $confirm_password = trim($_POST['confirm_password']);
 
-    if ($new_password !== $confirm_password) {
-        $message = "Passwords do not match!";
+    // Password validation
+    if (strlen($new_password) < 8) {
+        $password_error = "Password must be at least 8 characters long.";
+    } elseif ($new_password !== $confirm_password) {
+        $confirm_error = "Passwords do not match!";
     } else {
         $stmt = $pdo->prepare("SELECT * FROM clients WHERE Email = ? AND ResetCode = ?");
         $stmt->execute([$email, $reset_code]);
@@ -72,6 +77,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         h2 {
             font-family: "Poppins", sans-serif;
         }
+
+        .password-error {
+            color: #d93025;
+            font-size: 13px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            text-align: left;
+            padding-left: 5px;
+        }
+
+        .confirm-error {
+            color: #d93025;
+            font-size: 13px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            text-align: left;
+            padding-left: 5px;
+        }
+
+        .input-error {
+            border-color: #d93025 !important;
+        }
+
+        .message {
+            color: #d93025;
+            font-size: 13px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            text-align: left;
+            padding-left: 5px;
+        }
+
+        .success-message {
+            color: #1a73e8;
+            font-size: 13px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            text-align: left;
+            padding-left: 5px;
+        }
     </style>
 </head>
 
@@ -88,32 +133,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <div class="right-section">
             <h2 id="login">Reset Your Password</h2>
-            <?php if (!empty($message)) echo "<p>$message</p>"; ?>
-            <form action="reset-pass.php" method="POST">
+            <?php if (!empty($message)): ?>
+                <?php if (strpos($message, 'successfully') !== false): ?>
+                    <div class="success-message"><?php echo $message; ?></div>
+                <?php else: ?>
+                    <div class="message"><?php echo $message; ?></div>
+                <?php endif; ?>
+            <?php endif; ?>
+            <form id="resetForm" action="reset-pass.php" method="POST">
                 <div class="input-group">
                     <i class="fas fa-key left-icon"></i>
                     <input class="inputs" type="text" name="reset_code" placeholder="Enter Reset Code" required>
                 </div>
 
-                <!-- New Password -->
                 <div class="input-group">
                     <i class="fas fa-lock left-icon"></i>
-                    <input class="inputs" type="password" id="new_password" name="new_password" placeholder="Enter New Password" required>
+                    <input class="inputs <?php echo !empty($password_error) ? 'input-error' : ''; ?>" 
+                           type="password" id="new_password" name="new_password" placeholder="Enter New Password" required>
                     <i class="fas fa-eye toggle-password" data-target="new_password"></i>
                 </div>
+                <?php if (!empty($password_error)): ?>
+                    <div class="password-error"><?php echo htmlspecialchars($password_error); ?></div>
+                <?php endif; ?>
 
-                <!-- Confirm Password -->
                 <div class="input-group">
                     <i class="fas fa-lock left-icon"></i>
-                    <input class="inputs" type="password" id="confirm_password" name="confirm_password" placeholder="Confirm New Password" required>
+                    <input class="inputs <?php echo !empty($confirm_error) ? 'input-error' : ''; ?>" 
+                           type="password" id="confirm_password" name="confirm_password" placeholder="Confirm New Password" required>
                     <i class="fas fa-eye toggle-password" data-target="confirm_password"></i>
                 </div>
+                <?php if (!empty($confirm_error)): ?>
+                    <div class="confirm-error"><?php echo htmlspecialchars($confirm_error); ?></div>
+                <?php endif; ?>
 
                 <button type="submit">Reset Password</button>
             </form>
         </div>
         <script>
-            // Toggle password visibility for multiple fields
             document.querySelectorAll(".toggle-password").forEach(toggle => {
                 toggle.addEventListener("click", function() {
                     const input = document.getElementById(this.dataset.target);
@@ -123,6 +179,96 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     this.classList.toggle("fa-eye");
                     this.classList.toggle("fa-eye-slash");
                 });
+            });
+
+            const newPasswordInput = document.getElementById('new_password');
+            const confirmPasswordInput = document.getElementById('confirm_password');
+
+            function validatePasswords() {
+                const newPassword = newPasswordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                let hasError = false;
+
+                const newPasswordError = newPasswordInput.parentElement.nextElementSibling;
+                const confirmPasswordError = confirmPasswordInput.parentElement.nextElementSibling;
+
+                if (newPassword.length > 0 && newPassword.length < 8) {
+                    if (!newPasswordError || !newPasswordError.classList.contains('password-error')) {
+                        const newError = document.createElement('div');
+                        newError.className = 'password-error';
+                        newError.textContent = 'Password must be at least 8 characters long.';
+                        newPasswordInput.parentElement.after(newError);
+                    } else {
+                        newPasswordError.textContent = 'Password must be at least 8 characters long.';
+                    }
+                    newPasswordInput.classList.add('input-error');
+                    hasError = true;
+                } else {
+                    if (newPasswordError && newPasswordError.classList.contains('password-error')) {
+                        newPasswordError.remove();
+                    }
+                    newPasswordInput.classList.remove('input-error');
+                }
+
+                if (newPassword.length >= 8 && confirmPassword.length > 0 && newPassword !== confirmPassword) {
+                    if (!confirmPasswordError || !confirmPasswordError.classList.contains('confirm-error')) {
+                        const newError = document.createElement('div');
+                        newError.className = 'confirm-error';
+                        newError.textContent = 'Passwords do not match!';
+                        confirmPasswordInput.parentElement.after(newError);
+                    } else {
+                        confirmPasswordError.textContent = 'Passwords do not match!';
+                    }
+                    confirmPasswordInput.classList.add('input-error');
+                    hasError = true;
+                } else {
+                    if (confirmPasswordError && confirmPasswordError.classList.contains('confirm-error')) {
+                        confirmPasswordError.remove();
+                    }
+                    confirmPasswordInput.classList.remove('input-error');
+                }
+
+                return !hasError;
+            }
+
+            newPasswordInput.addEventListener('input', validatePasswords);
+            confirmPasswordInput.addEventListener('input', validatePasswords);
+
+            document.getElementById('resetForm').addEventListener('submit', function(e) {
+                const newPassword = newPasswordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                let hasError = false;
+
+                validatePasswords();
+
+                const newPasswordError = newPasswordInput.parentElement.nextElementSibling;
+                const confirmPasswordError = confirmPasswordInput.parentElement.nextElementSibling;
+
+                if (newPassword.length < 8) {
+                    if (!newPasswordError || !newPasswordError.classList.contains('password-error')) {
+                        const newError = document.createElement('div');
+                        newError.className = 'password-error';
+                        newError.textContent = 'Password must be at least 8 characters long.';
+                        newPasswordInput.parentElement.after(newError);
+                    }
+                    newPasswordInput.classList.add('input-error');
+                    hasError = true;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    if (!confirmPasswordError || !confirmPasswordError.classList.contains('confirm-error')) {
+                        const newError = document.createElement('div');
+                        newError.className = 'confirm-error';
+                        newError.textContent = 'Passwords do not match!';
+                        confirmPasswordInput.parentElement.after(newError);
+                    }
+                    confirmPasswordInput.classList.add('input-error');
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    e.preventDefault();
+                }
             });
         </script>
     </div>
