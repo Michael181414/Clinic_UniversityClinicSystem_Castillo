@@ -151,7 +151,7 @@
             <div id="client-history-container" class="client-history-container">
                 <div class="table-wrapper">
                     <table class="client-history-table">
-                        <thead>
+                        <thead class="table-header">
                             <tr>
                                 <th class="id-col">Log ID</th>
                                 <th class="id-col">User ID</th>
@@ -176,49 +176,60 @@
     <!-- Modal for displaying full log -->
     <div id="logModal" class="modal" style="display:none;">
         <div class="modal-content">
-
             <div class="medform-modal-header">
                 <h3>Activity Log Details</h3>
                 <span class="close">&times;</span>
             </div>
-            <table class="modal-table">
-                <tr>
-                    <th>Log ID:</th>
-                    <td id="modalLogID"></td>
-                </tr>
-                <tr>
-                    <th>User ID:</th>
-                    <td id="modalUserID"></td>
-                </tr>
-                <tr>
-                    <th>Email/Username:</th>
-                    <td id="modalUsername"></td>
-                </tr>
-                <tr>
-                    <th>Role:</th>
-                    <td id="modalRole"></td>
-                </tr>
-                <tr>
-                    <th>Action Type:</th>
-                    <td id="modalActionType"></td>
-                </tr>
-                <tr>
-                    <th>Action Description:</th>
-                    <td id="modalActionDescription"></td>
-                </tr>
-                <tr>
-                    <th>Date:</th>
-                    <td id="modalDate"></td>
-                </tr>
-                <tr>
-                    <th>Time:</th>
-                    <td id="modalTime"></td>
-                </tr>
-                <tr>
-                    <th>Status:</th>
-                    <td id="modalStatus"></td>
-                </tr>
-            </table>
+
+            <div class="modal-details">
+
+                <div class="detail-row">
+                    <span class="detail-label">Log ID</span>
+                    <span class="detail-value" id="modalLogID"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">User ID</span>
+                    <span class="detail-value" id="modalUserID"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Email/Username</span>
+                    <span class="detail-value" id="modalUsername"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Role</span>
+                    <span class="detail-value" id="modalRole"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Action Type</span>
+                    <span class="detail-value" id="modalActionType"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Action Description</span>
+                    <span class="detail-value" id="modalActionDescription"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Date</span>
+                    <span class="detail-value" id="modalDate"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Time</span>
+                    <span class="detail-value" id="modalTime"></span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value" id="modalStatus"></span>
+                </div>
+
+            </div>
+
         </div>
     </div>
 

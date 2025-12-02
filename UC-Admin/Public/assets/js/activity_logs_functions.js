@@ -125,7 +125,6 @@ function showLogModal(log) {
 // Close modal
 function closeModal() {
   document.getElementById("logModal").style.display = "none";
-  document.body.style.overflow = "auto";
 }
 
 // Load logs with current filters

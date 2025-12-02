@@ -282,7 +282,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
             </a>
             <a href="Activity_logs.php">
                 <button class="buttons" id="activitylogsBtn">
-                    <img src="assets/images/activity_logs_icon.png" class="button-icon-nav" loading="lazy">
+                    <img src="assets/images/activity_logs_icon.png" class="button-icon-nav" style="width: 23px; height: 23px" loading="lazy">
                     <span class="nav-text">Activity Logs</span>
                 </button>
             </a>
