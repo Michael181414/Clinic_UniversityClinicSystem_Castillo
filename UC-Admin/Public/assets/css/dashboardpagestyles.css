@@ -104,7 +104,7 @@ h3 {
   align-items: center;
   padding: 10px;
   max-height: 58px;
-  background-color: rgb(241, 247, 255);
+  background-color: rgb(255, 255, 255);
   border-radius: 0px 0px 0px 0px;
 }
 .header-modal-button {
@@ -314,7 +314,7 @@ h3 {
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  background-color: rgb(241, 247, 255);
+  background-color: rgb(255, 255, 255);
   border-radius: 0px 0px 0px 0px;
   color: #0562ba;
 }
@@ -1440,4 +1440,67 @@ p {
   h2 {
     font-size: clamp(1.5rem, 1vw, 1.75rem);
   }
+}
+
+#activitylogsBtn img {
+  height: 23px;
+  width: 23px;
+}
+
+.profile-container {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Dropdown hidden by default */
+.profile-dropdown {
+  display: flex;
+  flex-direction: column;
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  min-width: 180px;
+  z-index: 10000;
+  overflow: hidden;
+  font-size: 14px;
+  padding: 15px;
+}
+
+.profile-item,
+.fixed-profile-item {
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #333;
+  cursor: pointer;
+  transform: scale(1); /* normal size */
+  transition: background 0.2s, transform 0.1s ease;
+}
+
+.profile-item:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.03); /* slightly bigger on hover */
+  border-left: solid #0b62c9 3px;
+}
+
+#profileBtn {
+  width: 45px;
+  height: 45px;
+}
+#btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+#btn i {
+  font-size: 25px;
+  padding-right: 5px;
 }

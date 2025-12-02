@@ -1,7 +1,25 @@
 <?php
 include 'dashboard.dbf/fetch_dashboard_data.php';
 require 'dashboard.dbf/recent_consultations.php';
+require_once 'config/database.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$pdo = pdo_connect_mysql();
+
+// Get admin ID from session
+$admin_id = $_SESSION['user_id'] ?? null;
+
+// Query admin table safely
+$stmt = $pdo->prepare("SELECT * FROM admin WHERE id = :adminID");
+$stmt->execute(['adminID' => $admin_id]);
+
+$current_user = $stmt->fetch(PDO::FETCH_ASSOC); // false if no row found
+
+$role = $current_user['user_type'] ?? 'Admin';
+$name = $current_user['username'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -69,8 +87,39 @@ require 'dashboard.dbf/recent_consultations.php';
         <div class="page-title">
             <h4>Dashboard</h4>
         </div>
-    </div>
 
+        <div class="profile-container">
+            <img id="profileBtn" src="<?= htmlspecialchars(!empty($rec['profilePicturePath']) ? '../../uploads/' . $rec['profilePicturePath'] : '../../uploads/profilepic2.png') ?>" class="profile-pic" alt="Profile">
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="fixed-profile-item">
+                    <i class="fas fa-envelope"></i> <?= htmlspecialchars($current_user['username'] ?? 'Admin') ?>
+                </div>
+                <a href="settings.php">
+                    <div class="fixed-profile-item"><i class="fas fa-cog"></i> Settings</div>
+                </a>
+                <div class="profile-item" onclick="document.getElementById('logoutForm').submit()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </div>
+                <form id="logoutForm" action="admin_logout.php" method="post"></form>
+            </div>
+        </div>
+    </div>
+    <script>
+        const profileBtn = document.getElementById("profileBtn");
+        const profileDropdown = document.getElementById("profileDropdown");
+
+        profileBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            profileDropdown.style.display =
+                profileDropdown.style.display === "block" ? "none" : "block";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                profileDropdown.style.display = "none";
+            }
+        });
+    </script>
     <div class="main-container">
         <nav class="navbar">
             <a href="Dashboard.php">
@@ -83,6 +132,12 @@ require 'dashboard.dbf/recent_consultations.php';
                 <button class="buttons" id="manageclientsBtn">
                     <img src="assets/images/manageclients_icon.svg" class="button-icon-nav" loading="lazy">
                     <span class="nav-text">Manage Patients</span>
+                </button>
+            </a>
+            <a href="Activity_logs.php">
+                <button class="buttons" id="activitylogsBtn">
+                    <img src="assets/images/activity_logs_icon.png" class="button-icon-nav" loading="lazy">
+                    <span class="nav-text">Activity Logs</span>
                 </button>
             </a>
             <a href="Data_Management.php">
@@ -99,7 +154,7 @@ require 'dashboard.dbf/recent_consultations.php';
                 </button>
             </a>
     -->
-            <a href="../../index.php">
+            <a href="admin_logout.php">
                 <button class="buttons" id="logoutbtn">
                     <img src="assets/images/logout-icon.svg" class="button-icon-nav" loading="lazy">
                     <span class="nav-text">Logout</span>
@@ -111,14 +166,17 @@ require 'dashboard.dbf/recent_consultations.php';
             <div class="report-cards-container">
                 <div class="quantity-statistics-container">
                     <div class="admin-tex-div">
-                        <h3>Welcome Admin!</h3>
+                        <h3>
+                            Welcome
+                            <?= htmlspecialchars($role) ?><?= $name ? ', ' . htmlspecialchars($name) : '' ?>!
+                        </h3>
                     </div>
                     <div class="patients-statisticis">
                         <div class="patients-type-counts-div">
-                            <div id="header-count-div" class="counts-div">
+                            <div id="header-count-div" class="counts-div" style="padding-right: 0px;">
                                 <h4>Registered Patients Overview</h4>
-                                <button class="header-modal-button">
-                                    <i class="fas fa-plus"></i>
+                                <button id="btn" class="header-modal-button">
+                                    <i class="fas fa-plus" style="font-size: 13px;"></i>
                                     View more
                                 </button>
 

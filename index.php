@@ -1,4 +1,5 @@
 <?php
+
 require 'config/database.php';
 
 function verify_password($password, $stored_hash)
@@ -22,10 +23,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($admin && verify_password($password, $admin['password'])) {
-            // Admin login successful
-            $_SESSION['user_type'] = 'admin';
+
+            // Save session
+            $_SESSION['user_type'] = $admin['user_type'];   // Doctor or Nurse
             $_SESSION['user_id']   = $admin['id'];
             $_SESSION['username']  = $admin['username'];
+
+            // Log login
+            $logStmt = $pdo->prepare("
+        INSERT INTO activity_logs 
+        (user_id, username, role, action_type, action_description, status) 
+        VALUES (?, ?, ?, ?, ?, ?)
+    ");
+
+            $logStmt->execute([
+                $admin['id'],
+                $admin['username'],
+                $admin['user_type'],    // Doctor or Nurse
+                'Login',
+                $admin['user_type'] . ' logged in',
+                'SUCCESS'
+            ]);
 
             header("Location: UC-Admin/Public/Dashboard.php");
             exit();

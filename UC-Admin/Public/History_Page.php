@@ -352,7 +352,7 @@ $fullName = trim($givenName . $surname);
                 </button>
             </a>
     -->
-            <a href="../../index.php">
+            <a href="admin_logout.php">
                 <button class="buttons" id="logoutbtn">
                     <img src="assets/images/logout-icon.svg" class="button-icon-nav" loading="lazy">
                     <span class="nav-text">Logout</span>

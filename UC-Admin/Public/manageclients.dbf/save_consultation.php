@@ -3,6 +3,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+session_start(); // Start session to get admin info
+
 require '../config/database.php';
 $pdo = pdo_connect_mysql();
 
@@ -23,13 +25,20 @@ if (!$clientID) {
     exit;
 }
 
-// Check if client exists
-$checkClient = $pdo->prepare("SELECT * FROM clients WHERE ClientID = ?");
+// Check if client exists and get email
+$checkClient = $pdo->prepare("SELECT Email FROM clients WHERE ClientID = ?");
 $checkClient->execute([$clientID]);
-if ($checkClient->rowCount() === 0) {
-    echo json_encode(['status' => 'error', 'message' => "Error: ClientID $clientID does not exist in the clients table."]);
+$client = $checkClient->fetch(PDO::FETCH_ASSOC);
+
+if (!$client) {
+    echo json_encode(['status' => 'error', 'message' => "Error: ClientID $clientID does not exist."]);
     exit;
 }
+
+// Get session user info
+$user_id   = $_SESSION['user_id'] ?? null;
+$username  = $_SESSION['username'] ?? 'System';
+$user_role = $_SESSION['user_type'] ?? 'Unknown';
 
 try {
     $pdo->beginTransaction();
@@ -38,7 +47,7 @@ try {
     $actionDate     = date('Y-m-d');
     $actionTime12hr = date('h:i:s A');
 
-    // Insert into history table (progress removed)
+    // Insert into history table
     $insertHistory = $pdo->prepare("
         INSERT INTO history (ClientID, actionDate, actionTime) 
         VALUES (?, ?, ?)
@@ -67,14 +76,28 @@ try {
     ]);
 
     // Insert into consultations table
-    $date_issued = date('Y-m-d');
-    $remarks     = "Medical certificate issued on $date_issued";
+    $remarks     = "Medical certificate issued on " . date('Y-m-d');
 
     $stmt2 = $pdo->prepare("
         INSERT INTO consultations (client_id, historyID, consultation_date, certificate_issued, remarks) 
         VALUES (?, ?, CURDATE(), TRUE, ?)
     ");
     $stmt2->execute([$clientID, $historyID, $remarks]);
+
+    // --- Activity Log (using client email) ---
+    $action_description = "Added consultation record for Client Email: {$client['Email']}, ClientID: $clientID";
+    $logStmt = $pdo->prepare("
+        INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status) 
+        VALUES (?, ?, ?, ?, ?, ?)
+    ");
+    $logStmt->execute([
+        $user_id,
+        $username,
+        $user_role,
+        'Add Consultation Record',
+        $action_description,
+        'SUCCESS'
+    ]);
 
     $pdo->commit();
 
@@ -85,6 +108,22 @@ try {
     ]);
 } catch (Exception $e) {
     $pdo->rollBack();
+
+    // Log the error in activity_logs
+    $error_description = "Failed to add consultation record for Client Email: {$client['Email']}, ClientID $clientID. Error: " . $e->getMessage();
+    $logStmt = $pdo->prepare("
+        INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status) 
+        VALUES (?, ?, ?, ?, ?, ?)
+    ");
+    $logStmt->execute([
+        $user_id,
+        $username,
+        $user_role,
+        'Add Consultation Record',
+        $error_description,
+        'ERROR'
+    ]);
+
     echo json_encode([
         'status' => 'error',
         'message' => 'Error saving data: ' . $e->getMessage()

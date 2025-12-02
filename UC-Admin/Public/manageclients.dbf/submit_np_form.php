@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
-
+session_start(); // Needed for admin/session info
 header('Content-Type: application/json');
 
 // Debug: Log received POST data
@@ -17,6 +17,7 @@ if (empty($_POST['client_id'])) {
     exit;
 }
 
+// --- Helper: Insert medical form ---
 function insertMedicalForm($formData)
 {
     $pdo = pdo_connect_mysql();
@@ -27,13 +28,13 @@ function insertMedicalForm($formData)
                 client_id, blood_test, urinalysis, chest_xray, drug_test, psych_test, neuro_test,
                 full_name, agency_address, address, age, sex, civil_status, proposed_position,
                 height, weight, blood_type,
-                physician_signature, physician_agency, OtherInfo,  physician_license, physician_designation,
+                physician_signature, physician_agency, OtherInfo, physician_license, physician_designation,
                 created_at
             ) VALUES (
                 :client_id, :blood_test, :urinalysis, :chest_xray, :drug_test, :psych_test, :neuro_test,
                 :full_name, :agency_address, :address, :age, :sex, :civil_status, :proposed_position,
                 :height, :weight, :blood_type,
-                :physician_signature, :physician_agency, :otherinfo, :physician_license, :offial_designation, 
+                :physician_signature, :physician_agency, :otherinfo, :physician_license, :official_designation,
                 NOW()
             )
         ");
@@ -65,25 +66,29 @@ function insertMedicalForm($formData)
             ':physician_agency' => $formData['physician_agency'] ?? '',
             ':otherinfo' => $formData['otherinfo'] ?? '',
             ':physician_license' => $formData['license_no'] ?? '',
-            ':offial_designation' => $formData['official_designation'] ?? ''
+            ':official_designation' => $formData['official_designation'] ?? ''
         ]);
 
         return $pdo->lastInsertId();
-
     } catch (PDOException $e) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Database error: ' . $e->getMessage()
-        ]);
-        exit;
+        throw $e;
     }
 }
 
-// Handle the POST request
+// --- Handle POST request ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $required = [
-        'client_id', 'name', 'agency', 'address', 'age', 'sex',
-        'civil-status', 'position', 'height', 'weight', 'blood-type'
+        'client_id',
+        'name',
+        'agency',
+        'address',
+        'age',
+        'sex',
+        'civil-status',
+        'position',
+        'height',
+        'weight',
+        'blood-type'
     ];
     $missing = [];
 
@@ -102,19 +107,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $insertId = insertMedicalForm($_POST);
+    try {
+        $insertId = insertMedicalForm($_POST);
 
-    if ($insertId !== false) {
+        // --- Activity log ---
+        $pdo = pdo_connect_mysql();
+
+        // Get client email
+        $client_id = $_POST['client_id'];
+        $checkClient = $pdo->prepare("SELECT Email FROM clients WHERE ClientID = ?");
+        $checkClient->execute([$client_id]);
+        $client = $checkClient->fetch(PDO::FETCH_ASSOC);
+        $client_email = $client['Email'] ?? 'Unknown';
+
+        // Get session info
+        $user_id   = $_SESSION['user_id'] ?? null;
+        $username  = $_SESSION['username'] ?? 'System';
+        $user_role = $_SESSION['user_type'] ?? 'Unknown';
+
+        $action_type = "New Personnel Form Submission";
+        $action_description = "Submitted new personnel form for Client Email: $client_email, ClientID: $client_id";
+
+        $logStmt = $pdo->prepare("
+            INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $logStmt->execute([
+            $user_id,
+            $username,
+            $user_role,
+            $action_type,
+            $action_description,
+            'SUCCESS'
+        ]);
+
         echo json_encode([
             'success' => true,
             'message' => 'Medical form submitted successfully',
             'insert_id' => $insertId
         ]);
-    } else {
+    } catch (PDOException $e) {
+        // Log failure
+        $pdo = pdo_connect_mysql();
+        $user_id   = $_SESSION['user_id'] ?? null;
+        $username  = $_SESSION['username'] ?? 'System';
+        $user_role = $_SESSION['user_type'] ?? 'Unknown';
+        $client_id = $_POST['client_id'] ?? 'Unknown';
+        $checkClient = $pdo->prepare("SELECT Email FROM clients WHERE ClientID = ?");
+        $checkClient->execute([$client_id]);
+        $client = $checkClient->fetch(PDO::FETCH_ASSOC);
+        $client_email = $client['Email'] ?? 'Unknown';
+
+        $error_description = "Failed to submit new personnel form for Client Email: $client_email, ClientID: $client_id. Error: " . $e->getMessage();
+
+        $logStmt = $pdo->prepare("
+            INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $logStmt->execute([
+            $user_id,
+            $username,
+            $user_role,
+            "New Personnel Form Submission",
+            $error_description,
+            'ERROR'
+        ]);
+
         echo json_encode([
             'success' => false,
-            'message' => 'Failed to submit medical form.'
+            'message' => 'Database error: ' . $e->getMessage()
         ]);
+        exit;
     }
-    exit;
 }

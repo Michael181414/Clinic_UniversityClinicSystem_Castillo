@@ -1,0 +1,125 @@
+* {
+  box-sizing: border-box;
+}
+
+.body {
+  overflow: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 70px;
+  margin-left: 250px;
+  flex: 1;
+  height: 100%;
+  gap: 25px;
+  padding: 25px;
+  padding-bottom: 0px;
+  max-height: 2700px;
+  width: calc(100% - 250px);
+  transition: margin-left 0.2s ease-in-out, width 0.2s ease-in-out;
+  overflow: hidden;
+}
+
+.clients-table-container {
+  width: 100%;
+}
+.client-history-table {
+  overflow: hidden;
+}
+.rows {
+  max-width: 200px;
+  white-space: nowrap; /* keep text on one line */
+  overflow: hidden; /* hide overflow */
+  text-overflow: ellipsis; /* the magic */
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 15px;
+  border-radius: 15px;
+  width: 600px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.3s ease;
+}
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close:hover {
+  color: #000;
+}
+
+.medform-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+
+  h3 {
+    font-size: clamp(1.5rem, 1vw, 1.75rem);
+  }
+}
+
+.modal-table {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  border: solid 1px #dfdfdf;
+  border-left: 6px solid #2e68cc;
+  overflow: hidden;
+}
+
+.modal-table th {
+  text-align: left;
+  padding: 10px 8px;
+  font-size: clamp(1rem, 1vw, 1.25rem);
+  border: solid 1px #dfdfdf;
+  background-color: rgb(243, 255, 249);
+  font-weight: 400;
+}
+
+.modal-table td {
+  text-align: left;
+  padding: 10px 8px;
+  font-size: clamp(1rem, 1vw, 1.25rem);
+  border-bottom: solid 1px #dfdfdf;
+  border-top: solid 1px #dfdfdf;
+  width: 100%;
+}

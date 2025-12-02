@@ -280,6 +280,12 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                     <span class="nav-text">Manage Patients</span>
                 </button>
             </a>
+            <a href="Activity_logs.php">
+                <button class="buttons" id="activitylogsBtn">
+                    <img src="assets/images/activity_logs_icon.png" class="button-icon-nav" loading="lazy">
+                    <span class="nav-text">Activity Logs</span>
+                </button>
+            </a>
             <a href="Data_Management.php">
                 <button class="buttons" id="datamanagementBtn">
                     <img src="assets/images/data_manage_icon.svg" class="button-icon-nav" loading="lazy">
@@ -294,7 +300,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                 </button>
             </a>
     -->
-            <a href="../../index.php">
+            <a href="admin_logout.php">
                 <button class="buttons" id="logoutbtn">
                     <img src="assets/images/logout-icon.svg" class="button-icon-nav" loading="lazy">
                     <span class="nav-text">Logout</span>

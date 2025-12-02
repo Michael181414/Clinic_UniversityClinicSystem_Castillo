@@ -37,6 +37,13 @@ foreach ($fields as $field) {
     $data[$field] = $_POST[$field] ?? '';
 }
 
+// Get client email for logging
+$clientEmail = 'Unknown';
+$checkClient = $pdo->prepare("SELECT Email FROM clients WHERE ClientID = ?");
+$checkClient->execute([$data['client_id']]);
+$client = $checkClient->fetch(PDO::FETCH_ASSOC);
+if ($client) $clientEmail = $client['Email'];
+
 try {
     // Get latest history for the client
     $getHistory = $pdo->prepare("
@@ -51,10 +58,7 @@ try {
 
     // If no history exists → create new one
     if (!$historyID) {
-        $insertHistory = $pdo->prepare("
-            INSERT INTO history (ClientID, actionDate) 
-            VALUES (?, NOW())
-        ");
+        $insertHistory = $pdo->prepare("INSERT INTO history (ClientID, actionDate) VALUES (?, NOW())");
         $insertHistory->execute([$data['client_id']]);
         $historyID = $pdo->lastInsertId();
     }
@@ -75,7 +79,6 @@ try {
             ExtremitiesNormal = ?, ExtremitiesFindings = ?,
             OthersNormal = ?, OthersFindings = ?
             WHERE historyID = ?";
-
         $params = [
             $data['height'],
             $data['weight'],
@@ -98,8 +101,10 @@ try {
             $data['others_findings'],
             $historyID
         ];
+        $actionType = "Update Physical Examination";
+        $actionMessage = "Updated physical examination for Client Email: $clientEmail, ClientID: {$data['client_id']}";
     } else {
-        // INSERT new physical examination data
+        // INSERT new record
         $sql = "INSERT INTO physicalexamination (
             ClientID, historyID, Height, Weight, BMI, BP, HR, RR, Temp,
             GenAppearanceAndSkinNormal, GenAppearanceAndSkinFindings,
@@ -109,7 +114,6 @@ try {
             ExtremitiesNormal, ExtremitiesFindings,
             OthersNormal, OthersFindings
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
         $params = [
             $data['client_id'],
             $historyID,
@@ -133,14 +137,44 @@ try {
             $data['others_normal'],
             $data['others_findings']
         ];
+        $actionType = "New Physical Examination";
+        $actionMessage = "Inserted new physical examination for Client Email: $clientEmail, ClientID: {$data['client_id']}";
     }
 
     $stmt = $pdo->prepare($sql);
     if ($stmt->execute($params)) {
+        // --- Activity Log Success ---
+        $logStmt = $pdo->prepare("
+            INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $logStmt->execute([
+            $_SESSION['user_id'] ?? null,
+            $_SESSION['username'] ?? 'System',
+            $_SESSION['user_type'] ?? 'Unknown',
+            $actionType,
+            $actionMessage,
+            'SUCCESS'
+        ]);
+
         echo json_encode(["status" => "success", "message" => "Physical examination saved successfully!"]);
     } else {
-        echo json_encode(["status" => "error", "message" => "Error saving data."]);
+        throw new Exception("Failed to save physical examination");
     }
-} catch (PDOException $e) {
+} catch (Exception $e) {
+    // --- Activity Log Error ---
+    $logStmt = $pdo->prepare("
+        INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ");
+    $logStmt->execute([
+        $_SESSION['user_id'] ?? null,
+        $_SESSION['username'] ?? 'System',
+        $_SESSION['user_type'] ?? 'Unknown',
+        "Physical Examination Error",
+        "Failed to save physical examination for Client Email: $clientEmail, ClientID: {$data['client_id']}. Error: " . $e->getMessage(),
+        'ERROR'
+    ]);
+
     echo json_encode(["status" => "error", "message" => "Database error: " . $e->getMessage()]);
 }

@@ -1,5 +1,6 @@
 <?php
 require '../config/database.php';
+session_start(); // Needed for admin/session info
 header('Content-Type: application/json');
 
 $pdo = pdo_connect_mysql();
@@ -12,6 +13,12 @@ function getCheckboxValue($name)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $client_id = $_POST['client_id'] ?? null;
+
+    // Get client email for activity log
+    $checkClient = $pdo->prepare("SELECT Email FROM clients WHERE ClientID = ?");
+    $checkClient->execute([$client_id]);
+    $client = $checkClient->fetch(PDO::FETCH_ASSOC);
+    $client_email = $client['Email'] ?? 'Unknown';
 
     // Get latest history ID (no progress filter)
     $getHistory = $pdo->prepare("
@@ -88,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ClientID = :client_id
                 WHERE historyID = :history_id
             ");
+            $action_type = "Update Diagnostic Record";
         } else {
             // INSERT new record
             $stmt = $pdo->prepare("INSERT INTO diagnosticresults (
@@ -103,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 :med_cert_issued, :referred_to, :recommendation, :physician_name,
                 :license_no, :signature_date, :institution
             )");
+            $action_type = "Create Diagnostic Record";
         }
 
         // Execute with parameters
@@ -130,8 +139,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':institution'         => $institution
         ]);
 
+        // --- Activity log ---
+        $user_id   = $_SESSION['user_id'] ?? null;
+        $username  = $_SESSION['username'] ?? 'System';
+        $user_role = $_SESSION['user_type'] ?? 'Unknown';
+
+        $action_description = "$action_type for Client Email: $client_email, ClientID: $client_id";
+
+        $logStmt = $pdo->prepare("
+            INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $logStmt->execute([
+            $user_id,
+            $username,
+            $user_role,
+            $action_type,
+            $action_description,
+            'SUCCESS'
+        ]);
+
         echo json_encode(['status' => 'success', 'message' => 'Diagnostic record saved successfully.']);
     } catch (Exception $e) {
+        // Log failure
+        $user_id   = $_SESSION['user_id'] ?? null;
+        $username  = $_SESSION['username'] ?? 'System';
+        $user_role = $_SESSION['user_type'] ?? 'Unknown';
+
+        $error_description = "Failed to $action_type for Client Email: $client_email, ClientID: $client_id. Error: " . $e->getMessage();
+        $logStmt = $pdo->prepare("
+            INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $logStmt->execute([
+            $user_id,
+            $username,
+            $user_role,
+            $action_type,
+            $error_description,
+            'ERROR'
+        ]);
+
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }

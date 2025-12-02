@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once('../config/database.php');
 require_once('../../../vendor/autoload.php');
 
@@ -32,16 +33,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
   }
 
-  // Insert data
-  $insert_stmt = $pdo->prepare("
-        INSERT INTO clients (Firstname, Lastname, Email, Sex, BirthDate, Password, ClientType, Department)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    ");
-  $insert_stmt->execute([$firstname, $lastname, $email, $sex, $birthdate, $password, $client_type, $department]);
-
-  // Send email notification
-  $mail = new PHPMailer(true);
   try {
+    // Insert client
+    $insert_stmt = $pdo->prepare("
+            INSERT INTO clients (Firstname, Lastname, Email, Sex, BirthDate, Password, ClientType, Department)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+    $insert_stmt->execute([$firstname, $lastname, $email, $sex, $birthdate, $password, $client_type, $department]);
+
+    // Get inserted patient ID
+    $patient_id = $pdo->lastInsertId();
+
+    // --- Insert activity log ---
+    // Make sure $admin exists (you need to set $admin from session or authentication)
+    $admin_id = $_SESSION['user_id'] ?? null;        // correct session variable
+    $admin_username = $_SESSION['username'] ?? 'System';
+    $admin_role     = $_SESSION['user_type'] ?? 'Unknown';
+
+    $action_description = "Added patient: ID {$patient_id}, Name {$firstname} {$lastname}";
+    $logStmt = $pdo->prepare("
+    INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status) 
+    VALUES (?, ?, ?, ?, ?, ?)
+");
+
+    $logStmt->execute([
+      $admin_id,          // user_id
+      $admin_username,    // username
+      $admin_role,        // Doctor or Nurse
+      'Add Patient',      // action_type
+      $action_description,
+      'SUCCESS'
+    ]);
+    // --- Send email ---
+    $mail = new PHPMailer(true);
     $mail->isSMTP();
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
@@ -59,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $mail->send();
 
-    // Only return JSON, no header redirects
     echo json_encode([
       'success' => true,
       'message' => 'Patient created and email sent successfully'
@@ -68,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   } catch (Exception $e) {
     echo json_encode([
       'success' => false,
-      'message' => "Mailer Error: {$mail->ErrorInfo}"
+      'message' => 'Error: ' . $e->getMessage()
     ]);
     exit();
   }

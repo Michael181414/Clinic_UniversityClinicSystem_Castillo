@@ -24,13 +24,9 @@ if (isset($_GET['error'])) {
     <link rel="stylesheet" href="assets/css/adminstyles.css">
     <link rel="stylesheet" href="assets/css/manageusers.css">
     <link rel="stylesheet" href="webicons/fontawesome-free-6.7.2-web/css/all.min.css">
-
     <script src="assets/js/dashboard_func.js" defer></script>
     <script src="assets/js/manageclients.js" defer></script>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
-        rel="stylesheet" />
     <style>
         @font-face {
             font-family: "Montserrat";
@@ -46,6 +42,9 @@ if (isset($_GET['error'])) {
             font-style: normal;
         }
     </style>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+        rel="stylesheet" />
     <title>Manage Profile</title>
 </head>
 </head>
@@ -80,6 +79,12 @@ if (isset($_GET['error'])) {
                     <span class="nav-text">Manage Patients</span>
                 </button>
             </a>
+            <a href="Activity_logs.php">
+                <button class="buttons" id="activitylogsBtn">
+                    <img src="assets/images/activity_logs_icon.png" class="button-icon-nav" style="width: 23px; height: 23px" loading="lazy">
+                    <span class="nav-text">Activity Logs</span>
+                </button>
+            </a>
             <a href="Data_Management.php">
                 <button class="buttons" id="datamanagementBtn">
                     <img src="assets/images/data_manage_icon.svg" class="button-icon-nav" loading="lazy">
@@ -94,7 +99,7 @@ if (isset($_GET['error'])) {
                 </button>
             </a>
     -->
-            <a href="../../index.php">
+            <a href="admin_logout.php">
                 <button class="buttons" id="logoutbtn">
                     <img src="assets/images/logout-icon.svg" class="button-icon-nav" loading="lazy">
                     <span class="nav-text">Logout</span>
@@ -548,7 +553,7 @@ if (isset($_GET['error'])) {
                                     <td class="course-td">
                                         <?= htmlspecialchars($freshman['Course']) ?>
                                     </td>
-                                    <td>
+                                    <td class="department-td">
                                         <?= htmlspecialchars($freshman['Department']) ?>
                                     </td>
 
@@ -614,7 +619,7 @@ if (isset($_GET['error'])) {
                                     <td class="email-td">
                                         <?= htmlspecialchars($newpersonnel['Email']) ?>
                                     </td>
-                                    <td>
+                                    <td class="department-td">
                                         <?= htmlspecialchars($newpersonnel['Department']) ?>
                                     </td>
 
@@ -672,7 +677,7 @@ if (isset($_GET['error'])) {
                                     <td class="course-td">
                                         <?= htmlspecialchars($students['Course']) ?>
                                     </td>
-                                    <td>
+                                    <td class="department-td">
                                         <?= htmlspecialchars($students['Department']) ?>
                                     </td>
 
@@ -724,7 +729,7 @@ if (isset($_GET['error'])) {
                                     <td class="email-td">
                                         <?= htmlspecialchars($faculties['Email']) ?>
                                     </td>
-                                    <td>
+                                    <td class="department-td">
                                         <?= htmlspecialchars($faculties['Department']) ?>
                                     </td>
 
@@ -776,8 +781,8 @@ if (isset($_GET['error'])) {
                                     <td class="email-td">
                                         <?= htmlspecialchars($personnel['Email']) ?>
                                     </td>
-                                    <td>
-                                        <?= htmlspecialchars($faculties['Department']) ?>
+                                    <td class="department-td">
+                                        <?= htmlspecialchars($personnel['Department']) ?>
                                     </td>
                                     <td class="actions-column">
                                         <div class="action-buttons">
