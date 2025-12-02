@@ -619,6 +619,132 @@ if ($clientId) {
                         gap: 15px;
                     }
                 }
+
+                /* ================== PROFILE CONTAINER & IMAGE STYLES ================== */
+.profile-container img#profileBtn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    
+    /* White shadow/glow effect */
+    box-shadow: 
+        0 0 0 3px white,
+        0 0 0 4px rgba(57, 125, 218, 0.3),
+        0 4px 15px rgba(57, 125, 218, 0.25) !important;
+    
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    cursor: pointer !important;
+    transform: scale(0.96) !important;
+    position: relative;
+}
+
+/* Hover effect */
+.profile-container img#profileBtn:hover {
+    transform: scale(1.03) !important;
+    box-shadow: 
+        0 0 0 4px white,
+        0 0 0 6px rgba(57, 125, 218, 0.4),
+        0 6px 20px rgba(57, 125, 218, 0.35) !important;
+    animation: pulse-glow 2s infinite !important;
+}
+
+/* Active/click effect */
+.profile-container img#profileBtn:active {
+    transform: scale(0.98) !important;
+    box-shadow: 
+        0 0 0 3px white,
+        0 0 0 5px rgba(57, 125, 218, 0.5),
+        0 2px 8px rgba(57, 125, 218, 0.3) !important;
+    transition: all 0.1s ease !important;
+}
+
+/* Pulse animation */
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 
+            0 0 0 4px white,
+            0 0 0 6px rgba(57, 125, 218, 0.4),
+            0 6px 20px rgba(57, 125, 218, 0.35);
+    }
+    50% {
+        box-shadow: 
+            0 0 0 4px white,
+            0 0 0 6px rgba(57, 125, 218, 0.6),
+            0 8px 25px rgba(57, 125, 218, 0.4);
+    }
+    100% {
+        box-shadow: 
+            0 0 0 4px white,
+            0 0 0 6px rgba(57, 125, 218, 0.4),
+            0 6px 20px rgba(57, 125, 218, 0.35);
+    }
+}
+
+/* Status indicator */
+.profile-container img#profileBtn::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-container img#profileBtn:hover::after {
+    opacity: 1;
+}
+
+/* ================== DROPDOWN HOVER EFFECTS ================== */
+/* Settings - BLUE background */
+.profile-dropdown a[href="settings.php"] .profile-item:hover,
+.profile-dropdown a[href="settings.php"] .fixed-profile-item:hover {
+    background-color: #e6f0ff !important;
+    border-left: solid #0b62c9 3px !important;
+    transform: translateX(4px) !important;
+    padding-left: 18px !important;
+    transition: all 0.2s ease !important;
+}
+
+.profile-dropdown a[href="settings.php"] .profile-item:hover i,
+.profile-dropdown a[href="settings.php"] .fixed-profile-item:hover i {
+    color: #0b62c9 !important;
+}
+
+/* Logout - RED background */
+.profile-dropdown .profile-item[onclick*="logout"]:hover,
+.profile-dropdown .profile-item:last-child:hover {
+    background-color: #ffebee !important;
+    border-left: solid #d32f2f 3px !important;
+    transform: translateX(4px) !important;
+    padding-left: 18px !important;
+    transition: all 0.2s ease !important;
+}
+
+.profile-dropdown .profile-item[onclick*="logout"]:hover i,
+.profile-dropdown .profile-item:last-child:hover i {
+    color: #d32f2f !important;
+}
+
+/* Email - NO hover effect */
+.profile-dropdown .profile-item:first-child:hover {
+    background-color: transparent !important;
+    border-left: none !important;
+    transform: none !important;
+    padding-left: 15px !important;
+    cursor: default !important;
+}
+
+/* General dropdown item styles */
+.profile-dropdown .profile-item {
+    transition: all 0.2s ease !important;
+}
             </style>
         </main>
     </div>
