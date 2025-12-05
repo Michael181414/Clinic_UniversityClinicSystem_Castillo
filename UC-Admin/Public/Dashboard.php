@@ -94,7 +94,7 @@ $name = $current_user['username'] ?? '';
                 <div class="fixed-profile-item">
                     <i class="fas fa-envelope"></i> <?= htmlspecialchars($current_user['username'] ?? 'Admin') ?>
                 </div>
-                <a href="settings.php">
+                <a href="Clinic_settings.php">
                     <div class="fixed-profile-item"><i class="fas fa-cog"></i> Settings</div>
                 </a>
                 <div class="profile-item" onclick="document.getElementById('logoutForm').submit()">
@@ -168,7 +168,7 @@ $name = $current_user['username'] ?? '';
                     <div class="admin-tex-div">
                         <h3>
                             Welcome
-                            <?= htmlspecialchars($role) ?><?= $name ? ', ' . htmlspecialchars($name) : '' ?>!
+                            <?= htmlspecialchars($role === 'Doctor' ? 'Dr.' : $role) ?><?= $name ? '' . htmlspecialchars($name) : '' ?>!
                         </h3>
                     </div>
                     <div class="patients-statisticis">

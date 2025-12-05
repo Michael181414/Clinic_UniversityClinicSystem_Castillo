@@ -9,7 +9,22 @@ try {
 } catch (PDOException $e) {
     die("Error fetching history data: " . $e->getMessage());
 }
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
+// Get admin ID from session
+$admin_id = $_SESSION['user_id'] ?? null;
+
+// Query admin table safely
+$stmt = $pdo->prepare("SELECT * FROM admin WHERE id = :adminID");
+$stmt->execute(['adminID' => $admin_id]);
+
+$current_user = $stmt->fetch(PDO::FETCH_ASSOC); // false if no row found
+
+$role = $current_user['user_type'] ?? 'Admin';
+$name = $current_user['username'] ?? '';
+$email = $current_user['email'] ?? '';
 ?>
 
 
@@ -19,7 +34,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layout Example</title>
+    <title>Data Management</title>
     <link rel="stylesheet" href="assets/css/dashboardpagestyles.css">
     <link rel="stylesheet" href="assets/css/adminstyles.css">
     <link rel="stylesheet" href="assets/css/data_management.css">
@@ -63,7 +78,38 @@ try {
         <div class="page-title">
             <h4>Data Management</h4>
         </div>
+        <div class="profile-container">
+            <img id="profileBtn" src="<?= htmlspecialchars(!empty($rec['profilePicturePath']) ? '../../uploads/' . $rec['profilePicturePath'] : '../../uploads/profilepic2.png') ?>" class="profile-pic" alt="Profile">
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="fixed-profile-item">
+                    <i class="fas fa-envelope"></i> <?= htmlspecialchars($current_user['username'] ?? 'Admin') ?>
+                </div>
+                <a href="Clinic_settings.php">
+                    <div class="fixed-profile-item"><i class="fas fa-cog"></i> Settings</div>
+                </a>
+                <div class="profile-item" onclick="document.getElementById('logoutForm').submit()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </div>
+                <form id="logoutForm" action="admin_logout.php" method="post"></form>
+            </div>
+        </div>
     </div>
+    <script>
+        const profileBtn = document.getElementById("profileBtn");
+        const profileDropdown = document.getElementById("profileDropdown");
+
+        profileBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            profileDropdown.style.display =
+                profileDropdown.style.display === "block" ? "none" : "block";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                profileDropdown.style.display = "none";
+            }
+        });
+    </script>
 
     <div class="main-container">
         <nav class="navbar">

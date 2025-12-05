@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password        = $_POST['password'];
 
         // ---------- 1️⃣ Check Admin Table First ----------
-        $stmt = $pdo->prepare("SELECT * FROM admin WHERE username = ?");
+        $stmt = $pdo->prepare("SELECT * FROM admin WHERE email = ?");
         $stmt->execute([$emailOrUsername]);
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Save session
             $_SESSION['user_type'] = $admin['user_type'];   // Doctor or Nurse
             $_SESSION['user_id']   = $admin['id'];
-            $_SESSION['username']  = $admin['username'];
+            $_SESSION['username']  = $admin['email'];
 
             // Log login
             $logStmt = $pdo->prepare("
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $logStmt->execute([
                 $admin['id'],
-                $admin['username'],
+                $admin['email'],
                 $admin['user_type'],    // Doctor or Nurse
                 'Login',
                 $admin['user_type'] . ' logged in',

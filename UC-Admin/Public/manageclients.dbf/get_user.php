@@ -2,7 +2,7 @@
 require_once 'config/database.php';
 header('Content-Type: text/html');
 
-function getFilteredClients($clientType, $globalSearch = '', $page = 1, $perPage = 10)
+function getFilteredClients($clientType, $globalSearch = '', $page = 1, $perPage = 30)
 {
     $pdo = pdo_connect_mysql();
     $offset = ($page - 1) * $perPage;
@@ -129,7 +129,7 @@ if (!empty($clientType)) {
 $clientType = $_GET['client_type'] ?? 'Student';
 $idFilter = $_GET['id_filter'] ?? '';
 $page = max(1, (int)($_GET['page'] ?? 1));
-$perPage = 10;
+$perPage = 30;
 
 $totalClients = countFilteredClients($clientType, $idFilter);
 $totalPages = ceil($totalClients / $perPage);
@@ -137,7 +137,7 @@ $totalPages = ceil($totalClients / $perPage);
 $clients = getFilteredClients($clientType, $idFilter, $page, $perPage);
 
 
-function fetchStudents($limit = 10, $offset = 0)
+function fetchStudents($limit = 30, $offset = 0)
 {
     $pdo = pdo_connect_mysql();
 
@@ -163,7 +163,7 @@ function fetchStudents($limit = 10, $offset = 0)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function fetchFaculty($limit = 10, $offset = 0)
+function fetchFaculty($limit = 30, $offset = 0)
 {
     $pdo = pdo_connect_mysql();
 
@@ -189,7 +189,7 @@ function fetchFaculty($limit = 10, $offset = 0)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function fetchPersonnel($limit = 10, $offset = 0)
+function fetchPersonnel($limit = 30, $offset = 0)
 {
     $pdo = pdo_connect_mysql();
 
@@ -215,7 +215,7 @@ function fetchPersonnel($limit = 10, $offset = 0)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function fetchFreshman($limit = 10, $offset = 0)
+function fetchFreshman($limit = 30, $offset = 0)
 {
     $pdo = pdo_connect_mysql();
 
@@ -241,7 +241,7 @@ function fetchFreshman($limit = 10, $offset = 0)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function fetchNewPersonnel($limit = 10, $offset = 0)
+function fetchNewPersonnel($limit = 30, $offset = 0)
 {
     $pdo = pdo_connect_mysql();
 

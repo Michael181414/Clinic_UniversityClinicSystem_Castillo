@@ -104,7 +104,6 @@ body {
 
 .navbar.collapsed ~ .content {
   margin-left: 70px;
-  width: calc(100% - 70px);
 }
 
 .navbar.collapsed .buttons {

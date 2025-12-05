@@ -9,7 +9,7 @@ $admin_username = $_SESSION['username']   ?? 'System';
 $admin_role     = $_SESSION['user_type']  ?? 'Unknown';
 
 // Log description
-$action_description = "Admin logged out";
+$action_description = "$admin_role logged out";
 
 $logStmt = $pdo->prepare("
     INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status) 

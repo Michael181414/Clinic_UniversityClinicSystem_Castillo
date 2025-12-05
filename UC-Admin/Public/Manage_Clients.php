@@ -1,7 +1,9 @@
 <?php
 require_once 'config/database.php';
 require_once 'manageclients.dbf/get_user.php';
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $students = fetchStudents();
 $faculties = fetchFaculty();
 $personnel = fetchPersonnel();
@@ -11,6 +13,21 @@ $newpersonnel = fetchNewPersonnel();
 if (isset($_GET['error'])) {
     echo '<div class="alert-error">' . htmlspecialchars($_GET['error']) . '</div>';
 }
+
+
+$pdo = pdo_connect_mysql();
+// Get admin ID from session
+$admin_id = $_SESSION['user_id'] ?? null;
+
+// Query admin table safely
+$stmt = $pdo->prepare("SELECT * FROM admin WHERE id = :adminID");
+$stmt->execute(['adminID' => $admin_id]);
+
+$current_user = $stmt->fetch(PDO::FETCH_ASSOC); // false if no row found
+
+$role = $current_user['user_type'] ?? 'Admin';
+$name = $current_user['username'] ?? '';
+$email = $current_user['email'] ?? '';
 ?>
 
 
@@ -20,7 +37,7 @@ if (isset($_GET['error'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layout Example</title>
+    <title>Manage Clients</title>
     <link rel="stylesheet" href="assets/css/adminstyles.css">
     <link rel="stylesheet" href="assets/css/manageusers.css">
     <link rel="stylesheet" href="webicons/fontawesome-free-6.7.2-web/css/all.min.css">
@@ -42,6 +59,7 @@ if (isset($_GET['error'])) {
             font-style: normal;
         }
     </style>
+
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
         rel="stylesheet" />
@@ -63,7 +81,38 @@ if (isset($_GET['error'])) {
         <div class="page-title">
             <h4>Manage Patients</h4>
         </div>
+        <div class="profile-container">
+            <img id="profileBtn" src="<?= htmlspecialchars(!empty($rec['profilePicturePath']) ? '../../uploads/' . $rec['profilePicturePath'] : '../../uploads/profilepic2.png') ?>" class="profile-pic" alt="Profile">
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="fixed-profile-item">
+                    <i class="fas fa-envelope"></i> <?= htmlspecialchars($current_user['username'] ?? 'Admin') ?>
+                </div>
+                <a href="Clinic_settings.php">
+                    <div class="fixed-profile-item"><i class="fas fa-cog"></i> Settings</div>
+                </a>
+                <div class="profile-item" onclick="document.getElementById('logoutForm').submit()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </div>
+                <form id="logoutForm" action="admin_logout.php" method="post"></form>
+            </div>
+        </div>
     </div>
+    <script>
+        const profileBtn = document.getElementById("profileBtn");
+        const profileDropdown = document.getElementById("profileDropdown");
+
+        profileBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            profileDropdown.style.display =
+                profileDropdown.style.display === "block" ? "none" : "block";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                profileDropdown.style.display = "none";
+            }
+        });
+    </script>
 
     <div class="main-container">
         <nav class="navbar">
@@ -520,65 +569,65 @@ if (isset($_GET['error'])) {
                 </style>
 
                 <!--====================================================================================-->
-                <div class="users_table_container">
-                    <div id="freshman-content" class="tab-content" style="display: none;">
 
-                        <table class="table table-bordered table-hover align-middle" id="freshmanstudentsTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Profile</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Course</th>
-                                    <th>Department</th>
-                                    <th class="actions-column">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="clientTableBody">
-                                <?php foreach ($freshman as $freshman): ?>
-                                    <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($freshman['ClientID']) ?>">
-                                        <td class="searchable-id"><?= htmlspecialchars($freshman['ClientID']) ?></td>
-                                        <td>
-                                            <?php
-                                            $profilePath = !empty($freshman['profilePicturePath']) ? '../../uploads/' . $freshman['profilePicturePath'] : '../../uploads/profilepic2.png';
-                                            ?>
-                                            <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
-                                        </td>
-                                        <td class="searchable-name">
-                                            <?= htmlspecialchars($freshman['FullName']) ?>
-                                        </td>
-                                        <td class="email-td">
-                                            <?= htmlspecialchars($freshman['Email']) ?>
-                                        </td>
-                                        <td class="course-td">
-                                            <?= htmlspecialchars($freshman['Course']) ?>
-                                        </td>
-                                        <td class="department-td">
-                                            <?= htmlspecialchars($freshman['Department']) ?>
-                                        </td>
+                <div id="freshman-content" class="tab-content" style="display: none;">
 
-                                        <td class="actions-column">
-                                            <div class="action-buttons">
-                                                <a href="ClientProfile.php?id=<?= $freshman['ClientID'] ?>" title="Edit User">
-                                                    <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                                </a>
-                                                <!--     <a href="ClientProfile.php?id=<?= $freshman['ClientID'] ?>" title="View Profile">
+                    <table class="table table-bordered table-hover align-middle" id="freshmanstudentsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Profile</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Department</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="clientTableBody">
+                            <?php foreach ($freshman as $freshman): ?>
+                                <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($freshman['ClientID']) ?>">
+                                    <td class="searchable-id"><?= htmlspecialchars($freshman['ClientID']) ?></td>
+                                    <td>
+                                        <?php
+                                        $profilePath = !empty($freshman['profilePicturePath']) ? '../../uploads/' . $freshman['profilePicturePath'] : '../../uploads/profilepic2.png';
+                                        ?>
+                                        <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
+                                    </td>
+                                    <td class="searchable-name">
+                                        <?= htmlspecialchars($freshman['FullName']) ?>
+                                    </td>
+                                    <td class="email-td">
+                                        <?= htmlspecialchars($freshman['Email']) ?>
+                                    </td>
+                                    <td class="course-td">
+                                        <?= htmlspecialchars($freshman['Course']) ?>
+                                    </td>
+                                    <td class="department-td">
+                                        <?= htmlspecialchars($freshman['Department']) ?>
+                                    </td>
+
+                                    <td class="actions-column">
+                                        <div class="action-buttons">
+                                            <a href="ClientProfile.php?id=<?= $freshman['ClientID'] ?>" title="Edit User">
+                                                <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+                                            <!--     <a href="ClientProfile.php?id=<?= $freshman['ClientID'] ?>" title="View Profile">
                                                             <i class="fas fa-eye eye-icon" style="color: #000; font-size: 18px;"></i>
                                                         </a>-->
-                                                <a href="manageclients.dbf/delete_client.php?id=<?= $freshman['ClientID'] ?>"
-                                                    onclick="return confirm('Are you sure you want to delete this user?');"
-                                                    title="Delete User">
-                                                    <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                            <a href="manageclients.dbf/delete_client.php?id=<?= $freshman['ClientID'] ?>"
+                                                onclick="return confirm('Are you sure you want to delete this user?');"
+                                                title="Delete User">
+                                                <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
+
                 <script>
                     // Make table rows clickable
                     document.addEventListener("DOMContentLoaded", function() {
@@ -592,219 +641,213 @@ if (isset($_GET['error'])) {
                     });
                 </script>
                 <!--====================================================================================-->
-                <div class="users_table_container">
-                    <div id="newpersonnel-content" class="tab-content" style="display: none;">
-                        <table class="table table-bordered table-hover align-middle" id="newpersonnelTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Profile</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Department</th>
-                                    <th class="actions-column">Actions</th>
+
+                <div id="newpersonnel-content" class="tab-content" style="display: none;">
+                    <table class="table table-bordered table-hover align-middle" id="newpersonnelTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Profile</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="clientTableBody">
+                            <?php foreach ($newpersonnel as $newpersonnel): ?>
+                                <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($newpersonnel['ClientID']) ?>">
+                                    <td class="searchable-id"><?= htmlspecialchars($newpersonnel['ClientID']) ?></td>
+                                    <td>
+                                        <?php
+                                        $profilePath = !empty($newpersonnel['profilePicturePath']) ? '../../uploads/' . $newpersonnel['profilePicturePath'] : '../../uploads/profilepic2.png';
+                                        ?>
+                                        <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
+                                    </td>
+                                    <td class="searchable-name">
+                                        <?= htmlspecialchars($newpersonnel['FullName']) ?>
+                                    </td>
+                                    <td class="email-td">
+                                        <?= htmlspecialchars($newpersonnel['Email']) ?>
+                                    </td>
+                                    <td class="department-td">
+                                        <?= htmlspecialchars($newpersonnel['Department']) ?>
+                                    </td>
+
+                                    <td class="actions-column">
+                                        <div class="action-buttons">
+                                            <a href="ClientProfile.php?id=<?= $newpersonnel['ClientID'] ?>" title="Edit User">
+                                                <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+
+                                            <a href="manageclients.dbf/delete_client.php?id=<?= $newpersonnel['ClientID'] ?>"
+                                                onclick="return confirm('Are you sure you want to delete this user?');"
+                                                title="Delete User">
+                                                <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="clientTableBody">
-                                <?php foreach ($newpersonnel as $newpersonnel): ?>
-                                    <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($newpersonnel['ClientID']) ?>">
-                                        <td class="searchable-id"><?= htmlspecialchars($newpersonnel['ClientID']) ?></td>
-                                        <td>
-                                            <?php
-                                            $profilePath = !empty($newpersonnel['profilePicturePath']) ? '../../uploads/' . $newpersonnel['profilePicturePath'] : '../../uploads/profilepic2.png';
-                                            ?>
-                                            <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
-                                        </td>
-                                        <td class="searchable-name">
-                                            <?= htmlspecialchars($newpersonnel['FullName']) ?>
-                                        </td>
-                                        <td class="email-td">
-                                            <?= htmlspecialchars($newpersonnel['Email']) ?>
-                                        </td>
-                                        <td class="department-td">
-                                            <?= htmlspecialchars($newpersonnel['Department']) ?>
-                                        </td>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
 
-                                        <td class="actions-column">
-                                            <div class="action-buttons">
-                                                <a href="ClientProfile.php?id=<?= $newpersonnel['ClientID'] ?>" title="Edit User">
-                                                    <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                                </a>
+                <!--====================================================================================-->
+                <div id="students-content" class="tab-content" style="display: block;">
 
-                                                <a href="manageclients.dbf/delete_client.php?id=<?= $newpersonnel['ClientID'] ?>"
-                                                    onclick="return confirm('Are you sure you want to delete this user?');"
-                                                    title="Delete User">
-                                                    <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="table table-bordered table-hover align-middle" id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Profile</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Department</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="clientTableBody">
+                            <?php foreach ($students as $students): ?>
+                                <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($students['ClientID']) ?>">
+                                    <td class="searchable-id"><?= htmlspecialchars($students['ClientID']) ?></td>
+                                    <td>
+                                        <?php
+                                        $profilePath = !empty($students['profilePicturePath']) ? '../../uploads/' . $students['profilePicturePath'] : '../../uploads/profilepic2.png';
+                                        ?>
+                                        <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
+                                    </td>
+                                    <td class="searchable-name">
+                                        <?= htmlspecialchars($students['FullName']) ?>
+                                    </td>
+                                    <td class="email-td">
+                                        <?= htmlspecialchars($students['Email']) ?>
+                                    </td>
+                                    <td class="course-td">
+                                        <?= htmlspecialchars($students['Course']) ?>
+                                    </td>
+                                    <td class="department-td">
+                                        <?= htmlspecialchars($students['Department']) ?>
+                                    </td>
+
+                                    <td class="actions-column">
+                                        <div class="action-buttons">
+                                            <a href="ClientProfile.php?id=<?= $students['ClientID'] ?>" title="Edit User">
+                                                <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+
+                                            <a href="manageclients.dbf/delete_client.php?id=<?= $students['ClientID'] ?>"
+                                                onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
+                                                <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
                 <!--====================================================================================-->
-                <div class="users_table_container">
-                    <div id="students-content" class="tab-content" style="display: block;">
+                <div id="employees-content" class="tab-content" style="display: none;">
 
-                        <table class="table table-bordered table-hover align-middle" id="studentsTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Profile</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Course</th>
-                                    <th>Department</th>
-                                    <th class="actions-column">Actions</th>
+                    <table class="table table-bordered table-hover align-middle" id="facultiesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Profile</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="clientTableBody">
+                            <?php foreach ($faculties as $faculties): ?>
+                                <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($faculties['ClientID']) ?>">
+                                    <td class="searchable-id"><?= htmlspecialchars($faculties['ClientID']) ?></td>
+                                    <td>
+                                        <?php
+                                        $profilePath = !empty($faculties['profilePicturePath']) ? '../../uploads/' . $faculties['profilePicturePath'] : '../../uploads/profilepic2.png';
+                                        ?>
+                                        <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
+                                    </td>
+                                    <td class="searchable-name">
+                                        <?= htmlspecialchars($faculties['FullName']) ?>
+                                    </td>
+                                    <td class="email-td">
+                                        <?= htmlspecialchars($faculties['Email']) ?>
+                                    </td>
+                                    <td class="department-td">
+                                        <?= htmlspecialchars($faculties['Department']) ?>
+                                    </td>
+
+                                    <td class="actions-column">
+                                        <div class="action-buttons">
+                                            <a href="ClientProfile.php?id=<?= $faculties['ClientID'] ?>" title="Edit User">
+                                                <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+
+                                            <a href="manageclients.dbf/delete_client.php?id=<?= $faculties['ClientID'] ?>"
+                                                onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
+                                                <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="clientTableBody">
-                                <?php foreach ($students as $students): ?>
-                                    <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($students['ClientID']) ?>">
-                                        <td class="searchable-id"><?= htmlspecialchars($students['ClientID']) ?></td>
-                                        <td>
-                                            <?php
-                                            $profilePath = !empty($students['profilePicturePath']) ? '../../uploads/' . $students['profilePicturePath'] : '../../uploads/profilepic2.png';
-                                            ?>
-                                            <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
-                                        </td>
-                                        <td class="searchable-name">
-                                            <?= htmlspecialchars($students['FullName']) ?>
-                                        </td>
-                                        <td class="email-td">
-                                            <?= htmlspecialchars($students['Email']) ?>
-                                        </td>
-                                        <td class="course-td">
-                                            <?= htmlspecialchars($students['Course']) ?>
-                                        </td>
-                                        <td class="department-td">
-                                            <?= htmlspecialchars($students['Department']) ?>
-                                        </td>
-
-                                        <td class="actions-column">
-                                            <div class="action-buttons">
-                                                <a href="ClientProfile.php?id=<?= $students['ClientID'] ?>" title="Edit User">
-                                                    <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                                </a>
-
-                                                <a href="manageclients.dbf/delete_client.php?id=<?= $students['ClientID'] ?>"
-                                                    onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
-                                                    <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
                 <!--====================================================================================-->
-                <div class="users_table_container">
-                    <div id="employees-content" class="tab-content" style="display: none;">
+                <div id="personnel-content" class="tab-content" style="display: none;">
 
-                        <table class="table table-bordered table-hover align-middle" id="facultiesTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Profile</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Department</th>
-                                    <th class="actions-column">Actions</th>
+                    <table class="table table-bordered table-hover align-middle " id="personnelTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Profile</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="clientTableBody">
+                            <?php foreach ($personnel as $personnel): ?>
+                                <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($personnel['ClientID']) ?>">
+                                    <td class="searchable-id"><?= htmlspecialchars($personnel['ClientID']) ?></td>
+                                    <td>
+                                        <?php
+                                        $profilePath = !empty($personnel['profilePicturePath']) ? '../../uploads/' . $personnel['profilePicturePath'] : '../../uploads/profilepic2.png';
+                                        ?>
+                                        <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
+                                    </td>
+                                    <td class="searchable-name">
+                                        <?= htmlspecialchars($personnel['FullName']) ?>
+                                    </td>
+                                    <td class="email-td">
+                                        <?= htmlspecialchars($personnel['Email']) ?>
+                                    </td>
+                                    <td class="department-td">
+                                        <?= htmlspecialchars($personnel['Department']) ?>
+                                    </td>
+                                    <td class="actions-column">
+                                        <div class="action-buttons">
+                                            <a href="ClientProfile.php?id=<?= $personnel['ClientID'] ?>" title="Edit User">
+                                                <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+
+                                            <a href="manageclients.dbf/delete_client.php?id=<?= $personnel['ClientID'] ?>"
+                                                onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
+                                                <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="clientTableBody">
-                                <?php foreach ($faculties as $faculties): ?>
-                                    <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($faculties['ClientID']) ?>">
-                                        <td class="searchable-id"><?= htmlspecialchars($faculties['ClientID']) ?></td>
-                                        <td>
-                                            <?php
-                                            $profilePath = !empty($faculties['profilePicturePath']) ? '../../uploads/' . $faculties['profilePicturePath'] : '../../uploads/profilepic2.png';
-                                            ?>
-                                            <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
-                                        </td>
-                                        <td class="searchable-name">
-                                            <?= htmlspecialchars($faculties['FullName']) ?>
-                                        </td>
-                                        <td class="email-td">
-                                            <?= htmlspecialchars($faculties['Email']) ?>
-                                        </td>
-                                        <td class="department-td">
-                                            <?= htmlspecialchars($faculties['Department']) ?>
-                                        </td>
-
-                                        <td class="actions-column">
-                                            <div class="action-buttons">
-                                                <a href="ClientProfile.php?id=<?= $faculties['ClientID'] ?>" title="Edit User">
-                                                    <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                                </a>
-
-                                                <a href="manageclients.dbf/delete_client.php?id=<?= $faculties['ClientID'] ?>"
-                                                    onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
-                                                    <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!--====================================================================================-->
-                <div class="users_table_container">
-                    <div id="personnel-content" class="tab-content" style="display: none;">
-
-                        <table class="table table-bordered table-hover align-middle " id="personnelTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Profile</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Department</th>
-                                    <th class="actions-column">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="clientTableBody">
-                                <?php foreach ($personnel as $personnel): ?>
-                                    <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($personnel['ClientID']) ?>">
-                                        <td class="searchable-id"><?= htmlspecialchars($personnel['ClientID']) ?></td>
-                                        <td>
-                                            <?php
-                                            $profilePath = !empty($personnel['profilePicturePath']) ? '../../uploads/' . $personnel['profilePicturePath'] : '../../uploads/profilepic2.png';
-                                            ?>
-                                            <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
-                                        </td>
-                                        <td class="searchable-name">
-                                            <?= htmlspecialchars($personnel['FullName']) ?>
-                                        </td>
-                                        <td class="email-td">
-                                            <?= htmlspecialchars($personnel['Email']) ?>
-                                        </td>
-                                        <td class="department-td">
-                                            <?= htmlspecialchars($personnel['Department']) ?>
-                                        </td>
-                                        <td class="actions-column">
-                                            <div class="action-buttons">
-                                                <a href="ClientProfile.php?id=<?= $personnel['ClientID'] ?>" title="Edit User">
-                                                    <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                                </a>
-
-                                                <a href="manageclients.dbf/delete_client.php?id=<?= $personnel['ClientID'] ?>"
-                                                    onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
-                                                    <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
     </div>

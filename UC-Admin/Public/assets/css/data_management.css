@@ -1,15 +1,12 @@
 .content {
+  display: flex;
+  flex-direction: column;
   margin-top: 70px;
   margin-left: 250px;
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  height: 1800%;
+  height: 93%;
   gap: 25px;
   padding: 25px;
-  height: 94%;
   width: calc(100% - 250px);
   transition: margin-left 0.2s ease-in-out, width 0.2s ease-in-out;
   overflow: hidden;

@@ -74,7 +74,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="main-container">
         <nav class="navbar">
-            <a href="All_Personnel_Profile.php">
+            <a href="#">
                 <button class="active-buttons"> <i class="fas fa-home"></i><span class="nav-text">Home</span></button>
             </a>
         </nav>
@@ -538,38 +538,45 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
         height: 45px;
         border-radius: 50%;
         object-fit: cover;
-        
+
         /* Add white shadow/glow effect */
-        box-shadow: 
-            0 0 0 3px white,           /* White border */
-            0 0 0 4px rgba(57, 125, 218, 0.3), /* Blue subtle border */
-            0 4px 15px rgba(57, 125, 218, 0.25); /* Outer shadow */
-        
+        box-shadow:
+            0 0 0 3px white,
+            /* White border */
+            0 0 0 4px rgba(57, 125, 218, 0.3),
+            /* Blue subtle border */
+            0 4px 15px rgba(57, 125, 218, 0.25);
+        /* Outer shadow */
+
         /* Add transition for smooth animation */
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        
+
         /* Make cursor show it's clickable */
         cursor: pointer;
-        
+
         /* Scale the image to 96% so white border is visible */
         transform: scale(0.96);
     }
 
     /* Hover effect */
     #profileBtn:hover {
-        transform: scale(1.03); /* Slight grow on hover */
-        box-shadow: 
-            0 0 0 4px white,           /* Thicker white border on hover */
-            0 0 0 6px rgba(57, 125, 218, 0.4), /* Blue border on hover */
-            0 6px 20px rgba(57, 125, 218, 0.35); /* Stronger shadow */
-        
+        transform: scale(1.03);
+        /* Slight grow on hover */
+        box-shadow:
+            0 0 0 4px white,
+            /* Thicker white border on hover */
+            0 0 0 6px rgba(57, 125, 218, 0.4),
+            /* Blue border on hover */
+            0 6px 20px rgba(57, 125, 218, 0.35);
+        /* Stronger shadow */
+
         /* Add a subtle pulsing animation */
         animation: pulse-glow 2s infinite;
     }
 
     #profileBtn:active {
         transform: scale(0.98);
-        box-shadow: 
+        box-shadow:
             0 0 0 3px white,
             0 0 0 5px rgba(57, 125, 218, 0.5),
             0 2px 8px rgba(57, 125, 218, 0.3);
@@ -578,19 +585,21 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 
     @keyframes pulse-glow {
         0% {
-            box-shadow: 
+            box-shadow:
                 0 0 0 4px white,
                 0 0 0 6px rgba(57, 125, 218, 0.4),
                 0 6px 20px rgba(57, 125, 218, 0.35);
         }
+
         50% {
-            box-shadow: 
+            box-shadow:
                 0 0 0 4px white,
                 0 0 0 6px rgba(57, 125, 218, 0.6),
                 0 8px 25px rgba(57, 125, 218, 0.4);
         }
+
         100% {
-            box-shadow: 
+            box-shadow:
                 0 0 0 4px white,
                 0 0 0 6px rgba(57, 125, 218, 0.4),
                 0 6px 20px rgba(57, 125, 218, 0.35);
@@ -632,7 +641,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
         }
     }
 
-        /* ================== UPDATE DROPDOWN HOVER COLORS ================== */
+    /* ================== UPDATE DROPDOWN HOVER COLORS ================== */
     /* Settings hover - keep professional blue */
     .profile-item:hover {
         background-color: #f0f0f0;
@@ -642,22 +651,28 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 
     /* Settings specific hover - blue theme */
     a[href="settings.php"] .profile-item:hover {
-        background-color: #e8f0fe; /* Light blue background */
-        border-left-color: #0b62c9; /* Blue border */
+        background-color: #e8f0fe;
+        /* Light blue background */
+        border-left-color: #0b62c9;
+        /* Blue border */
     }
 
     a[href="settings.php"] .profile-item:hover i {
-        color: #0b62c9; /* Blue icon */
+        color: #0b62c9;
+        /* Blue icon */
     }
 
     /* Logout hover - red theme */
     .profile-item[onclick*="logout"]:hover {
-        background-color: #fee; /* Very light red background */
-        border-left: solid #d32f2f 3px; /* Red border */
+        background-color: #fee;
+        /* Very light red background */
+        border-left: solid #d32f2f 3px;
+        /* Red border */
     }
 
     .profile-item[onclick*="logout"]:hover i {
-        color: #d32f2f; /* Red icon */
+        color: #d32f2f;
+        /* Red icon */
     }
 
     /* Alternative: If you want ALL logout items to have red hover */
@@ -671,34 +686,42 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /* ================== SMOOTH DROPDOWN HOVER COLORS ================== */
-/* Settings - Blue theme (smooth hover) */
-a[href="settings.php"] .profile-item:hover {
-    background-color: #3957bbff; /* Very light blue */
-    border-left: solid #0b62c9 3px;
-    transform: translateX(4px); /* Smooth slide instead of scale */
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother transition */
-}
+    /* Settings - Blue theme (smooth hover) */
+    a[href="settings.php"] .profile-item:hover {
+        background-color: #3957bbff;
+        /* Very light blue */
+        border-left: solid #0b62c9 3px;
+        transform: translateX(4px);
+        /* Smooth slide instead of scale */
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Smoother transition */
+    }
 
-a[href="settings.php"] .profile-item:hover i {
-    color: #0b62c9;
-    transform: rotate(0); /* Remove rotation */
-    transition: color 0.25s ease;
-}
+    a[href="settings.php"] .profile-item:hover i {
+        color: #0b62c9;
+        transform: rotate(0);
+        /* Remove rotation */
+        transition: color 0.25s ease;
+    }
 
-/* Logout - Red theme (smooth hover) */
-div.profile-item:last-child:hover {
-    background-color: rgba(94, 115, 231, 0.08); /* Very light red */
-    border-left: solid #3957bbff 3px;
-    transform: translateX(4px); /* Smooth slide instead of scale */
-    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother transition */
-}
+    /* Logout - Red theme (smooth hover) */
+    div.profile-item:last-child:hover {
+        background-color: rgba(94, 115, 231, 0.08);
+        /* Very light red */
+        border-left: solid #3957bbff 3px;
+        transform: translateX(4px);
+        /* Smooth slide instead of scale */
+        transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Smoother transition */
+    }
 
-/* Override any existing bounce/scale effects */
-.profile-item:hover {
-    transform: translateX(4px) !important; /* Replace scale with smooth slide */
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    background-color: #f0f0f0;
-}
+    /* Override any existing bounce/scale effects */
+    .profile-item:hover {
+        transform: translateX(4px) !important;
+        /* Replace scale with smooth slide */
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        background-color: #f0f0f0;
+    }
 </style>
 
 </html>

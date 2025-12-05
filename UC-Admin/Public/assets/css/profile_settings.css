@@ -1,0 +1,345 @@
+body {
+  overflow: hidden;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 45px;
+  margin-left: 250px;
+  flex: 1;
+  height: 90vh;
+  max-height: 2700px;
+  gap: 25px;
+  padding: 25px;
+  width: calc(100% - 250px);
+  transition: margin-left 0.2s ease-in-out, width 0.2s ease-in-out;
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  padding-top: 0px;
+  width: 100%;
+}
+.profile-main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  align-items: flex-start;
+  height: 100%;
+}
+
+.profile-picture-section {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 30%;
+  padding-left: 30px;
+  max-height: 110px;
+}
+
+.profile-pic-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 4px solid #2767c0;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.profile-pic:hover {
+  transform: scale(1.05);
+}
+
+.btn-upload {
+  background-color: #2767c0;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+}
+
+.btn-upload:hover {
+  background-color: #1e4ea7;
+}
+
+.btn-upload i {
+  margin-right: 6px;
+}
+
+.profile-info-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.profile-info-section h2 {
+  color: #1547b3;
+  margin-bottom: 0.2rem;
+  font-size: 1.6rem;
+}
+
+.profile-subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+form {
+  display: flex;
+  width: 100%;
+
+  input {
+    width: 100%;
+  }
+}
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 100%);
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1.2rem;
+  padding: 15px;
+}
+
+.profile-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-field label {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #333;
+}
+
+.profile-field input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.profile-field input:focus {
+  border-color: #2767c0;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(39, 103, 192, 0.2);
+}
+
+.btn-wrapper {
+  margin-top: 1.5rem;
+  text-align: right;
+}
+
+.btn-save {
+  background-color: #2767c0;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.btn-save:hover {
+  background-color: #1e4ea7;
+}
+
+.btn-save i {
+  margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+  .profile-main-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-wrapper {
+    text-align: center;
+  }
+}
+
+/* ================== ENHANCE PROFILE IMAGE ONLY ================== */
+/* Target the profile image directly */
+#profileBtn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  /* Add white shadow/glow effect */
+  box-shadow: 0 0 0 3px white,
+    /* White border */ 0 0 0 4px rgba(57, 125, 218, 0.3),
+    /* Blue subtle border */ 0 4px 15px rgba(57, 125, 218, 0.25);
+  /* Outer shadow */
+
+  /* Add transition for smooth animation */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Make cursor show it's clickable */
+  cursor: pointer;
+
+  /* Scale the image to 96% so white border is visible */
+  transform: scale(0.96);
+}
+
+/* Hover effect */
+#profileBtn:hover {
+  transform: scale(1.03);
+  /* Slight grow on hover */
+  box-shadow: 0 0 0 4px white,
+    /* Thicker white border on hover */ 0 0 0 6px rgba(57, 125, 218, 0.4),
+    /* Blue border on hover */ 0 6px 20px rgba(57, 125, 218, 0.35);
+  /* Stronger shadow */
+
+  /* Add a subtle pulsing animation */
+  animation: pulse-glow 2s infinite;
+}
+
+#profileBtn:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 0 3px white, 0 0 0 5px rgba(57, 125, 218, 0.5),
+    0 2px 8px rgba(57, 125, 218, 0.3);
+  transition: all 0.1s ease;
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 4px white, 0 0 0 6px rgba(57, 125, 218, 0.4),
+      0 6px 20px rgba(57, 125, 218, 0.35);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px white, 0 0 0 6px rgba(57, 125, 218, 0.6),
+      0 8px 25px rgba(57, 125, 218, 0.4);
+  }
+
+  100% {
+    box-shadow: 0 0 0 4px white, 0 0 0 6px rgba(57, 125, 218, 0.4),
+      0 6px 20px rgba(57, 125, 218, 0.35);
+  }
+}
+
+/* ================== DROPDOWN HOVER COLORS ================== */
+/* Settings - Blue hover */
+.profile-item:nth-child(2):hover {
+  background-color: #e8f0fe;
+  /* Light blue background */
+  border-left: solid #0b62c9 3px;
+  /* Blue border */
+}
+
+.profile-item:nth-child(2):hover i {
+  color: #0b62c9;
+  /* Blue icon */
+}
+
+/* Logout - Red hover */
+.profile-item:last-child:hover {
+  background-color: #fee;
+  /* Light red background */
+  border-left: solid #d32f2f 3px;
+  /* Red border */
+}
+
+.profile-item:last-child:hover i {
+  color: #d32f2f;
+  /* Red icon */
+}
+
+/* Smooth hover transitions */
+.profile-item:hover {
+  transform: translateX(4px);
+  transition: all 0.2s ease;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  #profileBtn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  #profileBtn {
+    width: 35px;
+    height: 35px;
+  }
+}
+.messagemodal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+}
+
+.messagemodal-content {
+  background: #fff;
+  padding: 25px 35px;
+  border-radius: 10px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+.messagemodal-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-primary {
+  background: #2767c0;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #ddd;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}

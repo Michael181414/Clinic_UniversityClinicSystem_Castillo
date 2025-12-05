@@ -19,7 +19,7 @@ if (isset($_GET['id'])) {
 
     if (!$client) {
         // Client not found
-        $redirect = $_SERVER['HTTP_REFERER'] ?? 'clients_list.php';
+        $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
         header("Location: $redirect?delete=notfound");
         exit;
     }
@@ -51,7 +51,7 @@ if (isset($_GET['id'])) {
     ]);
 
     // Redirect back safely
-    $redirect = $_SERVER['HTTP_REFERER'] ?? 'clients_list.php';
+    $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
     $status = ($stmt->rowCount() > 0) ? 'success' : 'error';
     header("Location: $redirect?delete=$status");
     exit;
