@@ -235,21 +235,17 @@ $email = $current_user['email'] ?? '';
                                     </div>
 
                                     <div class="form-group">
-                                        <label><i class="fas fa-envelope icon-blue"></i> Email</label>
+                                        <label><i class="fas fa-user icon-blue"></i> Username</label>
                                         <div id="emailError" class="error-message">
-                                            <i class="fas fa-exclamation-triangle"></i> Email already exists
+                                            <i class="fas fa-exclamation-triangle"></i> Username already exists
                                         </div>
-                                        <div class="input-wrapper">
-                                            <i class="fas fa-envelope input-icon"></i>
-                                            <input type="email" name="email" id="emailInput" class="form-control" required autocomplete="off" placeholder="Enter patient's email">
-                                        </div>
+                                        <input type="text" name="username" id="usernameInput" class="form-control" required placeholder="Enter patient's username">
                                     </div>
-
                                     <div class="form-group">
                                         <label><i class="fas fa-lock icon-blue"></i> Password</label>
                                         <div class="pass-input-wrapper">
                                             <i class="fas fa-lock input-icon"></i>
-                                            <input type="password" name="password" id="passwordInput" class="form-control" required minlength="8" placeholder="Enter a strong password">
+                                            <input type="password" name="password" id="passwordInput" class="form-control" required minlength="8" placeholder="Enter a strong password" readonly>
                                             <i id="togglePassword" class="fas fa-eye toggle-password"></i>
                                         </div>
                                         <div id="passwordStrength" class="password-strength">
@@ -337,7 +333,7 @@ $email = $current_user['email'] ?? '';
                                 }
 
                                 form.addEventListener("submit", function(e) {
-                                    e.preventDefault(); // stay on the same page
+                                    e.preventDefault();
                                     saveButton.disabled = true;
 
                                     const interval = startProgress();
@@ -347,10 +343,19 @@ $email = $current_user['email'] ?? '';
                                             method: "POST",
                                             body: formData
                                         })
-                                        .then(res => res.json())
-                                        .then(data => {
+                                        .then(res => res.text()) // get raw text first
+                                        .then(text => {
                                             finishProgress(interval);
                                             saveButton.disabled = false;
+
+                                            let data;
+                                            try {
+                                                data = JSON.parse(text); // parse manually
+                                            } catch (err) {
+                                                console.error("Invalid JSON response:", text);
+                                                alert("Server returned invalid JSON. Check console.");
+                                                return;
+                                            }
 
                                             if (data.success) {
                                                 alert(data.message);
@@ -371,14 +376,14 @@ $email = $current_user['email'] ?? '';
                     </div>
                 </div>
                 <script>
-                    document.getElementById("emailInput").addEventListener("blur", generateAutoPassword);
+                    document.getElementById("usernameInput").addEventListener("blur", generateAutoPassword);
                     document.querySelector("input[name='firstname']").addEventListener("blur", generateAutoPassword);
                     document.querySelector("input[name='lastname']").addEventListener("blur", generateAutoPassword);
 
                     function generateAutoPassword() {
                         const firstname = document.querySelector("input[name='firstname']").value.trim();
                         const lastname = document.querySelector("input[name='lastname']").value.trim();
-                        const email = document.getElementById("emailInput").value.trim();
+                        const email = document.getElementById("usernameInput").value.trim();
 
                         // If all are empty, do nothing
                         if (!firstname && !lastname && !email) return;

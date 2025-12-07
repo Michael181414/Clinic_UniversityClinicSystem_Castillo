@@ -1,61 +1,70 @@
 <?php
 session_start();
 require_once('../config/database.php');
-require_once('../../../vendor/autoload.php');
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+// MUST be first thing
+header('Content-Type: application/json; charset=utf-8');
 
-header('Content-Type: application/json'); // important for AJAX
+// Disable warnings for production or log them instead
+error_reporting(0);
 
-$pdo = pdo_connect_mysql();
+try {
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    throw new Exception('Invalid request method.');
+  }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $firstname = trim($_POST['firstname']);
-  $lastname = trim($_POST['lastname']);
-  $email = trim($_POST['email']);
-  $sex = $_POST['sex'];
-  $birthdate = $_POST['birthdate'];
-  $unhashedPassword = $_POST['password'];
-  $password = password_hash($unhashedPassword, PASSWORD_DEFAULT);
-  $client_type = $_POST['client_type'];
+  $firstname = trim($_POST['firstname'] ?? '');
+  $lastname = trim($_POST['lastname'] ?? '');
+  $username = trim($_POST['username'] ?? '');
+  $password_plain = $_POST['password'] ?? '';
+  $password_hashed = password_hash($password_plain, PASSWORD_DEFAULT);
+  $sex = $_POST['sex'] ?? '';
+  $birthdate = $_POST['birthdate'] ?? '';
+  $client_type = $_POST['client_type'] ?? '';
   $department = $_POST['department'] ?? null;
 
-  // Check for existing email
-  $stmt = $pdo->prepare("SELECT * FROM clients WHERE Email = ?");
-  $stmt->execute([$email]);
+  if (!$firstname || !$lastname || !$username || !$password_plain) {
+    throw new Exception('Required fields missing.');
+  }
 
-  if ($stmt->rowCount() > 0) {
-    echo json_encode([
-      'success' => false,
-      'message' => 'Email already exists'
-    ]);
+  $pdo = pdo_connect_mysql();
+
+  // Check username uniqueness
+  $stmt = $pdo->prepare("SELECT 1 FROM clients WHERE Username = ?");
+  $stmt->execute([$username]);
+  if ($stmt->fetchColumn()) {
+    echo json_encode(['success' => false, 'message' => 'Username already exists']);
     exit();
   }
 
-  try {
-    // Insert client
-    $insert_stmt = $pdo->prepare("
-            INSERT INTO clients (Firstname, Lastname, Email, Sex, BirthDate, Password, ClientType, Department)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-    $insert_stmt->execute([$firstname, $lastname, $email, $sex, $birthdate, $password, $client_type, $department]);
+  // Insert patient
+  $insert_stmt = $pdo->prepare("
+        INSERT INTO clients (Firstname, Lastname, Username, Sex, BirthDate, Password, ClientType, Department)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+  $insert_stmt->execute([$firstname, $lastname, $username, $sex, $birthdate, $password_hashed, $client_type, $department]);
 
-    // Get inserted patient ID
-    $patient_id = $pdo->lastInsertId();
+  $patient_id = $pdo->lastInsertId();
 
-    // --- Insert activity log ---
-    // Make sure $admin exists (you need to set $admin from session or authentication)
-    $admin_id = $_SESSION['user_id'] ?? null;        // correct session variable
-    $admin_username = $_SESSION['username'] ?? 'System';
-    $admin_role     = $_SESSION['user_type'] ?? 'Unknown';
+  // Log activity
+  $admin_id = $_SESSION['user_id'] ?? null;
+  $admin_username = $_SESSION['username'] ?? 'System';
+  $admin_role = $_SESSION['user_type'] ?? 'Unknown';
+  $action_description = "Added patient: ID {$patient_id}, Name {$firstname} {$lastname}";
+  $logStmt = $pdo->prepare("
+        INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ");
+  $logStmt->execute([$admin_id, $admin_username, $admin_role, 'Add Patient', $action_description, 'SUCCESS']);
 
-    $action_description = "Added patient: ID {$patient_id}, Name {$firstname} {$lastname}";
-    $logStmt = $pdo->prepare("
-    INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status) 
-    VALUES (?, ?, ?, ?, ?, ?)
-");
+  echo json_encode(['success' => true, 'message' => 'Patient created successfully']);
+} catch (Exception $e) {
+  echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+}
+exit();
 
+
+/*    ---  ---
     $logStmt->execute([
       $admin_id,          // user_id
       $admin_username,    // username
@@ -82,17 +91,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mail->Body = '...'; // your email HTML
 
     $mail->send();
-
-    echo json_encode([
-      'success' => true,
-      'message' => 'Patient created and email sent successfully'
-    ]);
-    exit();
-  } catch (Exception $e) {
-    echo json_encode([
-      'success' => false,
-      'message' => 'Error: ' . $e->getMessage()
-    ]);
-    exit();
-  }
-}
+*/

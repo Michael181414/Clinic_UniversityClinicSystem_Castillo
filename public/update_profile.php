@@ -15,11 +15,12 @@ if (!$clientId) {
 try {
     $fullName = trim($_POST['fullName'] ?? '');
     $email = trim($_POST['email'] ?? '');
+    $username = trim($_POST['username'] ?? '');
     $password = trim($_POST['password'] ?? '');
     $birthdate = $_POST['birthdate'] ?? null;
 
-    if (!$fullName || !$email) {
-        echo json_encode(['status' => 'error', 'message' => 'Full name and email are required.']);
+    if (!$fullName || !$email || !$username) {
+        echo json_encode(['status' => 'error', 'message' => 'Full name, email, and username are required.']);
         exit;
     }
 
@@ -29,16 +30,39 @@ try {
 
     if ($password !== '') {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "UPDATE clients SET Firstname = ?, Lastname = ?, Email = ?, BirthDate = ?, Password = ? WHERE ClientID = ?";
+        $sql = "UPDATE clients SET Firstname = ?, Lastname = ?, Email = ?, Username = ?, BirthDate = ?, Password = ? WHERE ClientID = ?";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$firstname, $lastname, $email, $birthdate, $hashedPassword, $clientId]);
+        $stmt->execute([$firstname, $lastname, $email,  $username, $birthdate, $hashedPassword, $clientId]);
     } else {
-        $sql = "UPDATE clients SET Firstname = ?, Lastname = ?, Email = ?, BirthDate = ? WHERE ClientID = ?";
+        $sql = "UPDATE clients SET Firstname = ?, Lastname = ?, Email = ?, Username = ?, BirthDate = ? WHERE ClientID = ?";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$firstname, $lastname, $email, $birthdate, $clientId]);
+        $stmt->execute([$firstname, $lastname, $email, $username, $birthdate, $clientId]);
     }
 
     echo json_encode(['status' => 'success']);
-} catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+} catch (PDOException $e) {
+
+    // ✅ Duplicate Email
+    if ($e->getCode() == 23000 && str_contains($e->getMessage(), 'Email')) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'This email is already in use. Please use another one.'
+        ]);
+        exit;
+    }
+
+    // ✅ Duplicate Username
+    if ($e->getCode() == 23000 && str_contains($e->getMessage(), 'Username')) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'This username is already taken. Please choose another.'
+        ]);
+        exit;
+    }
+
+    // ✅ Any Other Database Error (GENERIC MESSAGE ONLY)
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Something went wrong while saving your profile. Please try again.'
+    ]);
 }

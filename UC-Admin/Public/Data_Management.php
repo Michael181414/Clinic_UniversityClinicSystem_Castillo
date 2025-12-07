@@ -150,7 +150,7 @@ $email = $current_user['email'] ?? '';
                 <div class="top-div-body">
                     <div class="data-management-options">
 
-                        <!-- Backup Card -->
+                        <!-- Backup and Restore Cards -->
                         <a href="javascript:void(0);" onclick="showBackupModal()" class="data-management-link">
                             <div class="data-management-card">
                                 <span class="icon-span"><i class="fas fa-file-export"></i>
@@ -160,7 +160,6 @@ $email = $current_user['email'] ?? '';
                             </div>
                         </a>
 
-                        <!-- Restore Card -->
                         <a href="javascript:void(0);" onclick="showRestoreModal()" class="data-management-link">
                             <div class="data-management-card">
                                 <span class="icon-span"><i class="fas fa-database"></i>
@@ -169,6 +168,8 @@ $email = $current_user['email'] ?? '';
                                 <p class="p-tag">Restore the database from a previously created backup file.</p>
                             </div>
                         </a>
+
+                        <!-- Loading & Success Modals -->
                         <div id="loading-modal" class="modal">
                             <div class="modal-content">
                                 <div id="loadingDiv">
@@ -181,15 +182,6 @@ $email = $current_user['email'] ?? '';
                             </div>
                         </div>
 
-                        <div id="loading-modal">
-                            <div class="modal-content">
-                                <div class="spinner"></div>
-                                <p>Restoring data, please wait...</p>
-                                <div class="progress-bar">
-                                    <div class="progress"></div>
-                                </div>
-                            </div>
-                        </div>
                         <div id="success-modal" class="modal">
                             <div class="modal-content">
                                 <h3>Success</h3>
@@ -197,6 +189,7 @@ $email = $current_user['email'] ?? '';
                                 <button id="close-success" class="btn">OK</button>
                             </div>
                         </div>
+
                         <!-- Hidden Restore Form -->
                         <form id="restoreForm" action="restore.php" method="post" enctype="multipart/form-data" style="display:none;">
                             <input type="file" id="restoreInput" name="backup_file" accept=".sql">
@@ -204,64 +197,195 @@ $email = $current_user['email'] ?? '';
                             <button type="submit">Restore</button>
                         </form>
 
+                    </div>
+                </div>
+            </div> <!-- content-body -->
+
+            <!-- TABS -->
+            <div class="tabs-container">
+                <div class="tab-container">
+                    <button id="tab-backup" class="tab-button active" onclick="openTab(event, 'backupTab')">
+                        <i class="fas fa-file-export"></i> Backup History
+                    </button>
+
+                    <button id="tab-deleted" class="tab-button" onclick="openTab(event, 'deletedUsersTab')">
+                        <i class="fas fa-users-slash"></i> Deleted Users
+                    </button>
+                </div>
+
+                <!-- BACKUP HISTORY TAB -->
+                <div id="backupTab" class="tab-content active">
+                    <?php if (!empty($historyData)): ?>
+                        <div class="backup-history">
+                            <h2 style="margin-bottom: 10px;"><i class="fas fa-file-export"></i> Backup History</h2>
+
+                            <div class="table-wrapper">
+                                <table class="history-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>File Name</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($historyData as $index => $row): ?>
+                                            <tr>
+                                                <td><?= $index + 1 ?></td>
+                                                <td><?= htmlspecialchars($row['file_name']) ?></td>
+                                                <td><?= htmlspecialchars($row['backup_date']) ?></td>
+                                                <td><?= htmlspecialchars($row['backup_time']) ?></td>
+                                                <td>
+                                                    <?php if ($row['status'] === 'success'): ?>
+                                                        <span class="status success">Success</span>
+                                                    <?php else: ?>
+                                                        <span class="status failed">Failed</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <?php if ($row['status'] === 'success'): ?>
+                                                        <a href="backups/<?= htmlspecialchars($row['file_name']) ?>" class="btn-download">Download</a>
+                                                    <?php else: ?>
+                                                        <span class="muted">—</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <p class="no-records">No backup records found.</p>
+                    <?php endif; ?>
+                </div>
+
+                <!-- DELETED USERS TAB -->
+                <div id="deletedUsersTab" class="tab-content">
+                    <div class="backup-history">
+                        <h2 style="margin-bottom: 10px;"><i class="fas fa-users-slash"></i> Deleted Users</h2>
+
+                        <div class="table-wrapper">
+                            <table class="history-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Deleted At</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    // Fetch deleted users from database
+                                    $deletedUsers = $pdo->query("SELECT * FROM Clients WHERE deleted_at IS NOT NULL")->fetchAll();
+                                    ?>
+
+                                    <?php if (!empty($deletedUsers)): ?>
+                                        <?php foreach ($deletedUsers as $index => $row): ?>
+                                            <tr>
+                                                <td><?= $index + 1 ?></td>
+                                                <td><?= htmlspecialchars($row['Firstname'] . ' ' . $row['Lastname']) ?></td>
+                                                <td><?= htmlspecialchars($row['Email']) ?></td>
+                                                <td><?= htmlspecialchars($row['deleted_at']) ?></td>
+                                                <td>
+                                                    <button
+                                                        class="btn-restore"
+                                                        onclick="openConfirmModal('restore', 'manageclients.dbf/restore_client.php?id=<?= $row['ClientID'] ?>')">
+                                                        Restore
+                                                    </button>
+
+                                                    <button
+                                                        class="btn-delete"
+                                                        onclick="openConfirmModal('delete', 'manageclients.dbf/delete_client_permanent.php?id=<?= $row['ClientID'] ?>')">
+                                                        Delete
+                                                    </button>
+                                                </td>
 
 
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="5" class="no-records">No deleted users.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirmation Modal -->
+                <div id="actionModal" class="modal-overlay">
+                    <div class="modal-box">
+                        <h3 id="modalTitle">Confirm Action</h3>
+                        <p id="modalMessage">Are you sure you want to continue?</p>
+
+                        <div class="modal-buttons">
+                            <button id="modalCancel" class="modal-btn cancel">Cancel</button>
+                            <a id="modalConfirm" class="modal-btn confirm" href="#">Confirm</a>
+                        </div>
                     </div>
                 </div>
 
             </div>
-            <?php if (!empty($historyData)): ?>
-                <div class="backup-history">
-                    <h2 style="margin-bottom: 10px;"><i class="fas fa-file-export"></i> Backup History</h2>
-
-                    <div class="table-wrapper">
-                        <table class="history-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>File Name</th>
-                                    <th>Date</th>
-                                    <th>Time</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($historyData as $index => $row): ?>
-                                    <tr>
-                                        <td><?= $index + 1 ?></td>
-                                        <td><?= htmlspecialchars($row['file_name']) ?></td>
-                                        <td><?= htmlspecialchars($row['backup_date']) ?></td>
-                                        <td><?= htmlspecialchars($row['backup_time']) ?></td>
-                                        <td>
-                                            <?php if ($row['status'] === 'success'): ?>
-                                                <span class="status success">Success</span>
-                                            <?php else: ?>
-                                                <span class="status failed">Failed</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <?php if ($row['status'] === 'success'): ?>
-                                                <a href="backups/<?= htmlspecialchars($row['file_name']) ?>" class="btn-download">Download</a>
-                                            <?php else: ?>
-                                                <span class="muted">—</span>
-                                            <?php endif; ?>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            <?php else: ?>
-                <p class="no-records">No backup records found.</p>
-            <?php endif; ?>
-
-
-
         </main>
-
         <!-- Status Modal -->
+        <script>
+            function openTab(evt, tabName) {
+                let tabContent = document.getElementsByClassName("tab-content");
+                for (let i = 0; i < tabContent.length; i++) {
+                    tabContent[i].style.display = "none";
+                    tabContent[i].classList.remove("active");
+                }
+
+                let tabButtons = document.getElementsByClassName("tab-button");
+                for (let i = 0; i < tabButtons.length; i++) {
+                    tabButtons[i].classList.remove("active");
+                }
+
+                document.getElementById(tabName).style.display = "block";
+                document.getElementById(tabName).classList.add("active");
+                evt.currentTarget.classList.add("active");
+            }
+
+            // Show the default tab on page load
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("backupTab").style.display = "block";
+            });
+        </script>
+        <script>
+            function openConfirmModal(actionType, url) {
+                const modal = document.getElementById("actionModal");
+                const title = document.getElementById("modalTitle");
+                const message = document.getElementById("modalMessage");
+                const confirmBtn = document.getElementById("modalConfirm");
+
+                if (actionType === "restore") {
+                    title.textContent = "Restore User?";
+                    message.textContent = "Do you want to restore this user?";
+                    confirmBtn.style.background = "#1d9bf0";
+                } else if (actionType === "delete") {
+                    title.textContent = "Delete Permanently?";
+                    message.textContent = "This action cannot be undone. Delete this user permanently?";
+                    confirmBtn.style.background = "#d62828";
+                }
+
+                confirmBtn.href = url;
+
+                modal.style.display = "flex";
+            }
+
+            document.getElementById("modalCancel").onclick = function() {
+                document.getElementById("actionModal").style.display = "none";
+            };
+        </script>
+
         <script>
             document.getElementById("restoreInput").addEventListener("change", function() {
                 const form = document.getElementById("restoreForm");
@@ -466,10 +590,48 @@ $email = $current_user['email'] ?? '';
                 runBackup(); // now actually run the backup
             }
         </script>
+        <script>
+            function openTab(evt, tabName) {
+                // Hide all tabs
+                var tabs = document.getElementsByClassName("tab-content");
+                for (let i = 0; i < tabs.length; i++) {
+                    tabs[i].style.display = "none";
+                }
 
-        <style>
+                // Remove active class from all buttons
+                var buttons = document.getElementsByClassName("tab-button");
+                for (let i = 0; i < buttons.length; i++) {
+                    buttons[i].classList.remove("active");
+                }
 
-        </style>
+                // Show selected tab
+                document.getElementById(tabName).style.display = "block";
+
+                // Add active class to clicked button
+                evt.currentTarget.classList.add("active");
+
+                // Save tab selection to localStorage
+                localStorage.setItem("activeTab", tabName);
+            }
+
+            // Load last active tab on page load
+            document.addEventListener("DOMContentLoaded", function() {
+                let activeTab = localStorage.getItem("activeTab");
+
+                if (activeTab) {
+                    // Simulate click on the correct button
+                    if (activeTab === "backupTab") {
+                        document.getElementById("tab-backup").click();
+                    } else if (activeTab === "deletedUsersTab") {
+                        document.getElementById("tab-deleted").click();
+                    }
+                } else {
+                    // Default tab
+                    document.getElementById("tab-backup").click();
+                }
+            });
+        </script>
+
 
 </body>
 

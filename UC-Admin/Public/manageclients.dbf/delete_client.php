@@ -3,7 +3,7 @@ session_start();
 require 'config/database.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: ../../../index.php');
     exit;
 }
 
@@ -13,12 +13,11 @@ if (isset($_GET['id'])) {
     $clientID = $_GET['id'];
 
     // Fetch client info
-    $clientStmt = $pdo->prepare("SELECT email FROM Clients WHERE ClientID = ?");
+    $clientStmt = $pdo->prepare("SELECT email FROM Clients WHERE ClientID = ? AND deleted_at IS NULL");
     $clientStmt->execute([$clientID]);
     $client = $clientStmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$client) {
-        // Client not found
         $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
         header("Location: $redirect?delete=notfound");
         exit;
@@ -26,8 +25,8 @@ if (isset($_GET['id'])) {
 
     $clientEmail = $client['email'] ?? 'N/A';
 
-    // Delete client
-    $stmt = $pdo->prepare("DELETE FROM Clients WHERE ClientID = ?");
+    // Soft delete: Mark as deleted
+    $stmt = $pdo->prepare("UPDATE Clients SET deleted_at = NOW() WHERE ClientID = ?");
     $stmt->execute([$clientID]);
 
     // Log admin action
@@ -35,7 +34,7 @@ if (isset($_GET['id'])) {
     $admin_username = $_SESSION['username'] ?? 'System';
     $admin_role     = $_SESSION['user_type'] ?? 'Unknown';
 
-    $action_description = "Deleted client: ID: $clientID, (Email: $clientEmail), ";
+    $action_description = "Soft deleted client: ID: $clientID, (Email: $clientEmail).";
 
     $logStmt = $pdo->prepare("
         INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status) 
@@ -45,14 +44,13 @@ if (isset($_GET['id'])) {
         $admin_id,
         $admin_username,
         $admin_role,
-        'Delete Client',
+        'Soft Delete Client',
         $action_description,
         'SUCCESS'
     ]);
 
-    // Redirect back safely
+    // Redirect
     $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
-    $status = ($stmt->rowCount() > 0) ? 'success' : 'error';
-    header("Location: $redirect?delete=$status");
+    header("Location: $redirect?delete=success");
     exit;
 }

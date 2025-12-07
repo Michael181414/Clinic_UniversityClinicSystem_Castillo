@@ -104,7 +104,7 @@ try {
 
             <div class="profile-dropdown" id="profileDropdown">
                 <div class="profile-item">
-                    <i class="fas fa-envelope"></i> user@email.com
+                    <i class="fas fa-envelope"></i> <?= htmlspecialchars($UserInfoData['Email']) ?>
                 </div>
                 <div class="profile-item">
                     <i class="fas fa-cog"></i> Settings
@@ -144,7 +144,7 @@ try {
             </button>
 
 
-            <a href="Settings.php">
+            <!--<a href="Settings.php">
                 <button class="active-buttons" id="settingBtn">
                     <i class="fas fa-cog"></i>
 
@@ -154,13 +154,18 @@ try {
                         <span class="nav-text">Settings</span>
                     <?php endif; ?>
 
-                </button>
+                </button>-->
             </a>
         </nav>
 
 
         <main class="content" loading="lazy">
+
             <div class="profile-main-container">
+                <div class="profile-header">
+                    <h2>User Profile</h2>
+                    <p class="profile-subtitle">Manage your personal details</p>
+                </div>
                 <div class="profile-picture-section">
                     <div class="profile-pic-wrapper">
                         <img src="../uploads/profilepic2.png" alt="Profile Picture" class="profile-pic">
@@ -168,8 +173,7 @@ try {
                 </div>
 
                 <div class="profile-info-section">
-                    <h2>User Profile</h2>
-                    <p class="profile-subtitle">Manage your personal details</p>
+
 
                     <form id="profileForm" method="POST">
                         <div class="profile-grid">
@@ -182,20 +186,14 @@ try {
                             <div class="profile-field">
                                 <label for="email">Email:</label>
                                 <input type="email" name="email" id="email"
-                                    value="<?= htmlspecialchars($UserInfoData['Email'] ?? 'user@email.com') ?>">
+                                    value="<?= htmlspecialchars($UserInfoData['Email'] ?? '') ?>">
+                            </div>
+                            <div class="profile-field">
+                                <label for="username">Username:</label>
+                                <input type="text" name="username" id="username"
+                                    value="<?= htmlspecialchars($UserInfoData['Username'] ?? '') ?>">
                             </div>
                         </div>
-
-                        <div class="profile-field">
-                            <label for="password">New Password:</label>
-                            <input type="password" name="password" id="password" placeholder="Enter new password">
-                        </div>
-
-                        <div class="profile-field">
-                            <label for="confirmPassword">Confirm Password:</label>
-                            <input type="password" id="confirmPassword" placeholder="Confirm new password">
-                        </div>
-
                         <div class="profile-grid">
                             <div class="profile-field">
                                 <label for="birthdate">Birthdate:</label>
@@ -208,12 +206,24 @@ try {
                                 <input type="text" id="gender"
                                     value="<?= htmlspecialchars($UserInfoData['Sex'] ?? 'Not specified') ?>" readonly>
                             </div>
+                            <div class="profile-field"> </div>
                         </div>
+                        <div class="profile-grid">
+                            <div class="profile-field">
+                                <label for="password">New Password:</label>
+                                <input type="password" name="password" id="password" placeholder="Enter new password">
+                            </div>
 
-                        <div class="btn-wrapper">
-                            <button type="button" class="btn-save" onclick="confirmUpdate()">
-                                <i class="fas fa-save"></i> Save Changes
-                            </button>
+                            <div class="profile-field">
+                                <label for="confirmPassword">Confirm Password:</label>
+                                <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                            </div>
+
+                            <div class="btn-wrapper">
+                                <button type="button" class="btn-save" onclick="confirmUpdate()">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -373,21 +383,37 @@ try {
 
 
         <style>
+            .profile-header {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 10px;
+                padding-top: 0px;
+                width: 100%;
+            }
+
             .profile-main-container {
                 display: flex;
-                gap: 3rem;
-                padding: 2.5rem;
+                flex-direction: column;
+                gap: 5px;
+                padding: 15px;
                 background-color: #fff;
                 border-radius: 10px;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
                 align-items: flex-start;
+                height: 100%;
             }
 
             .profile-picture-section {
                 flex: 1;
                 display: flex;
-                justify-content: center;
+                justify-content: flex-start;
                 align-items: center;
+                width: 100%;
+                height: 30%;
+                padding-left: 30px;
+                max-height: 110px;
             }
 
             .profile-pic-wrapper {
@@ -398,8 +424,8 @@ try {
             }
 
             .profile-pic {
-                width: 140px;
-                height: 140px;
+                width: 100px;
+                height: 100px;
                 border-radius: 50%;
                 border: 4px solid #2767c0;
                 object-fit: cover;
@@ -433,7 +459,8 @@ try {
                 flex: 2;
                 display: flex;
                 flex-direction: column;
-                gap: 1.2rem;
+                gap: 15px;
+                width: 100%;
             }
 
             .profile-info-section h2 {
@@ -448,15 +475,27 @@ try {
                 margin-bottom: 1rem;
             }
 
+            form {
+                display: flex;
+                width: 100%;
+
+                input {
+                    width: 100%;
+                }
+            }
+
             .profile-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                width: 100%;
                 gap: 1.2rem;
+                padding: 15px;
             }
 
             .profile-field {
-                display: flex;
-                flex-direction: column;
+                display: grid;
+                gap: 0.4rem;
             }
 
             .profile-field label {
@@ -471,6 +510,7 @@ try {
                 border: 1px solid #ccc;
                 font-size: 1rem;
                 transition: all 0.2s ease;
+
             }
 
             .profile-field input:focus {
@@ -482,6 +522,8 @@ try {
             .btn-wrapper {
                 margin-top: 1.5rem;
                 text-align: right;
+                display: flex;
+                justify-content: flex-end;
             }
 
             .btn-save {
@@ -520,112 +562,127 @@ try {
             }
 
             /* ================== ENHANCE PROFILE IMAGE ONLY ================== */
-/* Target the profile image directly */
-#profileBtn {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
-    
-    /* Add white shadow/glow effect */
-    box-shadow: 
-        0 0 0 3px white,           /* White border */
-        0 0 0 4px rgba(57, 125, 218, 0.3), /* Blue subtle border */
-        0 4px 15px rgba(57, 125, 218, 0.25); /* Outer shadow */
-    
-    /* Add transition for smooth animation */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    /* Make cursor show it's clickable */
-    cursor: pointer;
-    
-    /* Scale the image to 96% so white border is visible */
-    transform: scale(0.96);
-}
+            /* Target the profile image directly */
+            #profileBtn {
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                object-fit: cover;
 
-/* Hover effect */
-#profileBtn:hover {
-    transform: scale(1.03); /* Slight grow on hover */
-    box-shadow: 
-        0 0 0 4px white,           /* Thicker white border on hover */
-        0 0 0 6px rgba(57, 125, 218, 0.4), /* Blue border on hover */
-        0 6px 20px rgba(57, 125, 218, 0.35); /* Stronger shadow */
-    
-    /* Add a subtle pulsing animation */
-    animation: pulse-glow 2s infinite;
-}
+                /* Add white shadow/glow effect */
+                box-shadow:
+                    0 0 0 3px white,
+                    /* White border */
+                    0 0 0 4px rgba(57, 125, 218, 0.3),
+                    /* Blue subtle border */
+                    0 4px 15px rgba(57, 125, 218, 0.25);
+                /* Outer shadow */
 
-#profileBtn:active {
-    transform: scale(0.98);
-    box-shadow: 
-        0 0 0 3px white,
-        0 0 0 5px rgba(57, 125, 218, 0.5),
-        0 2px 8px rgba(57, 125, 218, 0.3);
-    transition: all 0.1s ease;
-}
+                /* Add transition for smooth animation */
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-@keyframes pulse-glow {
-    0% {
-        box-shadow: 
-            0 0 0 4px white,
-            0 0 0 6px rgba(57, 125, 218, 0.4),
-            0 6px 20px rgba(57, 125, 218, 0.35);
-    }
-    50% {
-        box-shadow: 
-            0 0 0 4px white,
-            0 0 0 6px rgba(57, 125, 218, 0.6),
-            0 8px 25px rgba(57, 125, 218, 0.4);
-    }
-    100% {
-        box-shadow: 
-            0 0 0 4px white,
-            0 0 0 6px rgba(57, 125, 218, 0.4),
-            0 6px 20px rgba(57, 125, 218, 0.35);
-    }
-}
+                /* Make cursor show it's clickable */
+                cursor: pointer;
 
-/* ================== DROPDOWN HOVER COLORS ================== */
-/* Settings - Blue hover */
-.profile-item:nth-child(2):hover {
-    background-color: #e8f0fe; /* Light blue background */
-    border-left: solid #0b62c9 3px; /* Blue border */
-}
+                /* Scale the image to 96% so white border is visible */
+                transform: scale(0.96);
+            }
 
-.profile-item:nth-child(2):hover i {
-    color: #0b62c9; /* Blue icon */
-}
+            /* Hover effect */
+            #profileBtn:hover {
+                transform: scale(1.03);
+                /* Slight grow on hover */
+                box-shadow:
+                    0 0 0 4px white,
+                    /* Thicker white border on hover */
+                    0 0 0 6px rgba(57, 125, 218, 0.4),
+                    /* Blue border on hover */
+                    0 6px 20px rgba(57, 125, 218, 0.35);
+                /* Stronger shadow */
 
-/* Logout - Red hover */
-.profile-item:last-child:hover {
-    background-color: #fee; /* Light red background */
-    border-left: solid #d32f2f 3px; /* Red border */
-}
+                /* Add a subtle pulsing animation */
+                animation: pulse-glow 2s infinite;
+            }
 
-.profile-item:last-child:hover i {
-    color: #d32f2f; /* Red icon */
-}
+            #profileBtn:active {
+                transform: scale(0.98);
+                box-shadow:
+                    0 0 0 3px white,
+                    0 0 0 5px rgba(57, 125, 218, 0.5),
+                    0 2px 8px rgba(57, 125, 218, 0.3);
+                transition: all 0.1s ease;
+            }
 
-/* Smooth hover transitions */
-.profile-item:hover {
-    transform: translateX(4px);
-    transition: all 0.2s ease;
-}
+            @keyframes pulse-glow {
+                0% {
+                    box-shadow:
+                        0 0 0 4px white,
+                        0 0 0 6px rgba(57, 125, 218, 0.4),
+                        0 6px 20px rgba(57, 125, 218, 0.35);
+                }
 
-/* Mobile responsive */
-@media (max-width: 768px) {
-    #profileBtn {
-        width: 40px;
-        height: 40px;
-    }
-}
+                50% {
+                    box-shadow:
+                        0 0 0 4px white,
+                        0 0 0 6px rgba(57, 125, 218, 0.6),
+                        0 8px 25px rgba(57, 125, 218, 0.4);
+                }
 
-@media (max-width: 480px) {
-    #profileBtn {
-        width: 35px;
-        height: 35px;
-    }
-}
+                100% {
+                    box-shadow:
+                        0 0 0 4px white,
+                        0 0 0 6px rgba(57, 125, 218, 0.4),
+                        0 6px 20px rgba(57, 125, 218, 0.35);
+                }
+            }
+
+            /* ================== DROPDOWN HOVER COLORS ================== */
+            /* Settings - Blue hover */
+            .profile-item:nth-child(2):hover {
+                background-color: #e8f0fe;
+                /* Light blue background */
+                border-left: solid #0b62c9 3px;
+                /* Blue border */
+            }
+
+            .profile-item:nth-child(2):hover i {
+                color: #0b62c9;
+                /* Blue icon */
+            }
+
+            /* Logout - Red hover */
+            .profile-item:last-child:hover {
+                background-color: #fee;
+                /* Light red background */
+                border-left: solid #d32f2f 3px;
+                /* Red border */
+            }
+
+            .profile-item:last-child:hover i {
+                color: #d32f2f;
+                /* Red icon */
+            }
+
+            /* Smooth hover transitions */
+            .profile-item:hover {
+                transform: translateX(4px);
+                transition: all 0.2s ease;
+            }
+
+            /* Mobile responsive */
+            @media (max-width: 768px) {
+                #profileBtn {
+                    width: 40px;
+                    height: 40px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                #profileBtn {
+                    width: 35px;
+                    height: 35px;
+                }
+            }
         </style>
         </main>
         <script>

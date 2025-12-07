@@ -1,94 +1,94 @@
 <?php
-
 require 'config/database.php';
+session_start();
 
 function verify_password($password, $stored_hash)
 {
     return password_verify($password, $stored_hash);
 }
 
-session_start();
 $error_message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $pdo = pdo_connect_mysql();
 
-        $emailOrUsername = htmlspecialchars(trim($_POST['email'])); // Can be admin username or client email
-        $password        = $_POST['password'];
+        $identifier = trim($_POST['identifier']); // Can be username or email
+        $password   = $_POST['password'];
 
-        // ---------- 1️⃣ Check Admin Table First ----------
-        $stmt = $pdo->prepare("SELECT * FROM admin WHERE email = ?");
-        $stmt->execute([$emailOrUsername]);
-        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$identifier || !$password) {
+            $error_message = 'Please enter username/email and password.';
+        } else {
+            // ---------- 1️⃣ Check Admin Table ----------
+            $stmt = $pdo->prepare("SELECT * FROM admin WHERE email = ? OR username = ?");
+            $stmt->execute([$identifier, $identifier]);
+            $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($admin && verify_password($password, $admin['password'])) {
+            if ($admin && verify_password($password, $admin['password'])) {
+                $_SESSION['user_type'] = $admin['user_type'];
+                $_SESSION['user_id']   = $admin['id'];
+                $_SESSION['username']  = $admin['email'];
 
-            // Save session
-            $_SESSION['user_type'] = $admin['user_type'];   // Doctor or Nurse
-            $_SESSION['user_id']   = $admin['id'];
-            $_SESSION['username']  = $admin['email'];
+                // Log login
+                $logStmt = $pdo->prepare("
+                    INSERT INTO activity_logs 
+                    (user_id, username, role, action_type, action_description, status) 
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ");
+                $logStmt->execute([
+                    $admin['id'],
+                    $admin['email'],
+                    $admin['user_type'],
+                    'Login',
+                    $admin['user_type'] . ' logged in',
+                    'SUCCESS'
+                ]);
 
-            // Log login
-            $logStmt = $pdo->prepare("
-        INSERT INTO activity_logs 
-        (user_id, username, role, action_type, action_description, status) 
-        VALUES (?, ?, ?, ?, ?, ?)
-    ");
-
-            $logStmt->execute([
-                $admin['id'],
-                $admin['email'],
-                $admin['user_type'],    // Doctor or Nurse
-                'Login',
-                $admin['user_type'] . ' logged in',
-                'SUCCESS'
-            ]);
-
-            header("Location: UC-Admin/Public/Dashboard.php");
-            exit();
-        }
-
-        // ---------- 2️⃣ If not admin, check Clients Table ----------
-        $stmt = $pdo->prepare("SELECT * FROM Clients WHERE Email = ?");
-        $stmt->execute([$emailOrUsername]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user && verify_password($password, $user['Password'])) {
-            // Client login successful
-            $_SESSION['user_type'] = 'client';
-            $_SESSION['ClientID']  = $user['ClientID'];
-            $_SESSION['ClientType'] = $user['ClientType'];
-            $_SESSION['Firstname'] = $user['Firstname'];
-            $_SESSION['Lastname']  = $user['Lastname'];
-            $_SESSION['Email']     = $user['Email'];
-
-            // Redirect based on ClientType
-            switch ($user['ClientType']) {
-                case 'Student':
-                    header("Location: public/Student_Profile.php");
-                    break;
-                case 'Freshman':
-                    header("Location:  public/Freshman_Profile.php");
-                    break;
-                case 'Faculty':
-                case 'Personnel':
-                    header("Location:  public/All_Personnel_Profile.php");
-                    break;
-                case 'NewPersonnel':
-                    header("Location:  public/Newly_Hired_Profile.php");
-                    break;
-                default:
-                    header("Location:  public/Profile.php");
-                    break;
+                header("Location: UC-Admin/Public/Dashboard.php");
+                exit();
             }
-            exit();
-        }
 
-        // ---------- 3️⃣ If no match ----------
-        $error_message = 'Invalid username/email or password.';
+            // ---------- 2️⃣ Check Clients Table ----------
+            $stmt = $pdo->prepare("SELECT * FROM clients WHERE Email = ? OR Username = ?");
+            $stmt->execute([$identifier, $identifier]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user && verify_password($password, $user['Password'])) {
+                $_SESSION['user_type']  = 'client';
+                $_SESSION['ClientID']   = $user['ClientID'];
+                $_SESSION['ClientType'] = $user['ClientType'];
+                $_SESSION['Firstname']  = $user['Firstname'];
+                $_SESSION['Lastname']   = $user['Lastname'];
+                $_SESSION['Email']      = $user['Email'];
+                $_SESSION['Username']   = $user['Username'];
+
+                // Redirect based on ClientType
+                switch ($user['ClientType']) {
+                    case 'Student':
+                        header("Location: public/Student_Profile.php");
+                        break;
+                    case 'Freshman':
+                        header("Location: public/Freshman_Profile.php");
+                        break;
+                    case 'Faculty':
+                    case 'Personnel':
+                        header("Location: public/All_Personnel_Profile.php");
+                        break;
+                    case 'NewPersonnel':
+                        header("Location: public/Newly_Hired_Profile.php");
+                        break;
+                    default:
+                        header("Location: public/Profile.php");
+                        break;
+                }
+                exit();
+            }
+
+            // ---------- 3️⃣ No match ----------
+            $error_message = 'Invalid username/email or password.';
+        }
     } catch (PDOException $e) {
-        $error_message = 'Database connection failed: ' . $e->getMessage();
+        $error_message = 'Database error: ' . $e->getMessage();
     }
 }
 ?>
@@ -144,8 +144,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form action="index.php" method="POST">
                 <!--   <label for="email">Email</label>-->
                 <div class="input-group">
-                    <i class="fas fa-envelope left-icon"></i>
-                    <input id="Email" type="email" class="inputs" name="email" placeholder="Email" required>
+                    <i class="fas fa-user left-icon"></i>
+                    <input id="identifier" type="text" class="inputs" name="identifier" placeholder="Username or Email" required>
                 </div>
                 <!--  <label for="password">Password</label>-->
                 <div class="input-group">
@@ -164,7 +164,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script>
-        document.getElementById('Email').focus();
+        document.getElementById('identifier').focus(); // use existing input ID
 
         const passwordInput = document.getElementById("password");
         const togglePassword = document.getElementById("togglePassword");
@@ -172,6 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         togglePassword.addEventListener("click", function() {
             const type = passwordInput.type === "password" ? "text" : "password";
             passwordInput.type = type;
+
             this.classList.toggle("fa-eye");
             this.classList.toggle("fa-eye-slash");
         });

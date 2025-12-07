@@ -574,3 +574,121 @@ a.register-link:hover {
     transform: translateY(0);
   }
 }
+
+/* Modal overlay */
+.messagemodal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 9999; /* On top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  backdrop-filter: blur(3px); /* Optional blur */
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Modal content box */
+.messagemodal-content {
+  background-color: #fff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  position: relative;
+  animation: slideDown 0.3s ease;
+}
+
+/* Heading */
+.messagemodal-content h2 {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.6rem;
+  margin-bottom: 15px;
+  color: #d9534f; /* Red warning color */
+}
+
+/* Paragraph */
+.messagemodal-content p {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* Buttons container */
+.messagemodal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* Buttons */
+.messagemodal-buttons .btn-primary {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.messagemodal-buttons .btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.messagemodal-buttons .btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.messagemodal-buttons .btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .messagemodal-content {
+    padding: 20px 15px;
+  }
+  .messagemodal-content h2 {
+    font-size: 1.4rem;
+  }
+  .messagemodal-content p {
+    font-size: 0.95rem;
+  }
+}

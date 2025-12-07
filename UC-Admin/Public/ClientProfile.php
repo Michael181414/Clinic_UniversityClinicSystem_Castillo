@@ -211,7 +211,7 @@ $email = $current_user['email'] ?? '';
     <link rel="stylesheet" href="assets/css/manageusers.css">
     <link rel="stylesheet" href="assets/css/patientformstyles.css">
     <link rel="stylesheet" href="assets/css/profileclients.css">
-    <link rel="stylesheet" href="assets/css/dashboardpagestyles.css">
+
     <link rel="stylesheet" href="assets/css/adminstyles.css">
     <link rel="stylesheet" href="webicons/fontawesome-free-6.7.2-web/css/all.min.css">
 
@@ -403,6 +403,7 @@ $email = $current_user['email'] ?? '';
                                     data-inactive="assets/images/time-past 3.svg">
                                 Patient Visit History
                             </div>
+                            <!--
                             <script>
                                 // Make sure this runs after DOM is ready
                                 window.addEventListener('DOMContentLoaded', () => {
@@ -429,7 +430,7 @@ $email = $current_user['email'] ?? '';
                                     // IMPORTANT: Do not call backto() here — that would reload on load.
                                     // If you previously had: window.onload = function(){ backto(); }; remove it.
                                 });
-                            </script>
+                            </script>-->
                         <?php endif; ?>
 
                         <div class="tab <?php echo $showLimitedTabs ? 'active' : 'active'; ?>" data-target="personal-info-div">
@@ -1646,7 +1647,7 @@ $email = $current_user['email'] ?? '';
                 <div id="med-history-modal-overlay" class="med-history-modal-overlay">
                     <div class="medical-history-content">
                         <div class="med-history-modal-header">
-                            <h3>Medical History</h3>
+                            <h3 class="header-label">Medical History</h3>
                             <span id="close-med-history-btn" onclick="backto(<?= htmlspecialchars($clientID) ?>)" class="close">&times;</span>
                         </div>
                         <div id="medical-history" class="medical-history-content-tables">
