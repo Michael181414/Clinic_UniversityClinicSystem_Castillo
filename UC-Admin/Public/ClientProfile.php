@@ -4,6 +4,12 @@ require_once('Profile/Profile_db.php');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../../index.php');
+    exit;
+}
+
+
 $pdo = pdo_connect_mysql();
 $user_data = getUserDataFromDatabase($pdo);
 

@@ -49,6 +49,53 @@ $name = $current_user['username'] ?? '';
             font-weight: 400;
             font-style: normal;
         }
+
+        .role-filter-dropdown {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            background-color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+            min-width: 200px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .role-filter-dropdown:hover {
+            border-color: #4a90e2;
+            box-shadow: 0 4px 8px rgba(74, 144, 226, 0.1);
+        }
+
+        .role-filter-dropdown:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+
+        .role-filter-dropdown option {
+            padding: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .tabs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
     <link rel="stylesheet" href="webicons/fontawesome-free-6.7.2-web/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -503,8 +550,10 @@ $name = $current_user['username'] ?? '';
                     <div class="legend-header">
                         <h2>Patients Department List</h2>
                         <div class="tabs">
-                            <div class="tab active" data-target="students-content">Students</div>
-                            <div class="tab" data-target="employees-content">Teaching Personnels</div>
+                            <select id="department-tabs-dropdown" class="role-filter-dropdown">
+                                <option value="students-content" selected>Students</option>
+                                <option value="employees-content">Teaching Personnels</option>
+                            </select>
                         </div>
                     </div>
 
@@ -641,17 +690,14 @@ $name = $current_user['username'] ?? '';
     const btn = document.querySelector(".header-modal-button");
     const close = document.querySelector(".close");
 
-    // Open modal
     btn.onclick = () => {
         modal.style.display = "flex";
     };
 
-    // Close modal when X is clicked
     close.onclick = () => {
         modal.style.display = "none";
     };
 
-    // Close modal when clicking outside of it
     window.onclick = (e) => {
         if (e.target === modal) {
             modal.style.display = "none";
@@ -692,6 +738,29 @@ $name = $current_user['username'] ?? '';
             });
         })
         .catch(error => console.error('Error loading data:', error));
+
+        // Handle dropdown tab switching
+            document.addEventListener('DOMContentLoaded', function() {
+                const dropdown = document.getElementById('department-tabs-dropdown');
+                const studentContent = document.getElementById('students-content');
+                const employeeContent = document.getElementById('employees-content');
+                
+                // Initial state - show students content
+                studentContent.style.display = 'block';
+                employeeContent.style.display = 'none';
+                
+                // Handle dropdown change
+                dropdown.addEventListener('change', function() {
+                    const selectedValue = this.value;
+                    
+                    // Hide all content
+                    studentContent.style.display = 'none';
+                    employeeContent.style.display = 'none';
+                    
+                    // Show selected content
+                    document.getElementById(selectedValue).style.display = 'block';
+                });
+            });
 </script>
 
 

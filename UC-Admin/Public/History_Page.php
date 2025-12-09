@@ -1,6 +1,11 @@
 <?php
 require_once 'config/database.php';
 require 'manageclients.dbf/view-personalform.php';
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../../index.php');
+    exit;
+}
+
 
 $pdo = pdo_connect_mysql();
 

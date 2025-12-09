@@ -3,6 +3,11 @@ require_once 'config/database.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../../index.php');
+    exit;
+}
+
 $pdo = pdo_connect_mysql();
 // Get admin ID from session
 $admin_id = $_SESSION['user_id'] ?? null;
@@ -225,7 +230,7 @@ $email = $current_user['email'] ?? '';
     <div id="logModal" class="modal" style="display:none;">
         <div class="modal-content">
             <div class="medform-modal-header">
-                <h3>Activity Log Details</h3>
+                <h3 style="color:#0056b3;">Activity Log Details</h3>
                 <span class="close">&times;</span>
             </div>
 

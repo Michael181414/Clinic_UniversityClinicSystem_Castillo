@@ -2,6 +2,11 @@
 include 'dashboard.dbf/fetch_dashboard_data.php';
 require 'dashboard.dbf/recent_consultations.php';
 require_once 'config/database.php';
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../../index.php');
+    exit;
+}
+
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

@@ -1,7 +1,10 @@
 <?php
 require_once 'config/database.php';
-$pdo = pdo_connect_mysql();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
+$pdo = pdo_connect_mysql();
 try {
     $stmt = $pdo->prepare("SELECT * FROM backup_logs ORDER BY id ASC");
     $stmt->execute(); // ✅ You need to execute the query
@@ -9,10 +12,11 @@ try {
 } catch (PDOException $e) {
     die("Error fetching history data: " . $e->getMessage());
 }
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../../index.php');
+    exit;
+}
 // Get admin ID from session
 $admin_id = $_SESSION['user_id'] ?? null;
 
