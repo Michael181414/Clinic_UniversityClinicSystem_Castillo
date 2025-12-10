@@ -272,9 +272,15 @@ $email = $current_user['email'] ?? '';
                                         </select>
                                     </div>
 
-                                    <div id="departmentField" class="form-group" style="display: none;">
+                                    <div id="departmentField" class="form-group" style="display: none;" 
+                                        onmousedown="event.stopPropagation();" 
+                                        onclick="event.stopPropagation();" 
+                                        onchange="event.stopPropagation();">
                                         <label for="department"><i class="fas fa-building-columns icon-blue"></i> Department</label>
-                                        <select id="department" name="department" class="form-control">
+                                        <select id="department" name="department" class="form-control" 
+                                                onmousedown="event.stopPropagation();" 
+                                                onclick="event.stopPropagation(); event.stopImmediatePropagation();"
+                                                onchange="event.stopPropagation(); event.stopImmediatePropagation();">
                                             <option value="">Select a Department</option>
                                             <option value="None">None</option>
                                             <option value="College of Computer Studies">College of Computer Studies</option>
@@ -875,10 +881,12 @@ $email = $current_user['email'] ?? '';
                 const baseUrl = window.location.href.split('?')[0];
                 window.history.pushState({}, '', baseUrl);
 
-                ['students-content', 'employees-content', 'personnel-content', 'freshman-content', 'newpersonnel-content']
-                .forEach(tabId => {
-                    document.querySelector(`#${tabId} tbody`).innerHTML = '';
-                });
+                // Reload original data instead of just clearing
+                loadFilteredData('students-content', 'Student', '');
+                loadFilteredData('employees-content', 'Faculty', '');
+                loadFilteredData('personnel-content', 'Personnel', '');
+                loadFilteredData('freshman-content', 'Freshman', '');
+                loadFilteredData('newpersonnel-content', 'NewPersonnel', '');
 
                 return;
             }
@@ -893,6 +901,15 @@ $email = $current_user['email'] ?? '';
             loadFilteredData('freshman-content', 'Freshman', searchId);
             loadFilteredData('newpersonnel-content', 'NewPersonnel', searchId);
         });
+
+
+        function loadFilteredData(tabId, clientType, searchId) {
+            fetch(`manageclients.dbf/get_user.php?client_type=${clientType}&id_filter=${encodeURIComponent(searchId)}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector(`#${tabId} tbody`).innerHTML = html;
+                });
+        }
 
 
         function loadFilteredData(tabId, clientType, searchId) {

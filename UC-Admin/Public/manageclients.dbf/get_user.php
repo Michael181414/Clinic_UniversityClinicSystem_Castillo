@@ -106,9 +106,7 @@ if (!empty($clientType)) {
     $clients = getFilteredClients($clientType, $idFilter) ?? [];
 
     foreach ($clients as $client): ?>
-        <tr class="client-row" data-href="ClientProfile.php?id=<?= $client['ClientID'] ?>">
-
-        <tr class="client-row">
+        <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($client['ClientID']) ?>">
             <td class="searchable-id"><?= htmlspecialchars($client['ClientID']) ?></td>
             <td>
                 <?php
@@ -116,27 +114,34 @@ if (!empty($clientType)) {
                     ? '../../uploads/' . $client['profilePicturePath']
                     : '../../uploads/profilepic2.png';
                 ?>
-                <img src="<?= htmlspecialchars($profilePath) ?>" class="rounded-circle" width="50" height="50">
+                <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
             </td>
-
-            <td class="searchable-name"><?= htmlspecialchars($client['FullName']) ?></td>
-            <td><?= htmlspecialchars($client['Email']) ?></td>
-
-            <?php if ($clientType === 'Freshman' || $clientType === 'Students'): ?>
-                <td><?= htmlspecialchars($client['Course']) ?></td>
+            <td class="searchable-name">
+                <?= htmlspecialchars($client['FullName']) ?>
+            </td>
+            <td class="email-td">
+                <?= htmlspecialchars($client['Email']) ?>
+            </td>
+            
+            <?php if ($clientType === 'Student' || $clientType === 'Freshman'): ?>
+                <td class="course-td">
+                    <?= htmlspecialchars($client['Course']) ?>
+                </td>
             <?php endif; ?>
-
-            <td><?= htmlspecialchars($client['Department']) ?></td>
-            <td><?= htmlspecialchars($client['ClientType']) ?></td>
+            
+            <td class="department-td">
+                <?= htmlspecialchars($client['Department']) ?>
+            </td>
 
             <td class="actions-column">
                 <div class="action-buttons">
                     <a href="ClientProfile.php?id=<?= $client['ClientID'] ?>" title="Edit User">
-                        <img src="assets/images/edit-blue-icon.svg" width="20" height="20">
+                        <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                     </a>
                     <a href="manageclients.dbf/delete_client.php?id=<?= $client['ClientID'] ?>"
-                        onclick="return confirm('Are you sure you want to delete this user?');">
-                        <img src="assets/images/delete-icon.svg" width="20" height="20">
+                        onclick="return confirm('Are you sure you want to delete this user?');"
+                        title="Delete User">
+                        <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                     </a>
                 </div>
             </td>
