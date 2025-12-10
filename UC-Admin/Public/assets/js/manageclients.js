@@ -290,3 +290,51 @@ async function filterTableById() {
 }
 */
 //==============================================================================
+let selectedClientId = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("deleteClientModal");
+  const trashBtn = document.getElementById("trashBtn");
+  const permanentBtn = document.getElementById("permanentBtn");
+  const cancelBtn = document.getElementById("cancelBtn");
+
+  // ✅ Row click → profile
+  document.querySelectorAll(".client-row").forEach((row) => {
+    row.addEventListener("click", (e) => {
+      // Ignore clicks inside action buttons
+      if (e.target.closest(".action-buttons")) return;
+
+      window.location.href = row.dataset.href;
+    });
+  });
+
+  // ✅ Delete button → show modal
+  document.querySelectorAll(".delete-client-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation(); // prevent row click
+
+      selectedClientId = btn.dataset.clientId;
+      modal.style.display = "flex";
+    });
+  });
+
+  // ✅ Move to Trash
+  trashBtn.addEventListener("click", () => {
+    window.location.href = `manageclients.dbf/delete_client.php?id=${selectedClientId}&action=trash`;
+  });
+
+  // ✅ Permanent Delete
+  permanentBtn.addEventListener("click", () => {
+    if (!confirm("This action is irreversible. Continue?")) return;
+    window.location.href = `manageclients.dbf/delete_client.php?id=${selectedClientId}&action=permanent`;
+  });
+
+  // ✅ Cancel Modal
+  cancelBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+    selectedClientId = null;
+  });
+});
+
+//==============================================================================

@@ -226,9 +226,9 @@ $name = $current_user['username'] ?? '';
                         <div class="patients-type-counts-div">
                             <div id="header-count-div" class="counts-div" style="padding-right: 0px;">
                                 <h4>Registered Patients Overview</h4>
-                                <button id="btn" class="header-modal-button">
+                                <button id="btn" class="header-modal-button" style="flex-direction:  row">
                                     <i class="fas fa-plus" style="font-size: 13px;"></i>
-                                    View more
+                                    <p style="display: flex; flex-direction: row; width: 100%;text-align: center;">View more</p>
                                 </button>
 
                                 <!-- Modal Structure -->
@@ -739,28 +739,28 @@ $name = $current_user['username'] ?? '';
         })
         .catch(error => console.error('Error loading data:', error));
 
-        // Handle dropdown tab switching
-            document.addEventListener('DOMContentLoaded', function() {
-                const dropdown = document.getElementById('department-tabs-dropdown');
-                const studentContent = document.getElementById('students-content');
-                const employeeContent = document.getElementById('employees-content');
-                
-                // Initial state - show students content
-                studentContent.style.display = 'block';
-                employeeContent.style.display = 'none';
-                
-                // Handle dropdown change
-                dropdown.addEventListener('change', function() {
-                    const selectedValue = this.value;
-                    
-                    // Hide all content
-                    studentContent.style.display = 'none';
-                    employeeContent.style.display = 'none';
-                    
-                    // Show selected content
-                    document.getElementById(selectedValue).style.display = 'block';
-                });
-            });
+    // Handle dropdown tab switching
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdown = document.getElementById('department-tabs-dropdown');
+        const studentContent = document.getElementById('students-content');
+        const employeeContent = document.getElementById('employees-content');
+
+        // Initial state - show students content
+        studentContent.style.display = 'block';
+        employeeContent.style.display = 'none';
+
+        // Handle dropdown change
+        dropdown.addEventListener('change', function() {
+            const selectedValue = this.value;
+
+            // Hide all content
+            studentContent.style.display = 'none';
+            employeeContent.style.display = 'none';
+
+            // Show selected content
+            document.getElementById(selectedValue).style.display = 'block';
+        });
+    });
 </script>
 
 

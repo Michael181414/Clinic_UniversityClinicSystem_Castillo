@@ -4,8 +4,8 @@ require 'config/database.php'; // includes pdo_connect_mysql()
 $conn = pdo_connect_mysql();
 
 // Prepare and execute queries for each gender
-$stmt_male = $conn->query("SELECT COUNT(*) AS count FROM personalinfo WHERE Gender = 'male'");
-$stmt_female = $conn->query("SELECT COUNT(*) AS count FROM personalinfo WHERE Gender = 'female'");
+$stmt_male = $conn->query("SELECT COUNT(*) AS count FROM clients WHERE Sex = 'male'");
+$stmt_female = $conn->query("SELECT COUNT(*) AS count FROM clients WHERE Sex = 'female'");
 
 // Fetch the results
 $data = [

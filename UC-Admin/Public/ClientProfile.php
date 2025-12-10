@@ -113,9 +113,6 @@ try {
     die("Error fetching history data: " . $e->getMessage());
 }
 //===========================================================================
-$stmt = $pdo->prepare("SELECT * FROM logbook WHERE ClientID = ?");
-$stmt->execute([$clientID]);
-$logbookEntries = $stmt->fetchAll(PDO::FETCH_ASSOC);
 //===========================================================================
 date_default_timezone_set('Asia/Manila');
 
@@ -178,6 +175,11 @@ $stmt = $pdo->prepare("SELECT Surname, GivenName, MiddleName, Age, CurrentAddres
 $stmt->execute([$clientID]);
 $personalinfo = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
+$stmt = $pdo->prepare("SELECT * FROM clients WHERE ClientID = ?");
+$stmt->execute([$clientID]);
+$personalinfoClients = $stmt->fetch(PDO::FETCH_ASSOC);
+
 $givenName = $personalinfo['GivenName'] ?? '--.--.--';
 $middleName = $personalinfo['MiddleName'] ?? '--.--.--';
 $surname = $personalinfo['Surname'] ?? '--.--.--';
@@ -187,6 +189,11 @@ $address = $personalinfo['CurrentAddress'] ?? '';
 $course = $personalinfo['Course'] ?? '';
 
 $fullName = trim($givenName . $surname);
+
+$ClientName = $personalinfoClients['Firstname'] ?? '--,--,--';
+$ClientLastName = $personalinfoClients['Lastname'] ?? '--,--,--';
+$ClientSex = $personalinfoClients['Sex'] ?? '--,--,--';
+$ClientAge = $personalinfoClients['Age'] ?? '--,--,--';
 //=====================================================
 $stmt = $pdo->prepare("SELECT * FROM femalehealthhistory WHERE ClientID = ?");
 $stmt->execute([$clientID]);
@@ -737,12 +744,12 @@ $email = $current_user['email'] ?? '';
                                                     <h3 style="margin-bottom: 15px;">Patient's Info</h3>
                                                     <div class=" info-row">
                                                         <span class="info-label">Name:</span>
-                                                        <input type="text" id="name" contenteditable="true" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
+                                                        <input type="text" id="name" contenteditable="true" value="<?= htmlspecialchars($ClientName) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
                                                         <span class="info-label">Age:</span>
-                                                        <input type="text" id="age" contenteditable="true" value="<?= htmlspecialchars($age) ?: ''; ?>" />
+                                                        <input type="text" id="age" contenteditable="true" value="<?= htmlspecialchars($ClientSex) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">

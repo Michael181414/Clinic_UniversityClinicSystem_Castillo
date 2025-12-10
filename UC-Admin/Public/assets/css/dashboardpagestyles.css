@@ -22,21 +22,20 @@
 }
 
 .report-cards-container {
-  display: grid;
-  grid-template-columns: repeat(2, 73% 27%);
+  display: flex;
+  flex-direction: row;
   width: 100%;
-  height: 25%;
-  max-height: 390px;
+  height: 100%;
+  max-height: 400px;
   max-width: 2000px;
-  box-sizing: border-box;
 }
 
 .quantity-statistics-container {
   display: grid;
   grid-template-rows: repeat(2, 20% 80%);
-  height: 100%;
   width: 100%;
-  max-height: 390px;
+  max-width: 73%;
+  height: 100%;
 }
 
 h3 {
@@ -73,9 +72,7 @@ h3 {
   align-items: left;
   width: 100%;
   height: 100%;
-  min-height: 300px;
   background-color: white;
-
   border-radius: 5px;
   font-family: "Montserrat", sans-serif;
   padding: 10px;
@@ -355,6 +352,14 @@ h3 {
   height: 100%;
   padding-left: 15px;
 }
+/*====================*/
+.calendar-div {
+  display: grid;
+  box-sizing: border-box;
+  width: 30%;
+  height: 100%;
+}
+
 /*==============Gender-Chart-End===========================*/
 #male-card {
   color: #000000;
@@ -539,6 +544,7 @@ h3 {
 
 .recent-patients-table table {
   width: 100%;
+  height: 100%;
   border-collapse: collapse;
 }
 
@@ -997,14 +1003,15 @@ select {
 }
 
 #calendar-app {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   background-color: white;
-  padding: 20px;
-
+  padding: 15px;
   border-radius: 5px;
+  gap: 15px;
   width: 100%;
-  height: 90%;
-  min-height: 390px;
-
+  height: 100%;
   position: relative;
 }
 
@@ -1013,7 +1020,7 @@ select {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .app-title {
@@ -1143,14 +1150,14 @@ select {
   text-align: center;
   font-size: clamp(0.5rem, 1vw, 0.75rem);
   width: 100%;
-  max-height: 385px;
+  max-height: 395px;
 }
 
 #day-names span {
   font-weight: 600;
   color: var(--secondary-text-color);
   padding: 0px 0;
-  font-size: clamp(0.9rem, 1vw, 0.1);
+  font-size: clamp(0.9rem, 1vw, 0.25);
 }
 
 /* Date Cells */
@@ -1158,7 +1165,7 @@ select {
   cursor: pointer;
   font-weight: 600;
   max-width: 100%;
-  font-size: clamp(0.5rem, 1vw, 0.75rem);
+  font-size: clamp(0.5rem, 1vw, 0.65rem);
   color: var(--text-color);
   border-radius: 50%;
   aspect-ratio: 1 / 1;
@@ -1425,7 +1432,6 @@ p {
   max-width: 500px;
   height: 100%;
   width: 100%;
-  border: solid red 1x;
   font-family: "Montserrat", sans-serif;
 }
 

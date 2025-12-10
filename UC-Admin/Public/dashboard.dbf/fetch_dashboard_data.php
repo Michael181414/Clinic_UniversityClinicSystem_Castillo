@@ -15,8 +15,8 @@ $counts['Total'] = array_sum($counts);
 
 // === GENDER COUNTS ===
 // Execute the query
-$MaleStmt = $pdo->query("SELECT COUNT(*) AS count FROM personalinfo WHERE Gender = 'male'");
-$FemaleStmt = $pdo->query("SELECT COUNT(*) AS count FROM personalinfo WHERE Gender = 'female'");
+$MaleStmt = $pdo->query("SELECT COUNT(*) AS count FROM clients WHERE Sex = 'male'");
+$FemaleStmt = $pdo->query("SELECT COUNT(*) AS count FROM clients WHERE Sex = 'female'");
 
 // Fetch the actual count
 $Male = $MaleStmt->fetch(PDO::FETCH_ASSOC)['count'];

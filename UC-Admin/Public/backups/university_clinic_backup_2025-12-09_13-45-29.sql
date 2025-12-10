@@ -1,0 +1,861 @@
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+--
+-- Host: localhost    Database: University_Clinic_System
+-- ------------------------------------------------------
+-- Server version	5.5.5-10.4.32-MariaDB
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `activity_logs`
+--
+
+DROP TABLE IF EXISTS `activity_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `username` varchar(120) NOT NULL,
+  `role` enum('Doctor','Nurse') NOT NULL,
+  `action_type` varchar(100) NOT NULL,
+  `action_description` text DEFAULT NULL,
+  `record_id` int(11) DEFAULT NULL,
+  `status` varchar(20) DEFAULT 'SUCCESS',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `fk_activity_user` (`user_id`),
+  CONSTRAINT `fk_activity_user` FOREIGN KEY (`user_id`) REFERENCES `admin` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=174 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_logs`
+--
+
+LOCK TABLES `activity_logs` WRITE;
+/*!40000 ALTER TABLE `activity_logs` DISABLE KEYS */;
+INSERT INTO `activity_logs` VALUES (1,5,'admin123@gmail.com','Doctor','Login','Admin logged in',NULL,'SUCCESS','2025-12-01 18:20:00'),(2,5,'admin123@gmail.com','Doctor','Login','Admin logged in',NULL,'SUCCESS','2025-12-01 18:28:56'),(3,5,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13252, Name Angelo Cano',NULL,'SUCCESS','2025-12-01 18:45:37'),(4,5,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13253, Name Carl Larga',NULL,'SUCCESS','2025-12-01 18:54:47'),(5,5,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13255, Name Lheila Tandang',NULL,'SUCCESS','2025-12-01 19:06:26'),(6,5,'admin123@gmail.com','Doctor','Login','Admin logged in',NULL,'SUCCESS','2025-12-01 19:07:30'),(7,5,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13256, Name Jeric Manibog',NULL,'SUCCESS','2025-12-01 20:10:21'),(8,5,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13257, Name Lawrence Salvador',NULL,'SUCCESS','2025-12-01 20:12:42'),(9,5,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13258, Name Mirah Lim',NULL,'SUCCESS','2025-12-01 20:21:02'),(10,5,'admin123@gmail.com','Doctor','Login','Nurse logged in',NULL,'SUCCESS','2025-12-01 20:22:03'),(11,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-01 20:23:18'),(12,5,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13259, Name Jin Casili',NULL,'SUCCESS','2025-12-01 20:23:59'),(13,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-01 21:07:16'),(14,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-01 21:09:59'),(15,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-01 21:13:58'),(16,5,'admin123@gmail.com','Doctor','Logged out','Logged out',NULL,'SUCCESS','2025-12-01 21:17:14'),(17,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-01 21:17:25'),(18,7,'jmmc@gmail.com','Nurse','Logout','Admin logged out',NULL,'SUCCESS','2025-12-01 21:20:11'),(19,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-01 21:20:30'),(20,7,'jmmc@gmail.com','Nurse','Delete Client','Deleted client: ID: 13259, (Email: Jin2@gmail.com), ',NULL,'SUCCESS','2025-12-01 22:28:04'),(21,7,'jmmc@gmail.com','Nurse','Add Consultation Record','Added consultation record for Client Email: RoseAnn@gmail.com, ClientID: 13171',NULL,'SUCCESS','2025-12-01 22:35:40'),(22,7,'jmmc@gmail.com','Nurse','Create Prescription','Created prescription for Client Email: RoseAnn@gmail.com, ClientID: 13171',NULL,'SUCCESS','2025-12-01 22:41:56'),(23,7,'jmmc@gmail.com','Nurse','Create Diagnostic Record','Create Diagnostic Record for Client Email: juandelacruz2@gmail.com, ClientID: 13245',NULL,'SUCCESS','2025-12-01 22:44:17'),(24,7,'jmmc@gmail.com','Nurse','New Personnel Form Submission','Submitted new personnel form for Client Email: Chester123@gmail.com, ClientID: 13192',NULL,'SUCCESS','2025-12-01 22:47:21'),(25,7,'jmmc@gmail.com','Nurse','Logout','Admin logged out',NULL,'SUCCESS','2025-12-01 22:47:49'),(26,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-01 22:47:54'),(27,5,'admin123@gmail.com','Doctor','Update Physical Examination','Updated physical examination for Client Email: michael18jmmc@gmail.com, ClientID: 13228',NULL,'SUCCESS','2025-12-01 22:49:24'),(28,5,'admin123@gmail.com','Doctor','Update Physical Examination','Updated physical examination for Client Email: juandelacruz2@gmail.com, ClientID: 13245',NULL,'SUCCESS','2025-12-01 22:50:20'),(29,5,'admin123@gmail.com','Doctor','New Physical Examination','Inserted new physical examination for Client Email: Susana@gmail.com, ClientID: 13244',NULL,'SUCCESS','2025-12-01 22:50:51'),(30,5,'admin123@gmail.com','Doctor','Logout','Admin logged out',NULL,'SUCCESS','2025-12-01 23:02:50'),(31,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-01 23:03:29'),(32,5,'admin123@gmail.com','Doctor','Logout','Admin logged out',NULL,'SUCCESS','2025-12-01 23:10:47'),(33,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-01 23:11:45'),(34,7,'jmmc@gmail.com','Nurse','Logout','Admin logged out',NULL,'SUCCESS','2025-12-01 23:41:16'),(35,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-02 07:10:02'),(36,5,'admin123@gmail.com','Doctor','Logout','Admin logged out',NULL,'SUCCESS','2025-12-02 09:50:40'),(37,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-02 09:50:52'),(38,7,'jmmc@gmail.com','Nurse','Logout','Admin logged out',NULL,'SUCCESS','2025-12-02 10:00:14'),(39,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-02 10:00:20'),(40,5,'admin123@gmail.com','Doctor','Delete Client','Deleted client: ID: 13255, (Email: Lhiela@gmail.com), ',NULL,'SUCCESS','2025-12-02 10:11:31'),(41,5,'admin123@gmail.com','Doctor','Delete Client','Deleted client: ID: 13258, (Email: mirahlim@gmail.com), ',NULL,'SUCCESS','2025-12-02 10:11:34'),(42,5,'admin123@gmail.com','Doctor','Delete Client','Deleted client: ID: 13252, (Email: angelo@gmail.com), ',NULL,'SUCCESS','2025-12-02 10:11:37'),(43,5,'admin123@gmail.com','Doctor','Delete Client','Deleted client: ID: 13254, (Email: Jepi@gmail.com), ',NULL,'SUCCESS','2025-12-02 10:11:42'),(44,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-02 16:06:55'),(45,5,'admin123@gmail.com','Doctor','Logout','Admin logged out',NULL,'SUCCESS','2025-12-02 17:18:49'),(46,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-02 17:19:13'),(47,5,'admin123@gmail.com','Doctor','Logout','Admin logged out',NULL,'SUCCESS','2025-12-02 23:20:23'),(48,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-02 23:23:19'),(49,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-03 08:32:36'),(50,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-03 08:32:36'),(51,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-03 12:01:53'),(52,5,'admin123@gmail.com','Doctor','Logout','Admin logged out',NULL,'SUCCESS','2025-12-03 12:06:41'),(53,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-03 17:26:18'),(54,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-04 08:38:35'),(55,5,'admin123@gmail.com','Doctor','Add Consultation Record','Added consultation record for Client Email: chesterTobey@gmail.com, ClientID: 13260',NULL,'SUCCESS','2025-12-04 08:46:37'),(56,5,'admin123@gmail.com','Doctor','Logout','Admin logged out',NULL,'SUCCESS','2025-12-04 08:51:23'),(57,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-04 08:51:56'),(58,5,'admin123@gmail.com','Doctor','Delete Client','Deleted client: ID: 13260, (Email: chesterTobey@gmail.com), ',NULL,'SUCCESS','2025-12-04 08:52:05'),(59,5,'admin123@gmail.com','Doctor','Delete Client','Deleted client: ID: 13257, (Email: lawrence@gmail.com), ',NULL,'SUCCESS','2025-12-04 08:55:30'),(60,5,'admin123@gmail.com','Doctor','Logout','Admin logged out',NULL,'SUCCESS','2025-12-04 08:55:45'),(61,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-04 08:56:42'),(62,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-04 09:01:39'),(63,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-04 09:02:06'),(64,5,'admin123@gmail.com','Doctor','Delete Client','Deleted client: ID: 13261, (Email: michaelcastillo12345@gmail.com), ',NULL,'SUCCESS','2025-12-04 09:02:38'),(65,5,'admin123@gmail.com','Doctor','Delete Client','Deleted client: ID: 13253, (Email: CarlLarga@gmail.com), ',NULL,'SUCCESS','2025-12-04 09:02:45'),(66,5,'admin123@gmail.com','Doctor','Logout','Admin logged out',NULL,'SUCCESS','2025-12-04 09:03:10'),(67,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-04 09:03:30'),(68,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 11:07:44'),(69,5,'admin123@gmail.com','Doctor','Delete Client','Deleted client: ID: 1093, (Email: ava.pearson954@example.com), ',NULL,'SUCCESS','2025-12-05 11:08:02'),(70,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 15:12:22'),(71,5,'admin123@gmail.com','Doctor','Logout','Admin logged out',NULL,'SUCCESS','2025-12-05 15:24:20'),(72,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 15:24:41'),(73,5,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-05 15:44:16'),(74,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 15:44:23'),(75,5,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-05 15:44:37'),(76,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-05 15:44:54'),(77,7,'jmmc@gmail.com','Nurse','Logout','Nurse logged out',NULL,'SUCCESS','2025-12-05 15:45:21'),(78,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 15:45:29'),(79,5,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-05 16:24:32'),(80,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 16:25:15'),(81,5,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 18:48:22'),(82,5,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-05 20:23:15'),(83,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-05 20:23:24'),(84,7,'jmmc@gmail.com','Nurse','Logout','Nurse logged out',NULL,'SUCCESS','2025-12-05 20:28:49'),(85,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-05 20:33:38'),(86,7,'jmmc@gmail.com','Nurse','Logout','Nurse logged out',NULL,'SUCCESS','2025-12-05 20:34:35'),(87,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 20:34:42'),(88,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-05 22:33:17'),(89,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 22:33:23'),(90,NULL,'System','','Logout','Unknown logged out',NULL,'SUCCESS','2025-12-05 22:42:23'),(91,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-05 22:52:40'),(92,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 22:52:51'),(93,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-05 22:53:52'),(94,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-05 22:54:01'),(95,7,'jmmc@gmail.com','Nurse','Logout','Nurse logged out',NULL,'SUCCESS','2025-12-05 22:54:08'),(96,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 22:54:21'),(97,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-05 22:54:38'),(98,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-05 22:54:46'),(99,7,'jmmc@gmail.com','Nurse','Logout','Nurse logged out',NULL,'SUCCESS','2025-12-05 22:55:39'),(100,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-05 22:55:45'),(101,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-05 22:55:56'),(102,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-05 22:56:07'),(103,7,'jmmc@gmail.com','Nurse','Logout','Nurse logged out',NULL,'SUCCESS','2025-12-05 22:56:32'),(104,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-05 22:56:45'),(105,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-06 15:48:52'),(106,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13256, (Email: jericmanibog@gmail.com).',NULL,'SUCCESS','2025-12-06 16:20:08'),(107,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13248, (Email: chester2@gmail.com).',NULL,'SUCCESS','2025-12-06 16:21:05'),(108,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13243, (Email: michael23@gmail.com).',NULL,'SUCCESS','2025-12-06 16:23:13'),(109,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13240, (Email: CJ@gmail.com).',NULL,'SUCCESS','2025-12-06 16:25:34'),(110,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13244, (Email: Susana@gmail.com).',NULL,'SUCCESS','2025-12-06 17:01:23'),(111,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 1099, (Email: lauren.english960@example.com).',NULL,'SUCCESS','2025-12-06 17:01:28'),(112,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13148, (Email: james@gmail.com).',NULL,'SUCCESS','2025-12-06 17:01:31'),(113,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-06 18:45:35'),(114,1,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13262, Name Michael Castillo',NULL,'SUCCESS','2025-12-06 20:20:35'),(115,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13262, (Email: ).',NULL,'SUCCESS','2025-12-06 20:21:20'),(116,1,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13270, Name Michael Castillo',NULL,'SUCCESS','2025-12-06 20:38:50'),(117,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-06 20:41:05'),(118,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 13:22:03'),(119,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 13:22:03'),(120,1,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13273, Name Chester Mendoza',NULL,'SUCCESS','2025-12-07 13:53:05'),(121,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13273, (Email: N/A).',NULL,'SUCCESS','2025-12-07 13:53:15'),(122,1,'admin123@gmail.com','Doctor','Add Patient','Added patient: ID 13274, Name Chester Mendoza',NULL,'SUCCESS','2025-12-07 13:53:54'),(123,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 13:53:57'),(124,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 16:29:08'),(125,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 16:31:35'),(126,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 16:31:55'),(127,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 16:32:28'),(128,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 16:32:37'),(129,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 16:32:59'),(130,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 16:41:50'),(131,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13270, (Email: N/A).',NULL,'SUCCESS','2025-12-07 16:41:56'),(132,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 1123, (Email: beverly.cain984@example.com).',NULL,'SUCCESS','2025-12-07 16:42:01'),(133,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 1070, (Email: carolyn.monroe931@example.com).',NULL,'SUCCESS','2025-12-07 16:42:06'),(134,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 1139, (Email: joshua@gmail.com).',NULL,'SUCCESS','2025-12-07 16:42:14'),(135,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13188, (Email: jay18@gmail.com).',NULL,'SUCCESS','2025-12-07 16:42:19'),(136,NULL,'System','','Logout','Unknown logged out',NULL,'SUCCESS','2025-12-07 16:44:12'),(137,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 16:44:25'),(138,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 1105, (Email: evelyn.wilson966@example.com).',NULL,'SUCCESS','2025-12-07 16:44:33'),(139,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 16:47:01'),(140,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13147, (Email: mj@gmail.com).',NULL,'SUCCESS','2025-12-07 16:47:34'),(141,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 1118, (Email: susan.cooper979@example.com).',NULL,'SUCCESS','2025-12-07 16:48:00'),(142,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 16:48:05'),(143,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-07 16:50:06'),(144,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 16:50:11'),(145,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13145, (Email: regor@gmail.com).',NULL,'SUCCESS','2025-12-07 16:50:23'),(146,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 16:53:29'),(147,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 16:56:25'),(148,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 16:58:52'),(149,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 16:58:55'),(150,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 17:04:32'),(151,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 17:04:37'),(152,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 17:04:38'),(153,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 17:04:53'),(154,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 17:04:57'),(155,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 17:05:08'),(156,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 17:05:51'),(157,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-07 17:05:55'),(158,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-07 17:05:56'),(159,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-08 12:47:28'),(160,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-08 12:54:02'),(161,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-08 12:54:27'),(162,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13271, (Email: N/A).',NULL,'SUCCESS','2025-12-08 12:57:10'),(163,1,'admin123@gmail.com','Doctor','Soft Delete Client','Soft deleted client: ID: 13272, (Email: N/A).',NULL,'SUCCESS','2025-12-08 12:57:12'),(164,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-08 13:54:28'),(165,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-09 11:20:07'),(166,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-09 13:42:37'),(167,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-09 13:56:08'),(168,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-09 14:00:37'),(169,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-09 14:01:48'),(170,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-09 14:07:20'),(171,1,'admin123@gmail.com','Doctor','Logout','Doctor logged out',NULL,'SUCCESS','2025-12-09 14:11:16'),(172,7,'jmmc@gmail.com','Nurse','Login','Nurse logged in',NULL,'SUCCESS','2025-12-09 14:11:33'),(173,1,'admin123@gmail.com','Doctor','Login','Doctor logged in',NULL,'SUCCESS','2025-12-09 20:29:43');
+/*!40000 ALTER TABLE `activity_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `user_type` enum('Doctor','Nurse') NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admin`
+--
+
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES (1,'Michael','Doctor','admin123@gmail.com','$2y$10$PisEXiWtixfLHaPyV31aDu2F7K5rQNgb9Itfiuc9SUCcNG17ykUpm'),(2,'jmmc','Doctor','','$2y$10$5KnDyG5g5qQZ2OaEQnmliegh50zV6tewLTjFM7psl3KuuTPP20ZNC'),(3,'admin12345','Doctor','','$2y$10$Q4M...Eg1MwQXovdJMZCfe3LUMZe365/MEc1XXEoIyDlCxW1dZ5PS'),(4,'admin123456','Doctor','','$2y$10$aR9onAfD2tRL73tLQIDON.nRm/r8FHxPW7I.vSfvN7404IrQ50hZi'),(5,'admin123@gmail.com','Doctor','','$2y$10$t16JpmKOLnOi.a3BjM0qT.u6L.xpoBWITvYOplrUQ0FAL11u/VfJK'),(7,'Jay Michael','Nurse','jmmc@gmail.com','$2y$10$VA7JRRG8VSH/qW.AEAnw7e2A7e3XPwu4KN1eMNlcjY31dIWxaSe5u');
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `annual_exams`
+--
+
+DROP TABLE IF EXISTS `annual_exams`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `annual_exams` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `file_path` varchar(500) NOT NULL,
+  `file_size` int(11) NOT NULL,
+  `file_type` varchar(100) NOT NULL,
+  `upload_date` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `client_id` (`client_id`),
+  CONSTRAINT `annual_exams_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `annual_exams`
+--
+
+LOCK TABLES `annual_exams` WRITE;
+/*!40000 ALTER TABLE `annual_exams` DISABLE KEYS */;
+/*!40000 ALTER TABLE `annual_exams` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `backup_logs`
+--
+
+DROP TABLE IF EXISTS `backup_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `backup_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(255) NOT NULL,
+  `backup_date` date NOT NULL,
+  `backup_time` time NOT NULL,
+  `status` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `backup_logs`
+--
+
+LOCK TABLES `backup_logs` WRITE;
+/*!40000 ALTER TABLE `backup_logs` DISABLE KEYS */;
+INSERT INTO `backup_logs` VALUES (1,'university_clinic_backup_2025-10-09_01-49-24.sql','2025-10-09','01:49:26','success'),(2,'university_clinic_backup_2025-10-14_13-51-59.sql','2025-10-14','01:52:00','success'),(3,'university_clinic_backup_2025-10-18_14-10-07.sql','2025-10-18','02:10:10','success'),(4,'university_clinic_backup_2025-10-20_02-46-08.sql','2025-10-20','02:46:10','success'),(5,'university_clinic_backup_2025-10-20_12-56-23.sql','2025-10-20','12:56:25','success'),(6,'university_clinic_backup_2025-10-20_16-18-34.sql','2025-10-20','04:18:36','success'),(7,'university_clinic_backup_2025-10-30_00-42-28.sql','2025-10-30','12:42:29','success'),(8,'university_clinic_backup_2025-10-30_01-05-52.sql','2025-10-30','01:05:54','success'),(9,'university_clinic_backup_2025-10-30_01-11-46.sql','2025-10-30','01:11:48','success'),(10,'university_clinic_backup_2025-10-30_01-13-12.sql','2025-10-30','01:13:14','success'),(11,'university_clinic_backup_2025-10-30_01-13-59.sql','2025-10-30','01:14:00','success'),(12,'university_clinic_backup_2025-12-04_02-04-03.sql','2025-12-04','02:04:04','success');
+/*!40000 ALTER TABLE `backup_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `client_certificates`
+--
+
+DROP TABLE IF EXISTS `client_certificates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `client_certificates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `client_certificates`
+--
+
+LOCK TABLES `client_certificates` WRITE;
+/*!40000 ALTER TABLE `client_certificates` DISABLE KEYS */;
+INSERT INTO `client_certificates` VALUES (1,20,'uploads/medical_certificates/20_1745829961.pdf','2025-04-28 08:46:01'),(2,20,'uploads/medical_certificates/20_1745831054.pdf','2025-04-28 09:04:14'),(3,20,'uploads/medical_certificates/20_1745832230.pdf','2025-04-28 09:23:50'),(4,20,'uploads/medical_certificates/20_1745832660.pdf','2025-04-28 09:31:00'),(5,20,'../../../uploadspdf/medical_certificates/20_1745832802.pdf','2025-04-28 09:33:22'),(6,20,'../../../uploadspdf/medical_certificates/20_1745834223.pdf','2025-04-28 09:57:03'),(7,20,'../../../public/uploads/client_certificates/20_1745835030.pdf','2025-04-28 10:10:30'),(8,20,'../../../public/uploads/client_certificates/20_1745835119.pdf','2025-04-28 10:11:59'),(9,20,'../../../uploads/client_certificates/20_1745835294.pdf','2025-04-28 10:14:54');
+/*!40000 ALTER TABLE `client_certificates` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `clients`
+--
+
+DROP TABLE IF EXISTS `clients`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `clients` (
+  `ClientID` int(11) NOT NULL AUTO_INCREMENT,
+  `Firstname` varchar(50) NOT NULL,
+  `Lastname` varchar(50) NOT NULL,
+  `Email` varchar(100) DEFAULT NULL,
+  `Username` varchar(50) DEFAULT NULL,
+  `Sex` enum('Male','Female') DEFAULT NULL,
+  `BirthDate` date DEFAULT NULL,
+  `Password` varchar(255) NOT NULL,
+  `ClientType` enum('Freshman','Student','Faculty','Personnel','NewPersonnel','Default') NOT NULL DEFAULT 'Default',
+  `Department` varchar(100) DEFAULT NULL,
+  `Course` varchar(50) DEFAULT NULL,
+  `profilePicturePath` varchar(255) DEFAULT NULL,
+  `ResetCode` varchar(10) DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`ClientID`),
+  UNIQUE KEY `Email` (`Email`),
+  UNIQUE KEY `Username` (`Username`),
+  UNIQUE KEY `Email_2` (`Email`)
+) ENGINE=InnoDB AUTO_INCREMENT=13281 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clients`
+--
+
+LOCK TABLES `clients` WRITE;
+/*!40000 ALTER TABLE `clients` DISABLE KEYS */;
+INSERT INTO `clients` VALUES (13278,'John','Valdez',NULL,'Valdez','Male','1999-11-11','$2y$10$I4UWp2p8jQjRKDAo4fIt1O82Mt926bG5MWlNXPP.m5wK3hcsOShQi','Faculty','College of Computer Studies','',NULL,NULL,NULL),(13279,'Wil','Su',NULL,'su11','Male','1990-04-11','$2y$10$Mq6ls6USoNS7XxrPgRekGuwU4uSH4RozrzDLduDxjqcbLf/9abh/i','Faculty','College of Computer Studies','',NULL,NULL,NULL),(13280,'John Paolo','Medallom',NULL,'jpmedallom','Male','2003-06-30','$2y$10$2n2wWCJgZLY24TYexhAfCOgHrBZ4zV.vwAj4ZcCb/7lxj/NlLsRqa','Student','College of Computer Studies','Bachelor of Science in Information Technology',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `clients` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `consultationrecords`
+--
+
+DROP TABLE IF EXISTS `consultationrecords`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `consultationrecords` (
+  `consultationid` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) NOT NULL,
+  `historyid` int(11) NOT NULL,
+  `BP` varchar(10) DEFAULT NULL,
+  `HR_PR` varchar(10) DEFAULT NULL,
+  `Temp` varchar(10) DEFAULT NULL,
+  `O2sat` varchar(10) DEFAULT NULL,
+  `Subjective` text DEFAULT NULL,
+  `Objective` text DEFAULT NULL,
+  `Assesment` text DEFAULT NULL,
+  `Plan` text DEFAULT NULL,
+  `datecreated` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`consultationid`),
+  KEY `fk_consult_client` (`ClientID`),
+  KEY `fk_consult_history` (`historyid`),
+  CONSTRAINT `fk_consult_client` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE,
+  CONSTRAINT `fk_consult_history` FOREIGN KEY (`historyid`) REFERENCES `history` (`historyID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=176 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `consultationrecords`
+--
+
+LOCK TABLES `consultationrecords` WRITE;
+/*!40000 ALTER TABLE `consultationrecords` DISABLE KEYS */;
+/*!40000 ALTER TABLE `consultationrecords` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `consultations`
+--
+
+DROP TABLE IF EXISTS `consultations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `consultations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `historyID` int(11) DEFAULT NULL,
+  `consultation_date` date NOT NULL,
+  `certificate_issued` tinyint(1) DEFAULT 0,
+  `remarks` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `fk_consulthistory` (`historyID`),
+  KEY `consultations_ibfk_1` (`client_id`),
+  CONSTRAINT `consultations_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE,
+  CONSTRAINT `fk_consulthistory` FOREIGN KEY (`historyID`) REFERENCES `history` (`historyID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=654 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `consultations`
+--
+
+LOCK TABLES `consultations` WRITE;
+/*!40000 ALTER TABLE `consultations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `consultations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `diagnosticresults`
+--
+
+DROP TABLE IF EXISTS `diagnosticresults`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `diagnosticresults` (
+  `DiagnosticID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) DEFAULT NULL,
+  `historyID` int(11) DEFAULT NULL,
+  `ExamDate` date DEFAULT NULL,
+  `ChestXrayPerformed` tinyint(1) DEFAULT NULL,
+  `XrayFindings` text DEFAULT NULL,
+  `Impression` text DEFAULT NULL,
+  `Discussions` tinyint(1) DEFAULT NULL,
+  `DiscussionDetails` text DEFAULT NULL,
+  `HomeMedication` tinyint(1) DEFAULT NULL,
+  `MedicationDetails` text DEFAULT NULL,
+  `HomeInstructions` tinyint(1) DEFAULT NULL,
+  `InstructionDetails` text DEFAULT NULL,
+  `AbbreviationsUsed` varchar(255) DEFAULT NULL,
+  `F1Date` date DEFAULT NULL,
+  `MedicalCertIssued` tinyint(1) DEFAULT NULL,
+  `ReferredTo` varchar(255) DEFAULT NULL,
+  `Recommendation` enum('fit','fit_sports','fit_enroll','fit_work_eval','fit_sports_eval') DEFAULT NULL,
+  `PhysicianName` varchar(255) DEFAULT NULL,
+  `LicenseNo` varchar(100) DEFAULT NULL,
+  `SignatureDate` date DEFAULT NULL,
+  `Institution` varchar(255) DEFAULT 'LAGUNA STATE POLYTECHNIC UNIVERSITY, UNIVERSITY CLINIC',
+  PRIMARY KEY (`DiagnosticID`),
+  KEY `diagnosticresults_ibfk_1` (`ClientID`),
+  KEY `fk_diagnosticresults_historyID` (`historyID`),
+  CONSTRAINT `diagnosticresults_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE,
+  CONSTRAINT `fk_diagnosticresults_historyID` FOREIGN KEY (`historyID`) REFERENCES `history` (`historyID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `diagnosticresults`
+--
+
+LOCK TABLES `diagnosticresults` WRITE;
+/*!40000 ALTER TABLE `diagnosticresults` DISABLE KEYS */;
+/*!40000 ALTER TABLE `diagnosticresults` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `familymedicalhistory`
+--
+
+DROP TABLE IF EXISTS `familymedicalhistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `familymedicalhistory` (
+  `FamilyMedicalHistoryID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) DEFAULT NULL,
+  `historyID` int(11) DEFAULT NULL,
+  `Allergy` tinyint(1) DEFAULT 0,
+  `AllergyDetails` varchar(255) DEFAULT NULL,
+  `Asthma` tinyint(1) DEFAULT 0,
+  `AsthmaDetails` varchar(255) DEFAULT NULL,
+  `Tuberculosis` tinyint(1) DEFAULT 0,
+  `TuberculosisDetails` varchar(255) DEFAULT NULL,
+  `Hypertension` tinyint(1) DEFAULT 0,
+  `HypertensionDetails` varchar(255) DEFAULT NULL,
+  `BloodDisease` tinyint(1) DEFAULT 0,
+  `BloodDiseaseDetails` varchar(255) DEFAULT NULL,
+  `Stroke` tinyint(1) DEFAULT 0,
+  `StrokeDetails` varchar(255) DEFAULT NULL,
+  `Diabetes` tinyint(1) DEFAULT 0,
+  `DiabetesDetails` varchar(255) DEFAULT NULL,
+  `Cancer` tinyint(1) DEFAULT 0,
+  `CancerDetails` varchar(255) DEFAULT NULL,
+  `LiverDisease` tinyint(1) DEFAULT 0,
+  `LiverDiseaseDetails` varchar(255) DEFAULT NULL,
+  `KidneyBladder` tinyint(1) DEFAULT 0,
+  `KidneyBladderDetails` varchar(255) DEFAULT NULL,
+  `BloodDisorder` tinyint(1) DEFAULT 0,
+  `BloodDisorderDetails` varchar(255) DEFAULT NULL,
+  `Epilepsy` tinyint(1) DEFAULT 0,
+  `EpilepsyDetails` varchar(255) DEFAULT NULL,
+  `MentalDisorder` tinyint(1) DEFAULT 0,
+  `MentalDisorderDetails` varchar(255) DEFAULT NULL,
+  `OtherIllness` tinyint(1) DEFAULT 0,
+  `OtherIllnessDetails` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`FamilyMedicalHistoryID`),
+  UNIQUE KEY `unique_client_history` (`ClientID`,`historyID`),
+  KEY `ClientID` (`ClientID`),
+  KEY `fk_familymedhis` (`historyID`),
+  CONSTRAINT `familymedicalhistory_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE,
+  CONSTRAINT `fk_familymedhis` FOREIGN KEY (`historyID`) REFERENCES `history` (`historyID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `familymedicalhistory`
+--
+
+LOCK TABLES `familymedicalhistory` WRITE;
+/*!40000 ALTER TABLE `familymedicalhistory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `familymedicalhistory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `femalehealthhistory`
+--
+
+DROP TABLE IF EXISTS `femalehealthhistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `femalehealthhistory` (
+  `FemaleHealthHistoryID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) DEFAULT NULL,
+  `historyID` int(11) DEFAULT NULL,
+  `LastPeriod` date DEFAULT NULL,
+  `Regularity` enum('regular','irregular') DEFAULT NULL,
+  `Duration` varchar(50) DEFAULT NULL,
+  `PadsPerDay` int(11) DEFAULT NULL,
+  `Dysmenorrhea` enum('yes','no') DEFAULT NULL,
+  `DysmenorrheaSeverity` enum('mild','moderate','severe') DEFAULT NULL,
+  `LastOBVisit` date DEFAULT NULL,
+  `AbnormalBleeding` enum('yes','no') DEFAULT NULL,
+  `PreviousPregnancy` enum('yes','no') DEFAULT NULL,
+  `PregnancyDetails` varchar(255) DEFAULT NULL,
+  `HasChildren` enum('yes','no') DEFAULT NULL,
+  `ChildrenCount` int(11) DEFAULT NULL,
+  PRIMARY KEY (`FemaleHealthHistoryID`),
+  KEY `ClientID` (`ClientID`),
+  KEY `fk_fhhistoryID` (`historyID`),
+  CONSTRAINT `femalehealthhistory_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE,
+  CONSTRAINT `fk_fhhistoryID` FOREIGN KEY (`historyID`) REFERENCES `history` (`historyID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `femalehealthhistory`
+--
+
+LOCK TABLES `femalehealthhistory` WRITE;
+/*!40000 ALTER TABLE `femalehealthhistory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `femalehealthhistory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `history`
+--
+
+DROP TABLE IF EXISTS `history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `history` (
+  `historyID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) DEFAULT NULL,
+  `actionDate` date DEFAULT NULL,
+  `actionTime` time NOT NULL,
+  PRIMARY KEY (`historyID`),
+  KEY `history_ibfk_1` (`ClientID`),
+  CONSTRAINT `history_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=347 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `history`
+--
+
+LOCK TABLES `history` WRITE;
+/*!40000 ALTER TABLE `history` DISABLE KEYS */;
+INSERT INTO `history` VALUES (32,NULL,'2025-05-12','00:00:00'),(33,NULL,'2025-05-12','00:00:00'),(125,NULL,'2025-05-22','04:12:26'),(129,NULL,'2025-05-22','10:19:37'),(133,NULL,'2025-05-22','10:27:47');
+/*!40000 ALTER TABLE `history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logbook`
+--
+
+DROP TABLE IF EXISTS `logbook`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logbook` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) DEFAULT NULL,
+  `log_date` date DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `course` varchar(100) DEFAULT NULL,
+  `year` varchar(10) DEFAULT NULL,
+  `section` varchar(10) DEFAULT NULL,
+  `time_started` time DEFAULT NULL,
+  `time_finished` time DEFAULT NULL,
+  `medication_treatment` text DEFAULT NULL,
+  `illness` text DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ClientID` (`ClientID`),
+  CONSTRAINT `logbook_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logbook`
+--
+
+LOCK TABLES `logbook` WRITE;
+/*!40000 ALTER TABLE `logbook` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logbook` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `medicalcertificate`
+--
+
+DROP TABLE IF EXISTS `medicalcertificate`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `medicalcertificate` (
+  `MedicalCertID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) NOT NULL,
+  `historyID` int(11) DEFAULT NULL,
+  `PatientName` varchar(255) DEFAULT NULL,
+  `PatientAge` int(11) DEFAULT NULL,
+  `ExamDate` date DEFAULT NULL,
+  `Findings` text DEFAULT NULL,
+  `Impression` text DEFAULT NULL,
+  `NoteContent` text DEFAULT NULL,
+  `LicenseNo` varchar(100) DEFAULT NULL,
+  `DateIssued` date DEFAULT NULL,
+  `isDownload` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`MedicalCertID`),
+  KEY `ClientID` (`ClientID`),
+  KEY `fk_medcerthistory` (`historyID`),
+  CONSTRAINT `fk_medcerthistory` FOREIGN KEY (`historyID`) REFERENCES `history` (`historyID`) ON DELETE CASCADE,
+  CONSTRAINT `medicalcertificate_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `medicalcertificate`
+--
+
+LOCK TABLES `medicalcertificate` WRITE;
+/*!40000 ALTER TABLE `medicalcertificate` DISABLE KEYS */;
+/*!40000 ALTER TABLE `medicalcertificate` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `medicaldentalhistory`
+--
+
+DROP TABLE IF EXISTS `medicaldentalhistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `medicaldentalhistory` (
+  `MedicalDentalHistoryID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) DEFAULT NULL,
+  `historyID` int(11) DEFAULT NULL,
+  `KnownIllness` tinyint(1) DEFAULT 0,
+  `KnownIllnessDetails` varchar(255) DEFAULT NULL,
+  `Hospitalization` tinyint(1) DEFAULT 0,
+  `HospitalizationDetails` varchar(255) DEFAULT NULL,
+  `Allergies` tinyint(1) DEFAULT 0,
+  `AllergiesDetails` varchar(255) DEFAULT NULL,
+  `ChildImmunization` tinyint(1) DEFAULT 0,
+  `ChildImmunizationDetails` varchar(255) DEFAULT NULL,
+  `PresentImmunizations` tinyint(1) DEFAULT 0,
+  `PresentImmunizationsDetails` varchar(255) DEFAULT NULL,
+  `CurrentMedicines` tinyint(1) DEFAULT 0,
+  `CurrentMedicinesDetails` varchar(255) DEFAULT NULL,
+  `DentalProblems` tinyint(1) DEFAULT 0,
+  `DentalProblemsDetails` varchar(255) DEFAULT NULL,
+  `PrimaryPhysician` tinyint(1) DEFAULT 0,
+  `PrimaryPhysicianDetails` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`MedicalDentalHistoryID`),
+  UNIQUE KEY `unique_client_history` (`ClientID`,`historyID`),
+  KEY `ClientID` (`ClientID`),
+  KEY `fk_historyID` (`historyID`),
+  CONSTRAINT `fk_historyID` FOREIGN KEY (`historyID`) REFERENCES `history` (`historyID`) ON DELETE CASCADE,
+  CONSTRAINT `medicaldentalhistory_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `medicaldentalhistory`
+--
+
+LOCK TABLES `medicaldentalhistory` WRITE;
+/*!40000 ALTER TABLE `medicaldentalhistory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `medicaldentalhistory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `newpersonnel_form`
+--
+
+DROP TABLE IF EXISTS `newpersonnel_form`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `newpersonnel_form` (
+  `form_id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `blood_test` tinyint(1) DEFAULT 0,
+  `urinalysis` tinyint(1) DEFAULT 0,
+  `chest_xray` tinyint(1) DEFAULT 0,
+  `drug_test` tinyint(1) DEFAULT 0,
+  `psych_test` tinyint(1) DEFAULT 0,
+  `neuro_test` tinyint(1) DEFAULT 0,
+  `full_name` varchar(255) NOT NULL,
+  `agency_address` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `age` int(11) NOT NULL,
+  `sex` enum('Male','Female') NOT NULL,
+  `civil_status` enum('Single','Married','Divorced','Widowed') NOT NULL,
+  `proposed_position` varchar(255) NOT NULL,
+  `height` decimal(5,2) NOT NULL COMMENT 'In meters',
+  `weight` decimal(5,2) NOT NULL COMMENT 'In kilograms',
+  `blood_type` varchar(5) NOT NULL,
+  `physician_signature` varchar(255) DEFAULT NULL,
+  `physician_name` varchar(255) DEFAULT NULL,
+  `physician_agency` varchar(255) DEFAULT NULL,
+  `physician_license` varchar(50) DEFAULT NULL,
+  `physician_designation` varchar(255) DEFAULT NULL,
+  `examination_date` date DEFAULT NULL,
+  `fitness_status` enum('FIT','UNFIT') DEFAULT NULL,
+  `OtherInfo` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`form_id`),
+  KEY `idx_newpersonnel_form_client_id` (`client_id`),
+  CONSTRAINT `newpersonnel_form_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `newpersonnel_form`
+--
+
+LOCK TABLES `newpersonnel_form` WRITE;
+/*!40000 ALTER TABLE `newpersonnel_form` DISABLE KEYS */;
+/*!40000 ALTER TABLE `newpersonnel_form` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `personalinfo`
+--
+
+DROP TABLE IF EXISTS `personalinfo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `personalinfo` (
+  `PersonalInfoID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) DEFAULT NULL,
+  `Surname` varchar(100) NOT NULL,
+  `GivenName` varchar(100) NOT NULL,
+  `MiddleName` varchar(100) DEFAULT NULL,
+  `Age` int(11) NOT NULL,
+  `Gender` enum('male','female') NOT NULL,
+  `DateOfBirth` date NOT NULL,
+  `Status` enum('single','married') NOT NULL,
+  `Course` varchar(100) DEFAULT NULL,
+  `SchoolYearEntered` varchar(100) DEFAULT NULL,
+  `CurrentAddress` varchar(255) NOT NULL,
+  `ContactNumber` varchar(20) NOT NULL,
+  `MothersName` varchar(100) DEFAULT NULL,
+  `FathersName` varchar(100) DEFAULT NULL,
+  `GuardiansName` varchar(100) DEFAULT NULL,
+  `EmergencyContactPerson` varchar(100) DEFAULT NULL,
+  `EmergencyContactName` varchar(100) NOT NULL,
+  `EmergencyContactRelationship` varchar(100) NOT NULL,
+  PRIMARY KEY (`PersonalInfoID`),
+  UNIQUE KEY `unique_client` (`ClientID`),
+  KEY `ClientID` (`ClientID`),
+  CONSTRAINT `personalinfo_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `personalinfo`
+--
+
+LOCK TABLES `personalinfo` WRITE;
+/*!40000 ALTER TABLE `personalinfo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `personalinfo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `personalsocialhistory`
+--
+
+DROP TABLE IF EXISTS `personalsocialhistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `personalsocialhistory` (
+  `PersonalSocialHistoryID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) DEFAULT NULL,
+  `historyID` int(11) DEFAULT NULL,
+  `AlcoholIntake` enum('no','yes','former') DEFAULT 'no',
+  `AlcoholDetails` varchar(255) DEFAULT NULL,
+  `TobaccoUse` enum('no','yes','former') DEFAULT 'no',
+  `TobaccoDetails` varchar(255) DEFAULT NULL,
+  `DrugUse` enum('no','yes','former') DEFAULT 'no',
+  `DrugDetails` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`PersonalSocialHistoryID`),
+  UNIQUE KEY `unique_client_history` (`ClientID`,`historyID`),
+  KEY `ClientID` (`ClientID`),
+  KEY `fk_pshistoryID` (`historyID`),
+  CONSTRAINT `fk_pshistoryID` FOREIGN KEY (`historyID`) REFERENCES `history` (`historyID`) ON DELETE CASCADE,
+  CONSTRAINT `personalsocialhistory_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `personalsocialhistory`
+--
+
+LOCK TABLES `personalsocialhistory` WRITE;
+/*!40000 ALTER TABLE `personalsocialhistory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `personalsocialhistory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `physicalexamination`
+--
+
+DROP TABLE IF EXISTS `physicalexamination`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `physicalexamination` (
+  `PhysicalExaminationID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) DEFAULT NULL,
+  `historyID` int(11) DEFAULT NULL,
+  `Height` decimal(5,2) DEFAULT NULL,
+  `Weight` decimal(5,2) DEFAULT NULL,
+  `BMI` decimal(5,2) DEFAULT NULL,
+  `BP` varchar(20) DEFAULT NULL,
+  `HR` int(11) DEFAULT NULL,
+  `RR` int(11) DEFAULT NULL,
+  `Temp` decimal(4,2) DEFAULT NULL,
+  `GenAppearanceAndSkinNormal` tinyint(1) DEFAULT NULL,
+  `GenAppearanceAndSkinFindings` varchar(255) DEFAULT NULL,
+  `HeadAndNeckNormal` tinyint(1) DEFAULT NULL,
+  `HeadAndNeckFindings` varchar(255) DEFAULT NULL,
+  `ChestAndBackNormal` tinyint(1) DEFAULT NULL,
+  `ChestAndBackFindings` varchar(255) DEFAULT NULL,
+  `AbdomenNormal` tinyint(1) DEFAULT NULL,
+  `AbdomenFindings` varchar(255) DEFAULT NULL,
+  `ExtremitiesNormal` tinyint(1) DEFAULT NULL,
+  `ExtremitiesFindings` varchar(255) DEFAULT NULL,
+  `OthersNormal` tinyint(1) DEFAULT NULL,
+  `OthersFindings` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`PhysicalExaminationID`),
+  KEY `ClientID` (`ClientID`),
+  KEY `fk_physicalexam_historyID` (`historyID`),
+  CONSTRAINT `fk_physicalexam_historyID` FOREIGN KEY (`historyID`) REFERENCES `history` (`historyID`) ON DELETE CASCADE,
+  CONSTRAINT `physicalexamination_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `physicalexamination`
+--
+
+LOCK TABLES `physicalexamination` WRITE;
+/*!40000 ALTER TABLE `physicalexamination` DISABLE KEYS */;
+/*!40000 ALTER TABLE `physicalexamination` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `prescriptions`
+--
+
+DROP TABLE IF EXISTS `prescriptions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `prescriptions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) NOT NULL,
+  `historyID` int(11) NOT NULL,
+  `patient_name` varchar(255) DEFAULT NULL,
+  `age` varchar(10) DEFAULT NULL,
+  `impression` varchar(255) DEFAULT NULL,
+  `physician` varchar(255) DEFAULT NULL,
+  `license_no` varchar(100) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `date_created` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_client` (`ClientID`),
+  KEY `fk_history` (`historyID`),
+  CONSTRAINT `fk_client` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_history` FOREIGN KEY (`historyID`) REFERENCES `history` (`historyID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `prescriptions`
+--
+
+LOCK TABLES `prescriptions` WRITE;
+/*!40000 ALTER TABLE `prescriptions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `prescriptions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `progresstable`
+--
+
+DROP TABLE IF EXISTS `progresstable`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `progresstable` (
+  `ProgressID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClientID` int(11) NOT NULL,
+  `DateSubmitted` date DEFAULT NULL,
+  `DateCompleted` date DEFAULT NULL,
+  `Status` enum('Inprogress','Completed','Cancelled') DEFAULT 'Inprogress',
+  PRIMARY KEY (`ProgressID`),
+  KEY `ClientID` (`ClientID`),
+  CONSTRAINT `progresstable_ibfk_1` FOREIGN KEY (`ClientID`) REFERENCES `clients` (`ClientID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `progresstable`
+--
+
+LOCK TABLES `progresstable` WRITE;
+/*!40000 ALTER TABLE `progresstable` DISABLE KEYS */;
+/*!40000 ALTER TABLE `progresstable` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sessions` (
+  `id` varchar(128) NOT NULL,
+  `data` text NOT NULL,
+  `access` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `access` (`access`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sessions`
+--
+
+LOCK TABLES `sessions` WRITE;
+/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
+INSERT INTO `sessions` VALUES ('2ofqmjmbk8fi6anefmp2e6vah4','',1744068698);
+/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `todolist`
+--
+
+DROP TABLE IF EXISTS `todolist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `todolist` (
+  `todolistid` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `time` time NOT NULL,
+  `event` text NOT NULL,
+  `location` text DEFAULT NULL,
+  `noted` text DEFAULT NULL,
+  PRIMARY KEY (`todolistid`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `todolist`
+--
+
+LOCK TABLES `todolist` WRITE;
+/*!40000 ALTER TABLE `todolist` DISABLE KEYS */;
+INSERT INTO `todolist` VALUES (26,'2025-04-30','09:00:00','Final Presentation','AVR','Good Luck!!!'),(27,'2025-05-16','01:00:00','Presentation','Lab 1/Lab 2','Good Luck'),(28,'2025-05-19','20:00:00','Meeting','Lab 1/Lab 2','');
+/*!40000 ALTER TABLE `todolist` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-12-09 20:45:31

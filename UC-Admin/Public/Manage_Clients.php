@@ -261,7 +261,7 @@ $email = $current_user['email'] ?? '';
 
                                     <div class="form-group">
                                         <label><i class="fas fa-users icon-blue"></i> Client Type</label>
-                                        <select name="client_type" id="clientTypeSelect" class="form-control" onchange="toggleDepartment()" required>
+                                        <select name="client_type" id="addPatientClientTypeSelect" class="form-control" onchange="toggleDepartment()" required>
                                             <option value="">Select Type</option>
                                             <option value="Freshman">Incoming Freshman Student</option>
                                             <option value="Student">Student (Enrolled/Regular)</option>
@@ -440,7 +440,7 @@ $email = $current_user['email'] ?? '';
                     }
 
                     function toggleDepartment() {
-                        const type = document.getElementById('clientTypeSelect').value;
+                        const type = document.getElementById('addPatientClientTypeSelect').value;
                         const depField = document.getElementById('departmentField');
                         if (type === 'Student' || type === 'Freshman' || type === 'Faculty' || type === 'Personnel') {
                             depField.style.display = 'block';
@@ -626,11 +626,16 @@ $email = $current_user['email'] ?? '';
                                             <!--     <a href="ClientProfile.php?id=<?= $freshman['ClientID'] ?>" title="View Profile">
                                                             <i class="fas fa-eye eye-icon" style="color: #000; font-size: 18px;"></i>
                                                         </a>-->
-                                            <a href="manageclients.dbf/delete_client.php?id=<?= $freshman['ClientID'] ?>"
-                                                onclick="return confirm('Are you sure you want to delete this user?');"
+                                            <button type="button"
+                                                class="delete-client-btn icon-button"
+                                                data-client-id="<?= $freshman['ClientID'] ?>"
                                                 title="Delete User">
-                                                <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                            </a>
+                                                <img class="table-icon-img"
+                                                    src="assets/images/delete-icon.svg"
+                                                    alt="Delete Icon"
+                                                    style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </button>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -691,11 +696,16 @@ $email = $current_user['email'] ?? '';
                                                 <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                                             </a>
 
-                                            <a href="manageclients.dbf/delete_client.php?id=<?= $newpersonnel['ClientID'] ?>"
-                                                onclick="return confirm('Are you sure you want to delete this user?');"
+                                            <button type="button"
+                                                class="delete-client-btn icon-button"
+                                                data-client-id="<?= $newpersonnel['ClientID'] ?>"
                                                 title="Delete User">
-                                                <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                            </a>
+                                                <img class="table-icon-img"
+                                                    src="assets/images/delete-icon.svg"
+                                                    alt="Delete Icon"
+                                                    style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </button>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -747,11 +757,16 @@ $email = $current_user['email'] ?? '';
                                             <a href="ClientProfile.php?id=<?= $students['ClientID'] ?>" title="Edit User">
                                                 <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                                             </a>
+                                            <button type="button"
+                                                class="delete-client-btn icon-button"
+                                                data-client-id="<?= $students['ClientID'] ?>"
+                                                title="Delete User">
+                                                <img class="table-icon-img"
+                                                    src="assets/images/delete-icon.svg"
+                                                    alt="Delete Icon"
+                                                    style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </button>
 
-                                            <a href="manageclients.dbf/delete_client.php?id=<?= $students['ClientID'] ?>"
-                                                onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
-                                                <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -799,10 +814,16 @@ $email = $current_user['email'] ?? '';
                                                 <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                                             </a>
 
-                                            <a href="manageclients.dbf/delete_client.php?id=<?= $faculties['ClientID'] ?>"
-                                                onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
-                                                <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                            </a>
+                                            <button type="button"
+                                                class="delete-client-btn icon-button"
+                                                data-client-id="<?= $faculties['ClientID'] ?>"
+                                                title="Delete User">
+                                                <img class="table-icon-img"
+                                                    src="assets/images/delete-icon.svg"
+                                                    alt="Delete Icon"
+                                                    style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </button>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -827,6 +848,7 @@ $email = $current_user['email'] ?? '';
                         <tbody class="clientTableBody">
                             <?php foreach ($personnel as $personnel): ?>
                                 <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($personnel['ClientID']) ?>">
+
                                     <td class="searchable-id"><?= htmlspecialchars($personnel['ClientID']) ?></td>
                                     <td>
                                         <?php
@@ -849,10 +871,16 @@ $email = $current_user['email'] ?? '';
                                                 <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                                             </a>
 
-                                            <a href="manageclients.dbf/delete_client.php?id=<?= $personnel['ClientID'] ?>"
-                                                onclick="return confirm('Are you sure you want to delete this user?');" title="Delete User">
-                                                <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
-                                            </a>
+                                            <button type="button"
+                                                class="delete-client-btn icon-button"
+                                                data-client-id="<?= $personnel['ClientID'] ?>"
+                                                title="Delete User">
+                                                <img class="table-icon-img"
+                                                    src="assets/images/delete-icon.svg"
+                                                    alt="Delete Icon"
+                                                    style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </button>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -861,47 +889,58 @@ $email = $current_user['email'] ?? '';
                     </table>
                 </div>
             </div>
+            <div id="deleteClientModal" class="modal-overlay" style="display:none;">
+                <div class="modal-box">
+                    <div class="modal-header">
+                        <h3>Delete User</h3>
+                        <button id="cancelBtn" class="modal-close" title="Close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this user?</p>
+                        <p class="modal-note">You can either move the user to the trash or delete permanently. Permanent deletion cannot be undone.</p>
+                    </div>
+                    <div class="modal-actions">
+                        <button id="trashBtn" class="btn-warning">Move to Trash</button>
+                        <button id="permanentBtn" class="btn-danger">Permanent Delete</button>
+                    </div>
+                </div>
+            </div>
+
+
     </div>
     </main>
     </div>
     <script>
         const searchInput = document.getElementById('searchInput');
 
-        searchInput.addEventListener('input', function() {
-            const searchId = searchInput.value.trim();
-
-            if (searchId === '') {
-                // Clear button behavior:
-                const baseUrl = window.location.href.split('?')[0];
-                window.history.pushState({}, '', baseUrl);
-
-                ['students-content', 'employees-content', 'personnel-content', 'freshman-content', 'newpersonnel-content']
-                .forEach(tabId => {
-                    document.querySelector(`#${tabId} tbody`).innerHTML = '';
-                });
-
-                return;
-            }
-
-            const url = new URL(window.location);
-            url.searchParams.set('id_filter', searchId);
-            window.history.pushState({}, '', url);
-
-            loadFilteredData('students-content', 'Student', searchId);
-            loadFilteredData('employees-content', 'Faculty', searchId);
-            loadFilteredData('personnel-content', 'Personnel', searchId);
-            loadFilteredData('freshman-content', 'Freshman', searchId);
-            loadFilteredData('newpersonnel-content', 'NewPersonnel', searchId);
-        });
-
-
         function loadFilteredData(tabId, clientType, searchId) {
-            fetch(`manageclients.dbf/get_user.php?client_type=${clientType}&id_filter=${encodeURIComponent(searchId)}`)
+            const filterParam = searchId ? `&id_filter=${encodeURIComponent(searchId)}` : '';
+            fetch(`manageclients.dbf/get_user.php?client_type=${clientType}${filterParam}`)
                 .then(response => response.text())
                 .then(html => {
                     document.querySelector(`#${tabId} tbody`).innerHTML = html;
                 });
         }
+
+        searchInput.addEventListener('input', function() {
+            const searchId = searchInput.value.trim();
+
+            // Reload all tabs
+            loadFilteredData('students-content', 'Student', searchId);
+            loadFilteredData('employees-content', 'Faculty', searchId);
+            loadFilteredData('personnel-content', 'Personnel', searchId);
+            loadFilteredData('freshman-content', 'Freshman', searchId);
+            loadFilteredData('newpersonnel-content', 'NewPersonnel', searchId);
+
+            // Update URL
+            const url = new URL(window.location);
+            if (searchId === '') {
+                url.searchParams.delete('id_filter');
+            } else {
+                url.searchParams.set('id_filter', searchId);
+            }
+            window.history.pushState({}, '', url);
+        });
 
         document.getElementById('resetSearch').addEventListener('click', function() {
             const baseUrl = window.location.href.split('?')[0];
@@ -923,6 +962,15 @@ $email = $current_user['email'] ?? '';
                 if (tab) tab.click();
             }
         });
+
+        // Optional: initial load of the current client type table
+        const clientType = document.querySelector('#addPatientClientTypeSelect').value;
+        const idFilter = searchInput.value;
+        fetch(`get_user.php?client_type=${clientType}&id_filter=${encodeURIComponent(idFilter)}`)
+            .then(res => res.text())
+            .then(html => {
+                document.querySelector('#userTableBody').innerHTML = html;
+            });
     </script>
 
 

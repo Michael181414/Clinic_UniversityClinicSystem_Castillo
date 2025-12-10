@@ -1,6 +1,7 @@
 <?php
 require_once 'config/database.php';
 header('Content-Type: text/html');
+//get_user.php
 
 function getFilteredClients($clientType, $globalSearch = '', $page = 1, $perPage = 30)
 {
@@ -24,23 +25,23 @@ function getFilteredClients($clientType, $globalSearch = '', $page = 1, $perPage
 
     $searchTerms = [];
     if (!empty($globalSearch)) {
-
         $keywords = explode(' ', $globalSearch);
+        $searchParts = [];
 
         foreach ($keywords as $index => $keyword) {
             $param = ":keyword$index";
             $searchParts[] = "(c.ClientID LIKE $param 
-                OR CONCAT(c.Firstname, ' ', c.Lastname) LIKE $param 
-                OR c.Email LIKE $param 
-                OR c.Department LIKE $param 
-                OR c.ClientType LIKE $param)";
+            OR CONCAT(c.Firstname, ' ', c.Lastname) LIKE $param 
+            OR c.Email LIKE $param 
+            OR c.Department LIKE $param 
+            OR c.ClientType LIKE $param)";
             $searchTerms[$param] = "%$keyword%";
         }
 
-        if (!empty($searchParts)) {
-            $sql .= " AND (" . implode(" AND ", $searchParts) . ")";
-        }
+        $sql .= " AND (" . implode(" AND ", $searchParts) . ")";
     }
+    // ✅ If $globalSearch is empty, no AND condition is added → returns all users
+
 
     $sql .= " ORDER BY c.ClientID DESC LIMIT :limit OFFSET :offset";
 
@@ -122,22 +123,26 @@ if (!empty($clientType)) {
             <td class="searchable-name"><?= htmlspecialchars($client['FullName']) ?></td>
             <td><?= htmlspecialchars($client['Email']) ?></td>
 
-            <?php if ($clientType === 'Freshman' || $clientType === 'Students'): ?>
+            <?php if ($clientType === 'Freshman' || $clientType === 'Student'): ?>
                 <td><?= htmlspecialchars($client['Course']) ?></td>
             <?php endif; ?>
 
             <td><?= htmlspecialchars($client['Department']) ?></td>
-            <td><?= htmlspecialchars($client['ClientType']) ?></td>
 
             <td class="actions-column">
                 <div class="action-buttons">
                     <a href="ClientProfile.php?id=<?= $client['ClientID'] ?>" title="Edit User">
-                        <img src="assets/images/edit-blue-icon.svg" width="20" height="20">
+                        <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                     </a>
-                    <a href="manageclients.dbf/delete_client.php?id=<?= $client['ClientID'] ?>"
-                        onclick="return confirm('Are you sure you want to delete this user?');">
-                        <img src="assets/images/delete-icon.svg" width="20" height="20">
-                    </a>
+                    <button type="button"
+                        class="delete-client-btn icon-button"
+                        data-client-id="<?= $client['ClientID'] ?>"
+                        title="Delete User">
+                        <img class="table-icon-img"
+                            src="assets/images/delete-icon.svg"
+                            alt="Delete Icon"
+                            style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                    </button>
                 </div>
             </td>
         </tr>
