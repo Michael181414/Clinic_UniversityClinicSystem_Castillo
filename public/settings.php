@@ -177,6 +177,11 @@ try {
                     <form id="profileForm" method="POST">
                         <div class="profile-grid">
                             <div class="profile-field">
+                                <label for="fullName">ID:</label>
+                                <input type="text" name="id" id="id"
+                                    value="<?= htmlspecialchars(trim(($UserInfoData['ClientID'] ?? '')) ?: 'Undone') ?>">
+                            </div>
+                            <div class="profile-field">
                                 <label for="fullName">Full Name:</label>
                                 <input type="text" name="fullName" id="fullName"
                                     value="<?= htmlspecialchars(trim(($UserInfoData['Firstname'] ?? '') . ' ' . ($UserInfoData['Lastname'] ?? '')) ?: 'Undone') ?>">

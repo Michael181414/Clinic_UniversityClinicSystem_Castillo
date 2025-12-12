@@ -353,75 +353,105 @@ document.querySelectorAll(".row-delete-btn").forEach((btn) => {
 });
 //===============================================================================
 //This is part is the search users functionalities
-const searchInput = document.getElementById("searchInput");
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("searchInput");
+  const resetBtn = document.getElementById("resetSearch");
+  const tabIds = [
+    "Students",
+    "Freshman",
+    "Faculty",
+    "Personnel",
+    "NewPersonnel",
+  ];
+  const clientTypes = [
+    "Student",
+    "Freshman",
+    "Faculty",
+    "Personnel",
+    "NewPersonnel",
+  ];
+  let debounceTimer;
 
-searchInput.addEventListener("input", function () {
-  const searchId = searchInput.value.trim();
-
-  if (searchId === "") {
-    // Clear button behavior:
-    const baseUrl = window.location.href.split("?")[0];
-    window.history.pushState({}, "", baseUrl);
-
-    // Reload original data instead of just clearing
-    loadFilteredData("students-content", "Student", "");
-    loadFilteredData("employees-content", "Faculty", "");
-    loadFilteredData("personnel-content", "Personnel", "");
-    loadFilteredData("freshman-content", "Freshman", "");
-    loadFilteredData("newpersonnel-content", "NewPersonnel", "");
-
-    return;
+  // Attach search input
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const searchId = searchInput.value.trim();
+        updateUrl(searchId);
+        loadAllTabs(searchId);
+      }, 300);
+    });
   }
 
-  const url = new URL(window.location);
-  url.searchParams.set("id_filter", searchId);
-  window.history.pushState({}, "", url);
-
-  loadFilteredData("students-content", "Student", searchId);
-  loadFilteredData("employees-content", "Faculty", searchId);
-  loadFilteredData("personnel-content", "Personnel", searchId);
-  loadFilteredData("freshman-content", "Freshman", searchId);
-  loadFilteredData("newpersonnel-content", "NewPersonnel", searchId);
-});
-
-function loadFilteredData(tabId, clientType, searchId) {
-  fetch(
-    `manageclients.dbf/get_user.php?client_type=${clientType}&id_filter=${encodeURIComponent(
-      searchId
-    )}`
-  )
-    .then((response) => response.text())
-    .then((html) => {
-      document.querySelector(`#${tabId} tbody`).innerHTML = html;
+  // Reset search
+  if (resetBtn) {
+    resetBtn.addEventListener("click", function () {
+      searchInput.value = "";
+      updateUrl("");
+      loadAllTabs("");
     });
-}
+  }
 
-function loadFilteredData(tabId, clientType, searchId) {
-  fetch(
-    `manageclients.dbf/get_user.php?client_type=${clientType}&id_filter=${encodeURIComponent(
-      searchId
-    )}`
-  )
-    .then((response) => response.text())
-    .then((html) => {
-      document.querySelector(`#${tabId} tbody`).innerHTML = html;
+  // Load filtered data for all tabs
+  function loadAllTabs(searchId) {
+    tabIds.forEach((tabId, index) => {
+      loadFilteredData(tabId, clientTypes[index], searchId);
     });
-}
+  }
 
-document.getElementById("resetSearch").addEventListener("click", function () {
-  const baseUrl = window.location.href.split("?")[0];
-  window.location.href = baseUrl;
-});
+  // Fetch filtered data
+  function loadFilteredData(tabId, clientType, searchId) {
+    fetch(
+      `manageclients.dbf/get_user.php?client_type=${clientType}&id_filter=${encodeURIComponent(
+        searchId
+      )}`
+    )
+      .then((response) => response.text())
+      .then((html) => {
+        const tbody = document.querySelector(`#${tabId} tbody`);
+        if (tbody) {
+          tbody.innerHTML = html;
+          attachRowClickEvents(`#${tabId} tbody .client-row`);
+        }
+      })
+      .catch((err) => console.error("Error loading data:", err));
+  }
 
-document.addEventListener("DOMContentLoaded", function () {
+  // Update URL without reloading page
+  function updateUrl(searchId) {
+    const url = new URL(window.location);
+    if (searchId === "") {
+      url.searchParams.delete("id_filter");
+    } else {
+      url.searchParams.set("id_filter", searchId);
+    }
+    window.history.replaceState({}, "", url);
+  }
+
+  // Make table rows clickable
+  function attachRowClickEvents(selector) {
+    const rows = document.querySelectorAll(selector);
+    rows.forEach((row) => {
+      row.addEventListener("click", function (e) {
+        if (e.target.closest(".row-delete-btn")) return;
+        const url = this.dataset.href;
+        if (url) window.location.href = url;
+      });
+    });
+  }
+
+  // On page load: populate search if id_filter is in URL
   const urlParams = new URLSearchParams(window.location.search);
   const idFilter = urlParams.get("id_filter");
-
-  if (idFilter) {
+  if (idFilter && searchInput) {
     searchInput.value = idFilter;
-    searchInput.dispatchEvent(new Event("input"));
+    loadAllTabs(idFilter);
+  } else {
+    loadAllTabs("");
   }
 
+  // Restore active tab from sessionStorage
   const activeTab = sessionStorage.getItem("activeTab");
   if (activeTab) {
     const tab = document.querySelector(
@@ -431,3 +461,58 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 //===================================================================================
+let selectedUserId = null;
+let selectedUrl = null;
+
+document.addEventListener("click", function (e) {
+  const btn = e.target.closest(".row-delete-btn");
+  if (!btn) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  selectedUserId = btn.dataset.id;
+  selectedUrl = btn.dataset.url;
+  document.getElementById("deleteModal").style.display = "flex";
+});
+
+// Modal buttons
+document.getElementById("tempDeleteBtn").addEventListener("click", function () {
+  window.location.href = selectedUrl + "?action=archive&id=" + selectedUserId;
+});
+document.getElementById("permDeleteBtn").addEventListener("click", function () {
+  window.location.href = selectedUrl + "?action=permanent&id=" + selectedUserId;
+});
+document.getElementById("closeModal").addEventListener("click", function () {
+  document.getElementById("deleteModal").style.display = "none";
+});
+//=========================================================================
+//this is success delete modal
+document.addEventListener("DOMContentLoaded", function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const deleteType = urlParams.get("delete"); // must match PHP query
+  const message = urlParams.get("msg");
+
+  if (!deleteType || !message) return;
+
+  const modal = document.getElementById("deleteSuccessModal");
+  const closeBtn = modal.querySelector(".closeDeleteModal");
+  const okBtn = modal.querySelector(".closeModalBtn");
+
+  document.getElementById("deleteModalMessage").textContent =
+    decodeURIComponent(message);
+  modal.classList.add("show");
+
+  function closeModal() {
+    modal.classList.remove("show");
+    const baseUrl = window.location.href.split("?")[0];
+    window.history.replaceState({}, "", baseUrl);
+  }
+
+  closeBtn.addEventListener("click", closeModal);
+  okBtn.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+});

@@ -10,12 +10,13 @@ if (!isset($_SESSION['user_id'])) {
 $pdo = pdo_connect_mysql();
 
 if (!isset($_GET['id'])) {
-    $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
+    $redirect = $_SERVER['HTTP_REFERER'] ?? '../Data_Management.php';
     header("Location: $redirect?restore=invalid");
     exit;
 }
 
 $clientID = (int) $_GET['id'];
+$redirect = $_SERVER['HTTP_REFERER'] ?? '../Data_Management.php'; // define redirect here
 
 $admin_id       = $_SESSION['user_id'];
 $admin_username = $_SESSION['username'] ?? 'System';
@@ -27,7 +28,6 @@ $clientStmt->execute([$clientID]);
 $client = $clientStmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$client) {
-    $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
     header("Location: $redirect?restore=notfound");
     exit;
 }
@@ -35,7 +35,7 @@ if (!$client) {
 try {
     $pdo->beginTransaction();
 
-    // Insert back into Clients table with original ClientID
+    // Insert back into Clients table
     $insertStmt = $pdo->prepare("
         INSERT INTO Clients
         (ClientID, Firstname, Lastname, Email, Username, Sex, BirthDate, Password, ClientType, Department, Course, profilePicturePath, ResetCode)
@@ -78,13 +78,12 @@ try {
 
     $pdo->commit();
 
-    $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
-    header("Location: $redirect?restore=success");
+    $message_text = 'Client restored successfully';
+    header("Location: $redirect?restore=success&msg=" . urlencode($message_text));
     exit;
 } catch (Exception $e) {
     $pdo->rollBack();
 
-    // Log failure
     $logStmt = $pdo->prepare("
         INSERT INTO activity_logs
         (user_id, username, role, action_type, action_description, status)
@@ -99,7 +98,7 @@ try {
         'FAILED'
     ]);
 
-    $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
-    header("Location: $redirect?restore=error");
+    $message_text = 'Failed to restore client';
+    header("Location: $redirect?restore=error&msg=" . urlencode($message_text));
     exit;
 }

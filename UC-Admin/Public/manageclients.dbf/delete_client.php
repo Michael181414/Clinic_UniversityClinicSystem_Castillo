@@ -28,15 +28,25 @@ $admin_id       = $_SESSION['user_id'];
 $admin_username = $_SESSION['username'] ?? 'System';
 $admin_role     = $_SESSION['user_type'] ?? 'Unknown';
 
-// Fetch client info
+// Fetch client from Clients table
 $clientStmt = $pdo->prepare("SELECT * FROM Clients WHERE ClientID = ?");
 $clientStmt->execute([$clientID]);
 $client = $clientStmt->fetch(PDO::FETCH_ASSOC);
+$fromArchive = false;
 
+// If not found in main table, check archive_clients
+if (!$client) {
+    $clientStmt = $pdo->prepare("SELECT * FROM archive_clients WHERE ClientID = ?");
+    $clientStmt->execute([$clientID]);
+    $client = $clientStmt->fetch(PDO::FETCH_ASSOC);
+    $fromArchive = true;
+}
 
+// If still not found, return error
 if (!$client) {
     $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
-    header("Location: $redirect?delete=notfound");
+    $message_text = 'Client not found';
+    header("Location: $redirect?delete=error&msg=" . urlencode($message_text));
     exit;
 }
 
@@ -44,38 +54,40 @@ try {
     $pdo->beginTransaction();
 
     if ($action === 'archive') {
-        // Insert client into archive table
-        $archiveStmt = $pdo->prepare("
-            INSERT INTO archive_clients
-            (ClientID, Firstname, Lastname, Email, Username, Sex, BirthDate, Password, ClientType, Department, Course, profilePicturePath, ResetCode, deleted_by, deleted_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
-        ");
-        $archiveStmt->execute([
-            $client['ClientID'],
-            $client['Firstname'],
-            $client['Lastname'],
-            $client['Email'],
-            $client['Username'],
-            $client['Sex'],
-            $client['BirthDate'],
-            $client['Password'],
-            $client['ClientType'],
-            $client['Department'],
-            $client['Course'],
-            $client['profilePicturePath'],
-            $client['ResetCode'],
-            $admin_id
-        ]);
+        if (!$fromArchive) {
+            // Move client to archive_clients
+            $archiveStmt = $pdo->prepare("
+                INSERT INTO archive_clients
+                (ClientID, Firstname, Lastname, Email, Username, Sex, BirthDate, Password, ClientType, Department, Course, profilePicturePath, ResetCode, deleted_by, deleted_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+            ");
+            $archiveStmt->execute([
+                $client['ClientID'],
+                $client['Firstname'],
+                $client['Lastname'],
+                $client['Email'],
+                $client['Username'],
+                $client['Sex'],
+                $client['BirthDate'],
+                $client['Password'],
+                $client['ClientType'],
+                $client['Department'],
+                $client['Course'],
+                $client['profilePicturePath'],
+                $client['ResetCode'],
+                $admin_id
+            ]);
 
-        // Delete from main table
-        $delStmt = $pdo->prepare("DELETE FROM Clients WHERE ClientID = ?");
-        $delStmt->execute([$clientID]);
-
+            // Delete from main Clients table
+            $delStmt = $pdo->prepare("DELETE FROM Clients WHERE ClientID = ?");
+            $delStmt->execute([$clientID]);
+        }
         $action_type = 'Archive Client';
         $action_desc = "Archived client. ID: $clientID, Email: {$client['Email']}";
     } elseif ($action === 'permanent') {
-        // Permanent delete
-        $delStmt = $pdo->prepare("DELETE FROM Clients WHERE ClientID = ?");
+        // Delete permanently from wherever it exists
+        $table = $fromArchive ? 'archive_clients' : 'Clients';
+        $delStmt = $pdo->prepare("DELETE FROM $table WHERE ClientID = ?");
         $delStmt->execute([$clientID]);
 
         $action_type = 'Permanent Delete Client';
@@ -84,7 +96,7 @@ try {
         throw new Exception('Invalid delete action');
     }
 
-    // Log the action
+    // Log action
     $logStmt = $pdo->prepare("
         INSERT INTO activity_logs 
         (user_id, username, role, action_type, action_description, status)
@@ -102,7 +114,8 @@ try {
     $pdo->commit();
 
     $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
-    header("Location: $redirect?delete=success");
+    $message_text = 'Client deleted successfully';
+    header("Location: $redirect?delete=success&msg=" . urlencode($message_text));
     exit;
 } catch (Exception $e) {
     $pdo->rollBack();
@@ -123,6 +136,7 @@ try {
     ]);
 
     $redirect = $_SERVER['HTTP_REFERER'] ?? '../ManageClients.php';
-    header("Location: $redirect?delete=error");
+    $message_text = 'Failed to delete client';
+    header("Location: $redirect?delete=error&msg=" . urlencode($message_text));
     exit;
 }

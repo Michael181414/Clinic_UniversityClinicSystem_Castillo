@@ -34,7 +34,7 @@ $name = $current_user['username'] ?? '';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Layout Example</title>
     <link rel="stylesheet" href="assets/css/dashboardpagestyles.css">
-    <link rel="stylesheet" href="assets/css/adminstyles.css">
+
     <style>
         @font-face {
             font-family: "Montserrat";
@@ -104,6 +104,7 @@ $name = $current_user['username'] ?? '';
     <script src="assets/js/dashgraph.js" defer></script>
     <script src="assets/js/clientTypeChart.js" defer></script>
     <script src="assets/css/calendarstyles.css" defer></script>
+    <link rel="stylesheet" href="assets/css/adminstyles.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
         rel="stylesheet" />
@@ -205,12 +206,24 @@ $name = $current_user['username'] ?? '';
                 </button>
             </a>
     -->
-            <a href="admin_logout.php">
+            <a href="admin_logout.php" class="logout-link">
                 <button class="buttons" id="logoutbtn">
                     <img src="assets/images/logout-icon.svg" class="button-icon-nav" loading="lazy">
                     <span class="nav-text">Logout</span>
                 </button>
             </a>
+
+            <div class="logout-modal" style="display:none;">
+                <div class="logout-modal-content">
+                    <span class="close-logout">&times;</span>
+                    <h2>Confirm Logout</h2>
+                    <p>Are you sure you want to logout?</p>
+                    <div class="logout-buttons">
+                        <button class="btn-cancel">Cancel</button>
+                        <button class="btn-logout">Logout</button>
+                    </div>
+                </div>
+            </div>
         </nav>
 
         <main id="dashboard-main-content" class="content">

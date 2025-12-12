@@ -168,6 +168,7 @@ $email = $current_user['email'] ?? '';
                 <div class="clients-table-container">
                     <div class="table-header-controls">
                         <div class="table-left-controls">
+
                             <div class="search-input-container rectangular-search">
                                 <div class="input-wrapper">
                                     <i class="fas fa-search search-icon-inset"></i>
@@ -182,11 +183,11 @@ $email = $current_user['email'] ?? '';
                             <div class="select-wrapper">
                                 <i class="fas fa-filter"></i>
                                 <select id="clientTypeDropdown" class="client-type-dropdown">
-                                    <option value="students-content">Regular Students</option>
-                                    <option value="freshman-content">Incoming Freshman Students</option>
-                                    <option value="employees-content">Teaching Personnels</option>
-                                    <option value="personnel-content">Non-Teaching Personnels</option>
-                                    <option value="newpersonnel-content">Newly Hired Personnels</option>
+                                    <option value="Students">Regular Students</option>
+                                    <option value="Freshman">Incoming Freshman Students</option>
+                                    <option value="Faculty">Teaching Personnels</option>
+                                    <option value="Personnel">Non-Teaching Personnels</option>
+                                    <option value="NewPersonnel">Newly Hired Personnels</option>
                                 </select>
                             </div>
                         </div>
@@ -586,7 +587,7 @@ $email = $current_user['email'] ?? '';
 
                 <!--====================================================================================-->
 
-                <div id="freshman-content" class="tab-content" style="display: none;">
+                <div id="Freshman" class="tab-content" style="display: none;">
 
                     <table class="table table-bordered table-hover align-middle" id="freshmanstudentsTable">
                         <thead>
@@ -660,7 +661,7 @@ $email = $current_user['email'] ?? '';
                 </script>
                 <!--====================================================================================-->
 
-                <div id="newpersonnel-content" class="tab-content" style="display: none;">
+                <div id="NewPersonnel" class="tab-content" style="display: none;">
                     <table class="table table-bordered table-hover align-middle" id="newpersonnelTable">
                         <thead>
                             <tr>
@@ -713,7 +714,7 @@ $email = $current_user['email'] ?? '';
                 </div>
 
                 <!--====================================================================================-->
-                <div id="students-content" class="tab-content" style="display: block;">
+                <div id="Students" class="tab-content" style="display: block;">
 
                     <table class="table table-bordered table-hover align-middle" id="studentsTable">
                         <thead>
@@ -770,7 +771,7 @@ $email = $current_user['email'] ?? '';
                     </table>
                 </div>
                 <!--====================================================================================-->
-                <div id="employees-content" class="tab-content" style="display: none;">
+                <div id="Faculty" class="tab-content" style="display: none;">
 
                     <table class="table table-bordered table-hover align-middle" id="facultiesTable">
                         <thead>
@@ -823,7 +824,7 @@ $email = $current_user['email'] ?? '';
                     </table>
                 </div>
                 <!--====================================================================================-->
-                <div id="personnel-content" class="tab-content" style="display: none;">
+                <div id="Personnel" class="tab-content" style="display: none;">
 
                     <table class="table table-bordered table-hover align-middle " id="personnelTable">
                         <thead>
@@ -893,36 +894,21 @@ $email = $current_user['email'] ?? '';
                 <button id="permDeleteBtn" class="btn-danger">Delete</button>
             </div>
         </div>
+
+
     </div>
     </main>
     </div>
-    <script>
-        let selectedUserId = null;
-        let selectedUrl = null;
-
-        document.querySelectorAll(".row-delete-btn").forEach((btn) => {
-            btn.addEventListener("click", function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                selectedUserId = this.dataset.id;
-                selectedUrl = this.dataset.url;
-                document.getElementById("deleteModal").style.display = "flex";
-            });
-        });
-
-        document.getElementById("tempDeleteBtn").addEventListener("click", function() {
-            window.location.href = selectedUrl + "?action=archive&id=" + selectedUserId;
-        });
-
-        document.getElementById("permDeleteBtn").addEventListener("click", function() {
-            window.location.href = selectedUrl + "?action=permanent&id=" + selectedUserId;
-        });
-
-        document.getElementById("closeModal").addEventListener("click", function() {
-            document.getElementById("deleteModal").style.display = "none";
-        });
-    </script>
 
 </body>
+<div id="deleteSuccessModal" class="delete-success-modal">
+    <div class="delete-success-modal-content">
+        <span class="closeDeleteModal">&times;</span>
+        <div class="modal-icon">&#10004;</div>
+        <h2>Success!</h2>
+        <p id="deleteModalMessage">Message goes here</p>
+        <button class="closeModalBtn">OK</button>
+    </div>
+</div>
 
 </html

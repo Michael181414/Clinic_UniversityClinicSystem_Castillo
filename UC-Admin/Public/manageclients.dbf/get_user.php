@@ -144,10 +144,11 @@ if (!empty($clientType)) {
                     <a href="ClientProfile.php?id=<?= $client['ClientID'] ?>" title="Edit User">
                         <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
                     </a>
-                    <a href="manageclients.dbf/delete_client.php?id=<?= $client['ClientID'] ?>"
-                        onclick="return confirm('Are you sure you want to delete this user?');"
+                    <a class="row-delete-btn"
+                        data-id="<?= $client['ClientID'] ?>"
+                        data-url="manageclients.dbf/delete_client.php"
                         title="Delete User">
-                        <img class="table-icon-img" src="assets/images/delete-icon.svg" alt="Delete Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                        <i class="fa-solid fa-trash delete-icon"></i>
                     </a>
                 </div>
             </td>

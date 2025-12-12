@@ -51,6 +51,7 @@ $email = $current_user['email'] ?? '';
         rel="stylesheet" />
     <script src="assets/js/dashcalendar.js" defer></script>
     <script src="assets/js/dashgraph.js" defer></script>
+    <script src="assets/js/data_manage.js" defer></script>
     <style>
         @font-face {
             font-family: "Montserrat";
@@ -147,6 +148,7 @@ $email = $current_user['email'] ?? '';
                     <span class="nav-text">Logout</span>
                 </button>
             </a>
+
         </nav>
 
         <main class="content">
@@ -594,12 +596,10 @@ $email = $current_user['email'] ?? '';
                 xhr.send();
             }
 
-            // ✅ Restore Confirmation Modal
             const restoreInput = document.getElementById("restoreInput");
             const restoreForm = document.getElementById("restoreForm");
             const modal = document.getElementById("restoreWarningModal");
 
-            // Show modal first when clicking Restore
             function showRestoreModal() {
                 modal.style.display = "flex";
             }
@@ -610,15 +610,12 @@ $email = $current_user['email'] ?? '';
 
             function confirmRestore() {
                 modal.style.display = "none";
-                restoreInput.click(); // open file picker
+                restoreInput.click();
             }
-
-            // After file chosen → submit form
 
 
             const backupModal = document.getElementById("backupWarningModal");
 
-            // Show modal first when clicking Backup
             function showBackupModal() {
                 backupModal.style.display = "flex";
             }
@@ -629,12 +626,11 @@ $email = $current_user['email'] ?? '';
 
             function confirmBackup() {
                 backupModal.style.display = "none";
-                runBackup(); // now actually run the backup
+                runBackup();
             }
         </script>
         <script>
             function openTab(evt, tabName) {
-                // Hide all tabs
                 var tabs = document.getElementsByClassName("tab-content");
                 for (let i = 0; i < tabs.length; i++) {
                     tabs[i].style.display = "none";
@@ -676,5 +672,23 @@ $email = $current_user['email'] ?? '';
 
 
 </body>
+<div id="RestoreSuccessModal" class="restore-success-modal">
+    <div class="restore-success-modal-content">
+        <span class="closeRestoreModal">&times;</span>
+        <div class="modal-icon">&#10004;</div>
+        <h2>Success!</h2>
+        <p id="restoreModalMessage"></p>
+        <button class="closeRestoreBtn">OK</button>
+    </div>
+</div>
+<div id="deleteSuccessModal" class="delete-success-modal" style="display:none;">
+    <div class="delete-success-modal-content">
+        <span class="closeDeleteModal">&times;</span>
+        <div class="modal-icon">&#10004;</div>
+        <h2>Success!</h2>
+        <p id="deleteModalMessage"></p>
+        <button class="closeModalBtn">OK</button>
+    </div>
+</div>
 
 </html>
