@@ -213,7 +213,7 @@ $email = $current_user['email'] ?? '';
                     </button>
 
                     <button id="tab-deleted" class="tab-button" onclick="openTab(event, 'deletedUsersTab')">
-                        <i class="fas fa-users-slash"></i> Deleted Users
+                        <i class="fas fa-users-slash"></i> Archive Users
                     </button>
                 </div>
 
@@ -270,8 +270,26 @@ $email = $current_user['email'] ?? '';
                 <!-- DELETED USERS TAB -->
                 <div id="deletedUsersTab" class="tab-content">
                     <div class="backup-history">
-                        <h2 style="margin-bottom: 10px;"><i class="fas fa-users-slash"></i> Deleted Users</h2>
+                        <h2 style="margin-bottom: 10px;"><i class="fas fa-users-slash"></i>Archive Users</h2>
 
+                        <div class="search-input-container rectangular-search">
+                            <div class="input-wrapper">
+                                <i class="fas fa-search search-icon-inset"></i>
+                                <input type="text" class="search-input" id="searchInput" placeholder="Search by name or email...">
+                            </div>
+
+                            <div class="select-wrapper">
+                                <i class="fas fa-filter"></i>
+                                <select id="filterClientType" class="client-type-dropdown">
+                                    <option value="">All User Types</option>
+                                    <option value="Freshman">Freshman</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Faculty">Faculty</option>
+                                    <option value="Personnel">Personnel</option>
+                                    <option value="NewPersonnel">New Personnel</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="table-wrapper">
                             <table class="history-table">
                                 <thead>
@@ -280,42 +298,37 @@ $email = $current_user['email'] ?? '';
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Deleted At</th>
+                                        <th>User Type</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="archivedUsersTable">
                                     <?php
-                                    // Fetch deleted users from database
-                                    $deletedUsers = $pdo->query("SELECT * FROM Clients WHERE deleted_at IS NOT NULL")->fetchAll();
+                                    $archivedUsers = $pdo->query("SELECT * FROM archive_clients ORDER BY deleted_at DESC")->fetchAll();
                                     ?>
-
-                                    <?php if (!empty($deletedUsers)): ?>
-                                        <?php foreach ($deletedUsers as $index => $row): ?>
-                                            <tr>
+                                    <?php if (!empty($archivedUsers)): ?>
+                                        <?php foreach ($archivedUsers as $index => $row): ?>
+                                            <tr data-client-type="<?= htmlspecialchars($row['ClientType']) ?>">
                                                 <td><?= $index + 1 ?></td>
                                                 <td><?= htmlspecialchars($row['Firstname'] . ' ' . $row['Lastname']) ?></td>
                                                 <td><?= htmlspecialchars($row['Email']) ?></td>
                                                 <td><?= htmlspecialchars($row['deleted_at']) ?></td>
+                                                <td><?= htmlspecialchars($row['ClientType']) ?></td>
                                                 <td>
-                                                    <button
-                                                        class="btn-restore"
+                                                    <button class="btn-restore"
                                                         onclick="openConfirmModal('restore', 'manageclients.dbf/restore_client.php?id=<?= $row['ClientID'] ?>')">
                                                         Restore
                                                     </button>
-
-                                                    <button
-                                                        class="btn-delete"
-                                                        onclick="openConfirmModal('delete', 'manageclients.dbf/delete_client_permanent.php?id=<?= $row['ClientID'] ?>')">
+                                                    <button class="btn-delete"
+                                                        onclick="openConfirmModal('delete', 'manageclients.dbf/delete_client.php?action=permanent&id=<?= $row['ClientID'] ?>')">
                                                         Delete
                                                     </button>
                                                 </td>
-
-
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="5" class="no-records">No deleted users.</td>
+                                            <td colspan="6" class="no-records">No archived users.</td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>
@@ -339,6 +352,31 @@ $email = $current_user['email'] ?? '';
 
             </div>
         </main>
+        <script>
+            const searchInput = document.getElementById('searchInput');
+            const filterClientType = document.getElementById('filterClientType');
+            const tableBody = document.getElementById('archivedUsersTable');
+
+            function filterTable() {
+                const searchText = searchInput.value.toLowerCase();
+                const selectedType = filterClientType.value;
+
+                Array.from(tableBody.querySelectorAll('tr')).forEach(row => {
+                    const name = row.cells[1].textContent.toLowerCase();
+                    const email = row.cells[2].textContent.toLowerCase();
+                    const type = row.dataset.clientType;
+
+                    const matchesSearch = name.includes(searchText) || email.includes(searchText);
+                    const matchesType = selectedType === '' || type === selectedType;
+
+                    row.style.display = matchesSearch && matchesType ? '' : 'none';
+                });
+            }
+
+            // Event listeners
+            searchInput.addEventListener('input', filterTable);
+            filterClientType.addEventListener('change', filterTable);
+        </script>
         <!-- Status Modal -->
         <script>
             function openTab(evt, tabName) {

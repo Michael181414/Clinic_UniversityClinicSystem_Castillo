@@ -219,7 +219,7 @@ $name = $current_user['username'] ?? '';
                     <div class="admin-tex-div">
                         <h3>
                             Welcome
-                            <?= htmlspecialchars($role === 'Doctor' ? 'Dr.' : $role) ?><?= $name ? '' . htmlspecialchars($name) : '' ?>!
+                            <?= htmlspecialchars($role === 'Doctor' ? 'Dr.' : $role) ?><?= $name ? '' . htmlspecialchars($name) : '' ?>
                         </h3>
                     </div>
                     <div class="patients-statisticis">
@@ -352,7 +352,7 @@ $name = $current_user['username'] ?? '';
                                 <h4>Patients Sex Distribution</h4>
                             </div>
                             <div class="gender-chart-container">
-                                <canvas id="genderChart" width="400" height="400"></canvas>
+                                <canvas id="genderChart" load="lazy"></canvas>
                                 <div class="gender-count">
                                     <div id="male-card-count" class="gender-count-sub-sec">
                                         <div id="male-card-icon" class="gender-icon-cards">
@@ -378,7 +378,6 @@ $name = $current_user['username'] ?? '';
 
                 <div class="calendar-div">
                     <div id="calendar-app">
-
                         <div id="calendar-header">
                             <h1 class="app-title">Calendar</h1>
 
@@ -498,7 +497,7 @@ $name = $current_user['username'] ?? '';
                                 <div class="scrollable-table">
                                     <div class="recent-patients-table">
                                         <table>
-                                            <thead>
+                                            <thead class="consult-table-head">
                                                 <tr>
                                                     <th>Patient Info</th>
                                                     <th>Action</th>

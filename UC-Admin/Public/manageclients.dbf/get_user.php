@@ -1,7 +1,13 @@
 <?php
 require_once 'config/database.php';
 header('Content-Type: text/html');
+session_start();
 
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../../../index.php');
+    exit;
+}
 function getFilteredClients($clientType, $globalSearch = '', $page = 1, $perPage = 30)
 {
     $pdo = pdo_connect_mysql();

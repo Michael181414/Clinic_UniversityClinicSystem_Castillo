@@ -119,7 +119,8 @@ try {
 
     <div class="main-container">
         <nav class="navbar">
-            <button class="buttons" id="backToForm">
+
+            <button class="active-buttons" id="backToForm" style="background-color: #397dda; color: white;">
 
                 <?php if ($userType === "Faculty" || $userType === "Personnel") : ?>
                     <i class="fas fa-home"></i>

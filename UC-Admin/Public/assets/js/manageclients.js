@@ -338,3 +338,96 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 //==============================================================================
+//This part handle the rows in users table, it prevent auto directing to client/patients profile
+//when you click the delete icon
+document.querySelectorAll(".row-delete-btn").forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+    e.stopPropagation(); // ⛔ Prevent row redirect
+    e.preventDefault(); // ⛔ Prevent any default behavior
+
+    selectedUserId = this.dataset.id;
+    selectedUrl = this.dataset.url;
+
+    document.getElementById("deleteModal").style.display = "flex";
+  });
+});
+//===============================================================================
+//This is part is the search users functionalities
+const searchInput = document.getElementById("searchInput");
+
+searchInput.addEventListener("input", function () {
+  const searchId = searchInput.value.trim();
+
+  if (searchId === "") {
+    // Clear button behavior:
+    const baseUrl = window.location.href.split("?")[0];
+    window.history.pushState({}, "", baseUrl);
+
+    // Reload original data instead of just clearing
+    loadFilteredData("students-content", "Student", "");
+    loadFilteredData("employees-content", "Faculty", "");
+    loadFilteredData("personnel-content", "Personnel", "");
+    loadFilteredData("freshman-content", "Freshman", "");
+    loadFilteredData("newpersonnel-content", "NewPersonnel", "");
+
+    return;
+  }
+
+  const url = new URL(window.location);
+  url.searchParams.set("id_filter", searchId);
+  window.history.pushState({}, "", url);
+
+  loadFilteredData("students-content", "Student", searchId);
+  loadFilteredData("employees-content", "Faculty", searchId);
+  loadFilteredData("personnel-content", "Personnel", searchId);
+  loadFilteredData("freshman-content", "Freshman", searchId);
+  loadFilteredData("newpersonnel-content", "NewPersonnel", searchId);
+});
+
+function loadFilteredData(tabId, clientType, searchId) {
+  fetch(
+    `manageclients.dbf/get_user.php?client_type=${clientType}&id_filter=${encodeURIComponent(
+      searchId
+    )}`
+  )
+    .then((response) => response.text())
+    .then((html) => {
+      document.querySelector(`#${tabId} tbody`).innerHTML = html;
+    });
+}
+
+function loadFilteredData(tabId, clientType, searchId) {
+  fetch(
+    `manageclients.dbf/get_user.php?client_type=${clientType}&id_filter=${encodeURIComponent(
+      searchId
+    )}`
+  )
+    .then((response) => response.text())
+    .then((html) => {
+      document.querySelector(`#${tabId} tbody`).innerHTML = html;
+    });
+}
+
+document.getElementById("resetSearch").addEventListener("click", function () {
+  const baseUrl = window.location.href.split("?")[0];
+  window.location.href = baseUrl;
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const idFilter = urlParams.get("id_filter");
+
+  if (idFilter) {
+    searchInput.value = idFilter;
+    searchInput.dispatchEvent(new Event("input"));
+  }
+
+  const activeTab = sessionStorage.getItem("activeTab");
+  if (activeTab) {
+    const tab = document.querySelector(
+      `.nav-tabs .nav-link[data-bs-target="${activeTab}"]`
+    );
+    if (tab) tab.click();
+  }
+});
+//===================================================================================
