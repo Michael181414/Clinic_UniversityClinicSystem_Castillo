@@ -345,13 +345,10 @@ $diagnostic = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <div class="main-container">
         <nav class="navbar">
-
-            <button class="active-buttons" id="medicalBtn">
-                <i class="fas fa-file-lines button-icon-nav"></i>
-                <span class="nav-text">Medical Forms</span>
-            </button>
+            <a href="#">
+                <button class="active-buttons"> <i class="fas fa-file-lines"></i><span class="nav-text">Medical Form</span></button>
+            </a>
         </nav>
-
         <main class="content" loading="lazy">
             <!-- Confirm Submission Modal -->
             <div id="confirmModal" class="modal">

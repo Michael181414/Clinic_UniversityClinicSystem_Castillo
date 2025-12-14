@@ -1,105 +1,35 @@
 <?php
 session_start();
+require_once '../config/database.php';
 
-require_once 'config/database.php';
+header('Content-Type: application/json; charset=utf-8');
+error_reporting(0);
 
-$pdo = pdo_connect_mysql();
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+try {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception('Invalid request method.');
+    }
 
-header('Content-Type: application/json'); // All responses will be JSON
-
-/**
- * Check if ClientID exists in clients table
- */
-function clientExists(PDO $pdo, int $clientId): bool {
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM clients WHERE ClientID = ?");
-    $stmt->execute([$clientId]);
-    return (bool)$stmt->fetchColumn();
-}
-
-/**
- * Fetch personal info for a client
- */
-function getUserDataFromDatabase(PDO $pdo, int $clientId): ?array {
-    $stmt = $pdo->prepare("
-        SELECT 
-            Surname, GivenName, MiddleName, Age, Gender,
-            DateOfBirth, Status, Course, SchoolYearEntered,
-            CurrentAddress, ContactNumber,
-            MothersName, FathersName, GuardiansName,
-            EmergencyContactName, EmergencyContactRelationship, EmergencyContactPerson
-        FROM personalinfo
-        WHERE ClientID = :ClientID
-    ");
-    $stmt->execute(['ClientID' => $clientId]);
-    return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-}
-
-/**
- * Insert new personal info record
- */
-function insertUserData(PDO $pdo, int $clientId, array $d): bool {
-    $sql = "INSERT INTO personalinfo (
-                ClientID, Surname, GivenName, MiddleName, Age, Gender,
-                DateOfBirth, Status, Course, SchoolYearEntered,
-                CurrentAddress, ContactNumber,
-                MothersName, FathersName, GuardiansName,
-                EmergencyContactName, EmergencyContactRelationship, EmergencyContactPerson
-            ) VALUES (
-                :ClientID, :Surname, :GivenName, :MiddleName, :Age, :Gender,
-                :DateOfBirth, :Status, :Course, :SchoolYearEntered,
-                :CurrentAddress, :ContactNumber,
-                :MothersName, :FathersName, :GuardiansName,
-                :EmergencyContactName, :EmergencyContactRelationship, :EmergencyContactPerson
-            )";
-    $stmt = $pdo->prepare($sql);
-    return $stmt->execute(array_merge($d, ['ClientID' => $clientId]));
-}
-
-/**
- * Update existing personal info record
- */
-function updateUserData(PDO $pdo, int $clientId, array $d): bool {
-    $sql = "UPDATE personalinfo SET
-                Surname = :Surname,
-                GivenName = :GivenName,
-                MiddleName = :MiddleName,
-                Age = :Age,
-                Gender = :Gender,
-                DateOfBirth = :DateOfBirth,
-                Status = :Status,
-                Course = :Course,
-                SchoolYearEntered = :SchoolYearEntered,
-                CurrentAddress = :CurrentAddress,
-                ContactNumber = :ContactNumber,
-                MothersName = :MothersName,
-                FathersName = :FathersName,
-                GuardiansName = :GuardiansName,
-                EmergencyContactName = :EmergencyContactName,
-                EmergencyContactRelationship = :EmergencyContactRelationship,
-                EmergencyContactPerson = :EmergencyContactPerson
-            WHERE ClientID = :ClientID";
-    $stmt = $pdo->prepare($sql);
-    return $stmt->execute(array_merge($d, ['ClientID' => $clientId]));
-}
-
-// Handle POST submission (insert or update)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Surname'])) {
     $clientId = filter_input(INPUT_POST, 'ClientID', FILTER_VALIDATE_INT);
     if (!$clientId && isset($_SESSION['ClientID'])) {
         $clientId = (int)$_SESSION['ClientID'];
     }
 
     if (!$clientId) {
-        echo json_encode(['success' => false, 'message' => 'Client ID is missing or invalid.']);
-        exit;
+        throw new Exception('Client ID is missing or invalid.');
     }
 
-    if (!clientExists($pdo, $clientId)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid Client ID: client does not exist.']);
-        exit;
+    $pdo = pdo_connect_mysql();
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Check if client exists
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM clients WHERE ClientID = ?");
+    $stmt->execute([$clientId]);
+    if (!(bool)$stmt->fetchColumn()) {
+        throw new Exception('Invalid Client ID: client does not exist.');
     }
 
+    // Collect form data
     $d = [
         'Surname' => filter_input(INPUT_POST, 'Surname', FILTER_SANITIZE_SPECIAL_CHARS),
         'GivenName' => filter_input(INPUT_POST, 'GivenName', FILTER_SANITIZE_SPECIAL_CHARS),
@@ -121,39 +51,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Surname'])) {
     ];
 
     if (empty($d['Surname']) || empty($d['GivenName']) || $d['Age'] === false) {
-        echo json_encode(['success' => false, 'message' => 'Please fill all required fields correctly.']);
-        exit;
+        throw new Exception('Please fill all required fields correctly.');
     }
 
-    try {
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM personalinfo WHERE ClientID = ?");
-        $stmt->execute([$clientId]);
-        $exists = (bool)$stmt->fetchColumn();
+    // Check if personal info exists
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM personalinfo WHERE ClientID = ?");
+    $stmt->execute([$clientId]);
+    $exists = (bool)$stmt->fetchColumn();
 
-        if ($exists) {
-            $ok = updateUserData($pdo, $clientId, $d);
-            $action = 'updated';
-        } else {
-            $ok = insertUserData($pdo, $clientId, $d);
-            $action = 'inserted';
-        }
-
-        if ($ok) {
-            echo json_encode(['success' => true, 'message' => "Personal info {$action} successfully!"]);
-        } else {
-            echo json_encode(['success' => false, 'message' => "Failed to {$action} personal info."]);
-        }
-    } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    if ($exists) {
+        // Update
+        $sql = "UPDATE personalinfo SET
+                    Surname=:Surname, GivenName=:GivenName, MiddleName=:MiddleName, Age=:Age, Gender=:Gender,
+                    DateOfBirth=:DateOfBirth, Status=:Status, Course=:Course, SchoolYearEntered=:SchoolYearEntered,
+                    CurrentAddress=:CurrentAddress, ContactNumber=:ContactNumber, MothersName=:MothersName,
+                    FathersName=:FathersName, GuardiansName=:GuardiansName,
+                    EmergencyContactName=:EmergencyContactName, EmergencyContactRelationship=:EmergencyContactRelationship,
+                    EmergencyContactPerson=:EmergencyContactPerson
+                WHERE ClientID=:ClientID";
+        $stmt = $pdo->prepare($sql);
+        $ok = $stmt->execute(array_merge($d, ['ClientID' => $clientId]));
+        $action = 'Updated Personal Info';
+    } else {
+        // Insert
+        $sql = "INSERT INTO personalinfo (
+                    ClientID, Surname, GivenName, MiddleName, Age, Gender,
+                    DateOfBirth, Status, Course, SchoolYearEntered,
+                    CurrentAddress, ContactNumber,
+                    MothersName, FathersName, GuardiansName,
+                    EmergencyContactName, EmergencyContactRelationship, EmergencyContactPerson
+                ) VALUES (
+                    :ClientID, :Surname, :GivenName, :MiddleName, :Age, :Gender,
+                    :DateOfBirth, :Status, :Course, :SchoolYearEntered,
+                    :CurrentAddress, :ContactNumber,
+                    :MothersName, :FathersName, :GuardiansName,
+                    :EmergencyContactName, :EmergencyContactRelationship, :EmergencyContactPerson
+                )";
+        $stmt = $pdo->prepare($sql);
+        $ok = $stmt->execute(array_merge($d, ['ClientID' => $clientId]));
+        $action = 'Inserted Personal Info';
     }
 
-    exit;
-}
+    // Log admin action
+    $admin_id = $_SESSION['user_id'] ?? null;
+    $admin_username = $_SESSION['username'] ?? 'System';
+    $admin_role = $_SESSION['user_type'] ?? 'Unknown';
+    $status = $ok ? 'SUCCESS' : 'ERROR';
+    $description = $ok ? "Admin {$action} for ClientID {$clientId}" : "Failed to {$action} for ClientID {$clientId}";
+    $logStmt = $pdo->prepare("INSERT INTO activity_logs (user_id, username, role, action_type, action_description, status) VALUES (?, ?, ?, ?, ?, ?)");
+    $logStmt->execute([$admin_id, $admin_username, $admin_role, $action, $description, $status]);
 
-// Optional: Return existing data for AJAX pre-fill (if requested via GET & ClientID in session)
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_SESSION['ClientID'])) {
-    $clientId = (int)$_SESSION['ClientID'];
-    $data = getUserDataFromDatabase($pdo, $clientId);
-    echo json_encode(['success' => true, 'data' => $data ?: []]);
-    exit;
+    if ($ok) {
+        echo json_encode(['success' => true, 'message' => "Personal info saved successfully"]);
+    } else {
+        throw new Exception("Failed to save personal info");
+    }
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
+exit();

@@ -313,7 +313,7 @@ $email = $current_user['email'] ?? '';
                                             <tr data-client-type="<?= htmlspecialchars($row['ClientType']) ?>">
                                                 <td><?= $index + 1 ?></td>
                                                 <td><?= htmlspecialchars($row['Firstname'] . ' ' . $row['Lastname']) ?></td>
-                                                <td><?= htmlspecialchars($row['Email']) ?></td>
+                                                <td class="email-td"><?= htmlspecialchars($row['Email']) ?></td>
                                                 <td><?= htmlspecialchars($row['deleted_at']) ?></td>
                                                 <td><?= htmlspecialchars($row['ClientType']) ?></td>
                                                 <td>

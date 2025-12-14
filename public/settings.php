@@ -126,7 +126,7 @@ try {
                     <i class="fas fa-home"></i>
                 <?php endif; ?>
                 <?php if ($userType === "Freshman" || $userType === "NewPersonnel") : ?>
-                    <i class="fas fa-file-lines button-icon-nav"></i>
+                    <i class="fas fa-file-lines"></i>
                 <?php endif; ?>
                 <?php if ($userType === "Student") : ?>
                     <i class="fas fa-home"></i>

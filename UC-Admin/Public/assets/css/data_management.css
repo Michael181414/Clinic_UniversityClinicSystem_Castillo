@@ -18,7 +18,12 @@
   height: 100%;
   overflow-x: auto;
 }
-
+.email-td {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .history-table {
   width: 100%;
   border-collapse: collapse;
