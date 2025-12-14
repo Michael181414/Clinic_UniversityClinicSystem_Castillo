@@ -2047,7 +2047,7 @@ $email = $current_user['email'] ?? '';
                             </div>
 
                             <div class="medinfotable-div" id="diagnosticResults" style="display: none;">
-                                <div class="form-container">
+                                <div class="diagnosticform-container">
                                     <h1>Medical Diagnostic Form</h1>
 
                                     <form id="diagnosticform" method="POST" action="manageclients.dbf/submit_diagnostic.php">
@@ -2072,7 +2072,10 @@ $email = $current_user['email'] ?? '';
                                         <h2>VI. Impression</h2>
                                         <div class="form-section">
                                             <div class="form-group">
-                                                <textarea class="custom-textarea" name="impression"><?= htmlspecialchars($diagnostic['Impression'] ?? '') ?></textarea>
+                                                <textarea class="custom-textarea"
+                                                    name="impression"
+                                                    placeholder="Enter clinical impression"><?= htmlspecialchars($diagnostic['Impression'] ?? '') ?></textarea>
+
                                             </div>
                                         </div>
 

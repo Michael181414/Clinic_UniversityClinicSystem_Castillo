@@ -167,45 +167,53 @@ $diagnostic = $stmt->fetch(PDO::FETCH_ASSOC);
             font-weight: 400;
             font-style: normal;
         }
-                /* ================== ENHANCE PROFILE IMAGE ONLY ================== */
+
+        /* ================== ENHANCE PROFILE IMAGE ONLY ================== */
         /* Target the profile image directly */
         #profileBtn {
             width: 45px;
             height: 45px;
             border-radius: 50%;
             object-fit: cover;
-            
+
             /* Add white shadow/glow effect */
-            box-shadow: 
-                0 0 0 3px white,           /* White border */
-                0 0 0 4px rgba(57, 125, 218, 0.3), /* Blue subtle border */
-                0 4px 15px rgba(57, 125, 218, 0.25); /* Outer shadow */
-            
+            box-shadow:
+                0 0 0 3px white,
+                /* White border */
+                0 0 0 4px rgba(57, 125, 218, 0.3),
+                /* Blue subtle border */
+                0 4px 15px rgba(57, 125, 218, 0.25);
+            /* Outer shadow */
+
             /* Add transition for smooth animation */
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            
+
             /* Make cursor show it's clickable */
             cursor: pointer;
-            
+
             /* Scale the image to 96% so white border is visible */
             transform: scale(0.96);
         }
 
         /* Hover effect */
         #profileBtn:hover {
-            transform: scale(1.03); /* Slight grow on hover */
-            box-shadow: 
-                0 0 0 4px white,           /* Thicker white border on hover */
-                0 0 0 6px rgba(57, 125, 218, 0.4), /* Blue border on hover */
-                0 6px 20px rgba(57, 125, 218, 0.35); /* Stronger shadow */
-            
+            transform: scale(1.03);
+            /* Slight grow on hover */
+            box-shadow:
+                0 0 0 4px white,
+                /* Thicker white border on hover */
+                0 0 0 6px rgba(57, 125, 218, 0.4),
+                /* Blue border on hover */
+                0 6px 20px rgba(57, 125, 218, 0.35);
+            /* Stronger shadow */
+
             /* Add a subtle pulsing animation */
             animation: pulse-glow 2s infinite;
         }
 
         #profileBtn:active {
             transform: scale(0.98);
-            box-shadow: 
+            box-shadow:
                 0 0 0 3px white,
                 0 0 0 5px rgba(57, 125, 218, 0.5),
                 0 2px 8px rgba(57, 125, 218, 0.3);
@@ -214,19 +222,21 @@ $diagnostic = $stmt->fetch(PDO::FETCH_ASSOC);
 
         @keyframes pulse-glow {
             0% {
-                box-shadow: 
+                box-shadow:
                     0 0 0 4px white,
                     0 0 0 6px rgba(57, 125, 218, 0.4),
                     0 6px 20px rgba(57, 125, 218, 0.35);
             }
+
             50% {
-                box-shadow: 
+                box-shadow:
                     0 0 0 4px white,
                     0 0 0 6px rgba(57, 125, 218, 0.6),
                     0 8px 25px rgba(57, 125, 218, 0.4);
             }
+
             100% {
-                box-shadow: 
+                box-shadow:
                     0 0 0 4px white,
                     0 0 0 6px rgba(57, 125, 218, 0.4),
                     0 6px 20px rgba(57, 125, 218, 0.35);
@@ -242,22 +252,28 @@ $diagnostic = $stmt->fetch(PDO::FETCH_ASSOC);
 
         /* Settings - Blue hover */
         a[href="settings.php"] .profile-item:hover {
-            background-color: #e8f0fe; /* Light blue background */
-            border-left: solid #0b62c9 3px; /* Blue border */
+            background-color: #e8f0fe;
+            /* Light blue background */
+            border-left: solid #0b62c9 3px;
+            /* Blue border */
         }
 
         a[href="settings.php"] .profile-item:hover i {
-            color: #0b62c9; /* Blue icon */
+            color: #0b62c9;
+            /* Blue icon */
         }
 
         /* Logout - Red hover */
         .profile-item[onclick*="logout"]:hover {
-            background-color: #fee; /* Light red background */
-            border-left: solid #d32f2f 3px; /* Red border */
+            background-color: #fee;
+            /* Light red background */
+            border-left: solid #d32f2f 3px;
+            /* Red border */
         }
 
         .profile-item[onclick*="logout"]:hover i {
-            color: #d32f2f; /* Red icon */
+            color: #d32f2f;
+            /* Red icon */
         }
 
         /* Smooth hover transitions */

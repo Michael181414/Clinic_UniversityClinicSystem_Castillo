@@ -56,7 +56,6 @@ body {
   flex: 1;
   height: 100%;
   display: flex;
-  justify-content: flex-start;
   align-items: left;
 
   background: linear-gradient(
@@ -69,7 +68,6 @@ body {
   padding: 5% 10%;
   color: #fff;
 }
-
 /* Logo and Text */
 #lspulogo {
   width: 75px;
@@ -102,7 +100,7 @@ body {
   justify-content: center;
   padding: 60px 50px;
   box-sizing: border-box;
-  max-height: 550px;
+  max-height: 100vh;
 }
 .register-right-section {
   display: flex;
@@ -336,8 +334,9 @@ a.register-link:hover {
   .register-container {
     display: flex;
     flex-direction: column;
-    min-height: 700px;
+    min-height: 100vh;
     padding: 5px;
+    max-height: 2000px;
   }
   .register-container {
     max-height: 2000px;

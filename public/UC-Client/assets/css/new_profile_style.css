@@ -537,7 +537,15 @@ select:focus,
   margin-top: 20px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  text-align: center;
   gap: 10px;
+}
+.modal-buttons button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 .btn-primary {
   background: #2767c0;
@@ -734,6 +742,9 @@ select:focus,
   }
 
   .modal-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
     gap: 8px;
   }
@@ -993,6 +1004,7 @@ body.modal-open {
   margin-top: 15px;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 10px;
 }
 
