@@ -48,7 +48,7 @@ function initializeTabs() {
     "Manage_Clients.php": "manageclientsBtn",
     "ClientProfile.php": "manageclientsBtn",
     "History_Page.php": "manageclientsBtn",
-    "Activity_logs.php": "activitylogsBtn",
+    "Activity_Logs.php": "activitylogsBtn",
     "Data_Management.php": "datamanagementBtn",
     "Calendar.html": "calendarBtn",
   };
