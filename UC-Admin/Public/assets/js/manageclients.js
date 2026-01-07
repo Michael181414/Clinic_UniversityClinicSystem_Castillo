@@ -516,3 +516,62 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.target === modal) closeModal();
   });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  let staffToDeleteId = null;
+
+  const confirmationModal = document.getElementById("confirmationModal");
+  const confirmationName = document.getElementById("confirmationName");
+  const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+
+  // Open confirmation modal
+  document.querySelectorAll(".row-delete-btn").forEach((btn) => {
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      staffToDeleteId = btn.dataset.id;
+      const row = btn.closest("tr");
+      const name = row.querySelector(".searchable-name").textContent;
+      confirmationName.textContent = name;
+      confirmationModal.style.display = "block";
+    });
+  });
+
+  // Confirm delete
+  confirmDeleteBtn.addEventListener("click", function () {
+    if (!staffToDeleteId) return;
+
+    fetch("manageclients.dbf/delete_staff.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "id=" + encodeURIComponent(staffToDeleteId),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          // Remove row from table
+          document.querySelectorAll(".client-row").forEach((r) => {
+            const idCell = r.querySelector(".searchable-id");
+            if (idCell && idCell.textContent.trim() == staffToDeleteId) {
+              r.remove();
+            }
+          });
+          alert(data.message);
+        } else {
+          alert("Delete failed: " + data.message);
+        }
+        staffToDeleteId = null;
+        closeConfirmationModal();
+      })
+      .catch((err) => {
+        alert("Delete failed: " + err);
+        staffToDeleteId = null;
+        closeConfirmationModal();
+      });
+  });
+
+  function closeConfirmationModal() {
+    confirmationModal.style.display = "none";
+  }
+
+  window.closeConfirmationModal = closeConfirmationModal;
+});

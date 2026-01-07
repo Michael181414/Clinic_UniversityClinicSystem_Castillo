@@ -140,6 +140,12 @@ $email = $current_user['email'] ?? '';
                     <span class="nav-text">Activity Logs</span>
                 </button>
             </a>
+            <a href="Manage_Staffs.php">
+                <button class="buttons" id="managestaffsBtn">
+                    <img src="assets/images/manageclients_icon.svg" class="button-icon-nav" loading="lazy">
+                    <span class="nav-text">Manage Staffs</span>
+                </button>
+            </a>
             <a href="Data_Management.php">
                 <button class="buttons" id="datamanagementBtn">
                     <img src="assets/images/data_manage_icon.svg" class="button-icon-nav" loading="lazy">
@@ -192,7 +198,7 @@ $email = $current_user['email'] ?? '';
                             </div>
                         </div>
 
-                        <button type="button" class="btn-add-patient" onclick="openAddPatientModal()">
+                        <button type="button" class="add-btn" onclick="openAddPatientModal()">
                             <i class="fas fa-user-plus"></i> Add Patient
                         </button>
                     </div>
@@ -911,4 +917,4 @@ $email = $current_user['email'] ?? '';
     </div>
 </div>
 
-</html
+</html>
