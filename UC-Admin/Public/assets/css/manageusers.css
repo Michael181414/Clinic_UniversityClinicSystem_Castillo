@@ -1399,3 +1399,208 @@ select {
     opacity: 1;
   }
 }
+#addStaffModal {
+  display: none; /* hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+#addStaffModal .modal-content {
+  background: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  width: 500px; /* adjust as needed */
+  border-radius: 8px;
+  position: relative;
+}
+/* ==============================
+   Staff Info Modal
+   ============================== */
+.staff-info-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.65);
+}
+
+.staff-info-content {
+  background-color: #fff;
+  margin: 8% auto;
+  padding: 25px 30px;
+  border-radius: 12px;
+  width: 420px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  animation: slideInTop 0.35s ease;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.staff-info-overlay .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s;
+}
+
+.staff-info-overlay .close-btn:hover {
+  color: #000;
+}
+
+.staff-info-overlay .modal-title {
+  font-size: 22px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #333;
+}
+
+.staff-info-overlay #staffDetails p {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #444;
+}
+
+@keyframes slideInTop {
+  from {
+    transform: translateY(-60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ==============================
+   Confirm Delete Modal
+   ============================== */
+.delete-confirm-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1055;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.65);
+}
+
+.delete-confirm-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 22px 28px;
+  border-radius: 10px;
+  width: 360px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.32);
+  animation: fadeInScale 0.3s ease;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.delete-confirm-overlay .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.2s;
+}
+
+.delete-confirm-overlay .close-btn:hover {
+  color: #f44336;
+}
+
+.delete-confirm-overlay .modal-title {
+  font-size: 20px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f44336;
+}
+
+.delete-confirm-overlay p {
+  font-size: 16px;
+  color: #333;
+}
+
+.delete-confirm-overlay .modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.delete-confirm-overlay .btn-cancel {
+  padding: 8px 16px;
+  background-color: #ccc;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.delete-confirm-overlay .btn-cancel:hover {
+  background-color: #b3b3b3;
+}
+
+.delete-confirm-overlay .btn-delete {
+  padding: 8px 16px;
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.delete-confirm-overlay .btn-delete:hover {
+  background-color: #d32f2f;
+}
+
+@keyframes fadeInScale {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+#toggleStaffPassword {
+  align-items: center;
+  margin-top: 18px;
+}
+.add-btn {
+  background-color: #22c55e;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  height: 49px;
+  width: 200px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}

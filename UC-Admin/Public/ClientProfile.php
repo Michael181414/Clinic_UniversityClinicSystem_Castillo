@@ -188,7 +188,7 @@ $gender = $personalinfo['Gender'] ?? '';
 $address = $personalinfo['CurrentAddress'] ?? '';
 $course = $personalinfo['Course'] ?? '';
 
-$fullName = trim($givenName . $surname);
+$fullName = trim($givenName . " " . $surname);
 
 $ClientName = $personalinfoClients['Firstname'] ?? '--,--,--';
 $ClientLastName = $personalinfoClients['Lastname'] ?? '--,--,--';
@@ -345,6 +345,12 @@ $email = $current_user['email'] ?? '';
                     <span class="nav-text">Activity Logs</span>
                 </button>
             </a>
+            <a href="Manage_Staffs.php">
+                <button class="buttons" id="managestaffsBtn">
+                    <img src="assets/images/manageclients_icon.svg" class="button-icon-nav" loading="lazy">
+                    <span class="nav-text">Manage Staffs</span>
+                </button>
+            </a>
             <a href="Data_Management.php">
                 <button class="buttons" id="datamanagementBtn">
                     <img src="assets/images/data_manage_icon.svg" class="button-icon-nav" loading="lazy">
@@ -408,7 +414,7 @@ $email = $current_user['email'] ?? '';
             <div id="nav-div-1" class="nav-div" style="display: block;">
                 <div class="tabs">
                     <div class="tabs-child">
-                        <?php if (!$showAnnualTabs && !$showLimitedTabs): ?>
+                        <?php if (!$showLimitedTabs): ?>
                             <div id="visitHistoryTab" class="tab" data-target="visit-history">
                                 <img class="cp-btn-img"
                                     src="assets/images/time-past 2.svg"
@@ -532,7 +538,7 @@ $email = $current_user['email'] ?? '';
                     }
                 </style>
 
-                <?php if (!$showAnnualTabs && !$showLimitedTabs): ?>
+                <?php if (!$showLimitedTabs): ?>
                     <div id="visit-history" class="history-table-container" style="display: none;">
                         <div class="filter-container" style="height: 80%;">
 
@@ -730,7 +736,7 @@ $email = $current_user['email'] ?? '';
                                     <div id="prescription-control" class="consultation-cert-controls">
                                         <div>
                                             <button type="button" class="buttonsdp" onclick="savePrescription()">Save</button>
-                                            <button class="buttonsdp2" type="submit" onclick="savePDFRX()">Download as PDF</button>
+                                            <button class="buttonsdp2" type="button" onclick="savePDFRX()">Download as PDF</button>
                                         </div>
                                     </div>
                                 </div>
@@ -749,7 +755,7 @@ $email = $current_user['email'] ?? '';
 
                                                     <div class="info-row">
                                                         <span class="info-label">Age:</span>
-                                                        <input type="text" id="age" contenteditable="true" value="<?= htmlspecialchars($ClientSex) ?: ''; ?>" />
+                                                        <input type="text" id="age" contenteditable="true" value="<?= htmlspecialchars($age) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
@@ -967,7 +973,7 @@ $email = $current_user['email'] ?? '';
                                                     <h3 style="margin-bottom: 15px;">Patient's Info</h3>
                                                     <div class="info-row">
                                                         <span class="info-label">Name:</span>
-                                                        <input type="text" id="name" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
+                                                        <input type="text" id="name" value="<?= htmlspecialchars($ClientName) ?: ''; ?>" />
                                                     </div>
 
                                                     <div class="info-row">
@@ -976,7 +982,7 @@ $email = $current_user['email'] ?? '';
                                                     </div>
                                                     <div class="info-row">
                                                         <span class="info-label">Sex:</span>
-                                                        <input type="text" id="gender" contenteditable="true" value=<?= htmlspecialchars($gender) ?: '';  ?>>
+                                                        <input type="text" id="gender" contenteditable="true" value=<?= htmlspecialchars($ClientSex) ?: '';  ?>>
                                                     </div>
                                                     <!-- Removed Address -->
 
@@ -1052,23 +1058,30 @@ $email = $current_user['email'] ?? '';
                                         return true; // allow form submit
                                     }
 
+
                                     function savePDFRX() {
-                                        document.getElementById('input_patient_name').value = document.getElementById('name').textContent.trim();
-                                        document.getElementById('input_patient_age').value = document.getElementById('age').textContent.trim();
-                                        document.getElementById('input_patient_sex').value = document.getElementById('sex').textContent.trim();
 
-                                        document.getElementById('input_date').value = document.getElementById('date2').textContent.trim();
+                                        // use .value because these are <input>, not <span>
+                                        document.getElementById('input_patient_name').value =
+                                            document.querySelector('#rx input#name').value.trim();
 
-                                        // Copy physician and LicNo input values into hidden fields
-                                        document.getElementById('input_physician').value = document.querySelector('input[name="physician"]').value.trim();
-                                        document.getElementById('input_LicNo').value = document.querySelector('input[name="LicNo"]').value.trim();
+                                        document.getElementById('input_patient_age').value =
+                                            document.querySelector('#rx input#age').value.trim();
 
-                                        const today = new Date();
-                                        document.getElementById('pdf-date').value = today.toLocaleDateString("en-US", {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        });
+                                        // correct id → gender, not sex
+                                        document.getElementById('input_patient_sex').value =
+                                            document.querySelector('#rx input#gender').value.trim();
+
+                                        document.getElementById('input_date').value =
+                                            document.getElementById('date2').textContent.trim();
+
+                                        document.getElementById('input_physician').value =
+                                            document.querySelector('#rx input[name="physician"]').value.trim();
+
+                                        document.getElementById('input_LicNo').value =
+                                            document.querySelector('#rx input[name="LicNo"]').value.trim();
+
+                                        // just submit the RX form
                                         document.getElementById('rx-pdfForm').submit();
                                     }
                                 </script>
@@ -2477,7 +2490,13 @@ $email = $current_user['email'] ?? '';
                                     <div style="text-align: center; font-weight: bold; margin: 20px 0;">MEDICAL CERTIFICATE</div>
 
                                     <div style="margin-bottom: 15px;">
-                                        This is to certify that <span class="underline cert-field" contenteditable="true" id="patient-name" style="display: inline-block; min-width: 200px; border-bottom: 1px solid black;"></span>,
+                                        This is to certify that <span
+                                            class="underline cert-field"
+                                            contenteditable="true"
+                                            id="patient-name"
+                                            style="display:inline-block; min-width:200px; border-bottom:1px solid black;">
+                                            <?= htmlspecialchars($fullName) ?: '' ?>
+                                        </span>,
                                         a <span class="underline cert-field" contenteditable="true" id="patient-age" style="display: inline-block; min-width: 30px; border-bottom: 1px solid black;"></span> year old F/M, has been seen and examined on
                                         <input type="date" class="cert-field" id="exam-date" style="border: none; border-bottom: 1px solid black; display: inline-block; width: 120px;"></span> at the Medical Clinic.
                                     </div>
