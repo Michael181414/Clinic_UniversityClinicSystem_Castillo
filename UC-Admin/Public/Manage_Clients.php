@@ -911,4 +911,4 @@ $email = $current_user['email'] ?? '';
     </div>
 </div>
 
-</html
+</html>
