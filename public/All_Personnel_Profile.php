@@ -107,8 +107,6 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
 
-            <!-- CONSULTATION RECORDS -->
-            <!-- HISTORY TABLE
             <div class="card">
                 <h3>Consultation History</h3>
                 <div class="table-container">
@@ -162,7 +160,7 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                     </table>
                 </div>
 
-            </div> -->
+            </div>
             <!-- LARGE MODAL -->
             <div id="detailsModal" class="modal">
                 <div class="modal-content">
@@ -1059,153 +1057,158 @@ $histories = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
             }
 
             /* ================== ENSURE PROFILE SHADOW EFFECTS ================== */
-.profile-container img#profileBtn {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
-    
-    /* White shadow/glow effect - IMPORTANT */
-    box-shadow: 
-        0 0 0 3px white,
-        0 0 0 4px rgba(57, 125, 218, 0.3),
-        0 4px 15px rgba(57, 125, 218, 0.25) !important;
-    
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    cursor: pointer !important;
-    transform: scale(0.96) !important;
-    position: relative;
-}
+            .profile-container img#profileBtn {
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                object-fit: cover;
 
-/* Hover effect - force override */
-.profile-container img#profileBtn:hover {
-    transform: scale(1.03) !important;
-    box-shadow: 
-        0 0 0 4px white,
-        0 0 0 6px rgba(57, 125, 218, 0.4),
-        0 6px 20px rgba(57, 125, 218, 0.35) !important;
-    animation: pulse-glow 2s infinite !important;
-}
+                /* White shadow/glow effect - IMPORTANT */
+                box-shadow:
+                    0 0 0 3px white,
+                    0 0 0 4px rgba(57, 125, 218, 0.3),
+                    0 4px 15px rgba(57, 125, 218, 0.25) !important;
 
-/* Active/click effect */
-.profile-container img#profileBtn:active {
-    transform: scale(0.98) !important;
-    box-shadow: 
-        0 0 0 3px white,
-        0 0 0 5px rgba(57, 125, 218, 0.5),
-        0 2px 8px rgba(57, 125, 218, 0.3) !important;
-    transition: all 0.1s ease !important;
-}
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                cursor: pointer !important;
+                transform: scale(0.96) !important;
+                position: relative;
+            }
 
-/* Ensure the pulse animation exists */
-@keyframes pulse-glow {
-    0% {
-        box-shadow: 
-            0 0 0 4px white,
-            0 0 0 6px rgba(57, 125, 218, 0.4),
-            0 6px 20px rgba(57, 125, 218, 0.35);
-    }
-    50% {
-        box-shadow: 
-            0 0 0 4px white,
-            0 0 0 6px rgba(57, 125, 218, 0.6),
-            0 8px 25px rgba(57, 125, 218, 0.4);
-    }
-    100% {
-        box-shadow: 
-            0 0 0 4px white,
-            0 0 0 6px rgba(57, 125, 218, 0.4),
-            0 6px 20px rgba(57, 125, 218, 0.35);
-    }
-}
+            /* Hover effect - force override */
+            .profile-container img#profileBtn:hover {
+                transform: scale(1.03) !important;
+                box-shadow:
+                    0 0 0 4px white,
+                    0 0 0 6px rgba(57, 125, 218, 0.4),
+                    0 6px 20px rgba(57, 125, 218, 0.35) !important;
+                animation: pulse-glow 2s infinite !important;
+            }
 
-/* Status indicator */
-.profile-container img#profileBtn::after {
-    content: '';
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 10px;
-    height: 10px;
-    background-color: #4CAF50;
-    border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
+            /* Active/click effect */
+            .profile-container img#profileBtn:active {
+                transform: scale(0.98) !important;
+                box-shadow:
+                    0 0 0 3px white,
+                    0 0 0 5px rgba(57, 125, 218, 0.5),
+                    0 2px 8px rgba(57, 125, 218, 0.3) !important;
+                transition: all 0.1s ease !important;
+            }
 
-.profile-container img#profileBtn:hover::after {
-    opacity: 1;
-}
+            /* Ensure the pulse animation exists */
+            @keyframes pulse-glow {
+                0% {
+                    box-shadow:
+                        0 0 0 4px white,
+                        0 0 0 6px rgba(57, 125, 218, 0.4),
+                        0 6px 20px rgba(57, 125, 218, 0.35);
+                }
+
+                50% {
+                    box-shadow:
+                        0 0 0 4px white,
+                        0 0 0 6px rgba(57, 125, 218, 0.6),
+                        0 8px 25px rgba(57, 125, 218, 0.4);
+                }
+
+                100% {
+                    box-shadow:
+                        0 0 0 4px white,
+                        0 0 0 6px rgba(57, 125, 218, 0.4),
+                        0 6px 20px rgba(57, 125, 218, 0.35);
+                }
+            }
+
+            /* Status indicator */
+            .profile-container img#profileBtn::after {
+                content: '';
+                position: absolute;
+                bottom: 2px;
+                right: 2px;
+                width: 10px;
+                height: 10px;
+                background-color: #4CAF50;
+                border-radius: 50%;
+                border: 2px solid white;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .profile-container img#profileBtn:hover::after {
+                opacity: 1;
+            }
 
             /* ================== FIX DROPDOWN HOVER COLORS ================== */
-/* Settings - BLUE hover (fixed-profile-item class) */
-a[href="settings.php"] .fixed-profile-item:hover {
-    background-color: #e8f0fe !important; /* Light blue background */
-    border-left: solid #0b62c9 3px !important; /* Blue border */
-    transform: translateX(4px) !important;
-    transition: all 0.2s ease !important;
-}
+            /* Settings - BLUE hover (fixed-profile-item class) */
+            a[href="settings.php"] .fixed-profile-item:hover {
+                background-color: #e8f0fe !important;
+                /* Light blue background */
+                border-left: solid #0b62c9 3px !important;
+                /* Blue border */
+                transform: translateX(4px) !important;
+                transition: all 0.2s ease !important;
+            }
 
-a[href="settings.php"] .fixed-profile-item:hover i {
-    color: #0b62c9 !important; /* Blue icon */
-}
+            a[href="settings.php"] .fixed-profile-item:hover i {
+                color: #0b62c9 !important;
+                /* Blue icon */
+            }
 
-/* ================== DROPDOWN HOVER EFFECTS ================== */
-/* Settings - BLUE background (SECOND fixed-profile-item) */
-.profile-dropdown a[href="settings.php"] .fixed-profile-item:hover {
-    background-color: #e6f0ff !important;
-    border-left: solid #0b62c9 3px !important;
-    transform: translateX(4px) !important;
-    padding-left: 18px !important;
-    transition: all 0.2s ease !important;
-}
+            /* ================== DROPDOWN HOVER EFFECTS ================== */
+            /* Settings - BLUE background (SECOND fixed-profile-item) */
+            .profile-dropdown a[href="settings.php"] .fixed-profile-item:hover {
+                background-color: #e6f0ff !important;
+                border-left: solid #0b62c9 3px !important;
+                transform: translateX(4px) !important;
+                padding-left: 18px !important;
+                transition: all 0.2s ease !important;
+            }
 
-.profile-dropdown a[href="settings.php"] .fixed-profile-item:hover i {
-    color: #0b62c9 !important;
-}
+            .profile-dropdown a[href="settings.php"] .fixed-profile-item:hover i {
+                color: #0b62c9 !important;
+            }
 
-/* Logout - RED background */
-.profile-dropdown .profile-item[onclick*="logout"]:hover {
-    background-color: #ffebee !important;
-    border-left: solid #d32f2f 3px !important;
-    transform: translateX(4px) !important;
-    padding-left: 18px !important;
-    transition: all 0.2s ease !important;
-}
+            /* Logout - RED background */
+            .profile-dropdown .profile-item[onclick*="logout"]:hover {
+                background-color: #ffebee !important;
+                border-left: solid #d32f2f 3px !important;
+                transform: translateX(4px) !important;
+                padding-left: 18px !important;
+                transition: all 0.2s ease !important;
+            }
 
-.profile-dropdown .profile-item[onclick*="logout"]:hover i {
-    color: #d32f2f !important;
-}
+            .profile-dropdown .profile-item[onclick*="logout"]:hover i {
+                color: #d32f2f !important;
+            }
 
-/* Alternative logout selector */
-.profile-dropdown .profile-item:last-child:hover {
-    background-color: #ffebee !important;
-    border-left: solid #d32f2f 3px !important;
-    transform: translateX(4px) !important;
-    padding-left: 18px !important;
-    transition: all 0.2s ease !important;
-}
+            /* Alternative logout selector */
+            .profile-dropdown .profile-item:last-child:hover {
+                background-color: #ffebee !important;
+                border-left: solid #d32f2f 3px !important;
+                transform: translateX(4px) !important;
+                padding-left: 18px !important;
+                transition: all 0.2s ease !important;
+            }
 
-.profile-dropdown .profile-item:last-child:hover i {
-    color: #d32f2f !important;
-}
+            .profile-dropdown .profile-item:last-child:hover i {
+                color: #d32f2f !important;
+            }
 
-/* Email - NO hover effect (FIRST fixed-profile-item) */
-.profile-dropdown .fixed-profile-item:first-child:hover {
-    background-color: transparent !important;
-    border-left: none !important;
-    transform: none !important;
-    padding-left: 15px !important;
-    cursor: default !important;
-}
+            /* Email - NO hover effect (FIRST fixed-profile-item) */
+            .profile-dropdown .fixed-profile-item:first-child:hover {
+                background-color: transparent !important;
+                border-left: none !important;
+                transform: none !important;
+                padding-left: 15px !important;
+                cursor: default !important;
+            }
 
-/* General hover transition for dropdown items */
-.profile-dropdown .profile-item,
-.profile-dropdown .fixed-profile-item {
-    transition: all 0.2s ease !important;
-}
+            /* General hover transition for dropdown items */
+            .profile-dropdown .profile-item,
+            .profile-dropdown .fixed-profile-item {
+                transition: all 0.2s ease !important;
+            }
         </style>
         <script src="UC-Client/assets/js/new_profile_function.js" defer></script>
 </body>

@@ -470,6 +470,11 @@ $fullName = trim($givenName . $surname);
                                     </div>
 
                                     <div class="right-info-div">
+                                        <div class="cert-controls" style="margin-top: 20px;">
+                                            <button class="buttonsdp2" type="button" onclick="submitPdfForm()">Download as PDF</button>
+                                        </div>
+
+
                                         <div id="saveStatus" class="status-smg"></div>
 
                                         <div class="SOAP-div" style="align-items: left;">
@@ -484,7 +489,6 @@ $fullName = trim($givenName . $surname);
 
                                             <h3 style="padding: 15px;">Plan</h3>
                                             <textarea style="font-family: Roboto, sans-serif" id="plan" name="plan" rows="1" cols="50" placeholder="Enter notes or paragraph here..." oninput="autoGrow(this)"><?= htmlspecialchars($consultationrecords['Plan'] ?? '') ?></textarea>
-
                                         </div>
                                     </div>
 
@@ -522,14 +526,16 @@ $fullName = trim($givenName . $surname);
                         </div>
                         <script>
                             function submitPdfForm() {
-                                document.getElementById('pdf-name').value = document.getElementById('name').textContent;
-                                document.getElementById('pdf-age').value = document.getElementById('age').textContent;
-                                document.getElementById('pdf-address').value = document.getElementById('address').textContent;
-                                document.getElementById('pdf-course').value = document.getElementById('course').textContent;
+                                document.getElementById('pdf-name').value = document.getElementById('name').value;
+                                document.getElementById('pdf-age').value = document.getElementById('age').value;
+                                document.getElementById('pdf-address').value = document.getElementById('address').value;
+                                document.getElementById('pdf-course').value = document.getElementById('course').value;
+
                                 document.getElementById('pdf-bp').value = document.getElementById('bp_input').value;
                                 document.getElementById('pdf-hr_pr').value = document.getElementById('hr_pr').value;
                                 document.getElementById('pdf-temp').value = document.getElementById('temp_input').value;
                                 document.getElementById('pdf-o2sat').value = document.getElementById('o2sat').value;
+
                                 document.getElementById('pdf-subjective').value = document.getElementById('subjective').value;
                                 document.getElementById('pdf-objective').value = document.getElementById('objective').value;
                                 document.getElementById('pdf-assessment').value = document.getElementById('assessment').value;
@@ -541,6 +547,7 @@ $fullName = trim($givenName . $surname);
                                     month: 'long',
                                     day: 'numeric'
                                 });
+
                                 document.getElementById('pdfForm').submit();
                             }
                         </script>
@@ -563,12 +570,12 @@ $fullName = trim($givenName . $surname);
 
                                         <div class="info-row">
                                             <span class="info-label">Name:</span>
-                                            <input type="text" id="name" contenteditable="true" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
+                                            <input type="text" id="pname" name="patient_name" contenteditable="true" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
                                         </div>
 
                                         <div class="info-row">
                                             <span class="info-label">Age:</span>
-                                            <input type="text" id="age" contenteditable="true" value=<?= htmlspecialchars($age) ?>>
+                                            <input type="text" id="page" name="patient_age" contenteditable="true" value=<?= htmlspecialchars($age) ?>>
                                         </div>
                                         <div class="info-row">
                                             <span class="info-label">Sex:</span>
@@ -612,8 +619,8 @@ $fullName = trim($givenName . $surname);
                                 </div>
 
                                 <!-- Hidden inputs to send data -->
-                                <input type="hidden" name="patient_name" id="input_patient_name" value="<?= htmlspecialchars($prescriptions['patient_name'] ?? '') ?>" />
-                                <input type="hidden" name="patient_age" id="input_patient_age" value="<?= htmlspecialchars($prescriptions['age'] ?? '') ?>" />
+                                <input type="hidden" name="patient_name" id="input_patient_name" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
+                                <input type="hidden" name="patient_age" id="input_patient_age" value="<?= htmlspecialchars($age) ?: ''; ?>" />
                                 <input type="hidden" name="patient_sex" value="<?= htmlspecialchars($gender) ?>">
                                 <input type="hidden" name="date" id="input_date" value="<?= htmlspecialchars($prescriptions['date_created'] ?? '') ?>" />
 
@@ -622,6 +629,18 @@ $fullName = trim($givenName . $surname);
                                 <input type="hidden" name="input_LicNo" id="input_LicNo" value="<?= htmlspecialchars($prescriptions['license_no'] ?? '') ?>" />
 
                             </form>
+                            <script>
+                                function preparePdfData() {
+                                    document.getElementById('input_patient_name').value = document.getElementById('pname').value;
+                                    document.getElementById('input_patient_age').value = document.getElementById('page').value;
+
+                                    document.getElementById('input_patient_sex').value = document.getElementById('gender').value;
+                                    document.getElementById('input_date').value = document.getElementById('date2').textContent;
+                                    document.getElementById('input_physician').value = document.querySelector('input[name="physician"]').value;
+                                    document.getElementById('input_LicNo').value = document.querySelector('input[name="LicNo"]').value;
+                                    return true;
+                                }
+                            </script>
 
                         </div>
                     </div>
