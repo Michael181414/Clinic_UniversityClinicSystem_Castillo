@@ -1,8 +1,8 @@
 <?php
 require_once '../../../public/vendor/autoload.php';
 
-$patientName = $_POST['patient_name'] ?? '';
-$patientAge = $_POST['patient_age'] ?? '';
+$patientName = $_POST['p-patient_name'] ?? '';
+$patientAge = $_POST['p-patient_age'] ?? '';
 $patientSex = $_POST['patient_sex'] ?? '';
 $patientImpression = $_POST['p-impression'] ?? '';
 $physician = $_POST['physician'] ?? '';
@@ -34,10 +34,9 @@ try {
     }
 
     // PATIENT INFO SECTION
-    $pdf->SetFont('helvetica', '', 8);
-    $pdf->Cell(1, 5, 'Name:', 0, 0);
+    $pdf->Cell(14, 5, 'Name:', 0, 0);
     $pdf->SetFont('helvetica', 'B', 8);
-    $pdf->Cell(25, 5, $patientName, 0, 0, 'R');
+    $pdf->MultiCell(50, 5, $patientName, 0, 'L', false, 0);
     $pdf->SetFont('helvetica', '', 8);
     $pdf->SetX(60);
     $pdf->Cell(15, 5, 'Age/Sex:', 0, 0);

@@ -943,7 +943,7 @@ $consultationPersonInfo = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
                                 <div id="rx" class="tab-content" style="display: none;">
                                     <div class="medrec-subparent-div">
-                                        <form method="POST" id="rx-pdfForm" action="manageclients.dbf/generate_rx_pdf.php" class="medrec-subparent-div" onsubmit="return preparePdfData()" target="_blank">
+                                        <form method="POST" id="rx-pdfForm" action="manageclients.dbf/generate_rx_pdf.php" class="medrec-subparent-div" onsubmit="return preparedPdfData()" target="_blank">
 
                                             <input type="hidden" name="client_id" id="client-id" value="<?= htmlspecialchars($clientid['ClientID']) ?>">
 
@@ -952,12 +952,12 @@ $consultationPersonInfo = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
                                                     <h3 style="margin-bottom: 15px;">Patient's Info</h3>
                                                     <div class="info-row">
                                                         <span class="info-label">Name:</span>
-                                                        <input type="text" id="name" value="<?= htmlspecialchars($consultationPersonInfo['Name'] ?? '') ?>">
+                                                        <input type="text" id="Pname" value="<?= htmlspecialchars($consultationPersonInfo['Name'] ?? '') ?>">
                                                     </div>
 
                                                     <div class="info-row">
                                                         <span class="info-label">Age:</span>
-                                                        <input type="text" id="age" value="<?= htmlspecialchars($consultationPersonInfo['Age'] ?? '') ?>">
+                                                        <input type="text" id="Page" value="<?= htmlspecialchars($consultationPersonInfo['Age'] ?? '') ?>">
                                                     </div>
                                                     <div class="info-row">
                                                         <span class="info-label">Sex:</span>
@@ -998,8 +998,8 @@ $consultationPersonInfo = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
                                                 </div>
                                             </div>
 
-                                            <input type="hidden" name="patient_name" id="input_patient_name" />
-                                            <input type="hidden" name="patient_age" id="input_patient_age" />
+                                            <input type="hidden" name="prescription_patient_name" id="input_patient_name" />
+                                            <input type="hidden" name="prescription_patient_age" id="input_patient_age" />
                                             <input type="hidden" name="patient_sex" value="<?= htmlspecialchars($gender) ?>">
                                             <input type="hidden" name="date" id="input_date" />
                                             <input type="hidden" name="input_physician" id="input_physician" />
@@ -1023,15 +1023,12 @@ $consultationPersonInfo = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
                                         dateSpan.textContent = formattedDate;
                                     });
 
-                                    function preparePdfData() {
-                                        console.log("Sex value:", document.getElementById('sex').textContent.trim());
-                                        document.getElementById('input_patient_name').value = document.getElementById('name').textContent.trim();
-                                        document.getElementById('input_patient_age').value = document.getElementById('age').textContent.trim();
-                                        document.getElementById('input_patient_sex').value = document.getElementById('sex').textContent.trim();
+                                    function preparedPdfData() {
+                                        document.getElementById('input_patient_name').value = document.getElementById('Pname').value.trim();
+                                        document.getElementById('input_patient_age').value = document.getElementById('Page').value.trim();
+                                        document.getElementById('input_patient_sex').value = document.getElementById('sex').value.trim();
 
                                         document.getElementById('input_date').value = document.getElementById('date2').textContent.trim();
-
-                                        // Copy physician and LicNo input values into hidden fields
                                         document.getElementById('input_physician').value = document.querySelector('input[name="physician"]').value.trim();
                                         document.getElementById('input_LicNo').value = document.querySelector('input[name="LicNo"]').value.trim();
 
@@ -1043,7 +1040,7 @@ $consultationPersonInfo = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
                                         // use .value because these are <input>, not <span>
                                         document.getElementById('input_patient_name').value =
-                                            document.querySelector('#rx input#name').value.trim();
+                                            document.querySelector('#rx input#Pname').value.trim();
 
                                         document.getElementById('input_patient_age').value =
                                             document.querySelector('#rx input#age').value.trim();

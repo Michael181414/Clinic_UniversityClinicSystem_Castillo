@@ -581,24 +581,26 @@ $gender = $stmt->fetchColumn() ?: 'Unknown';
 
 
                         <div id="rx" class="medrec_container" style="display: none;">
-                            <form method="POST" action="manageclients.dbf/generate_rx_pdf.php" class="medrec-subparent-div" onsubmit="return preparePdfData()" target="_blank">
+                            <form method="POST" action="manageclients.dbf/generate_rx_pdf.php" class="medrec-subparent-div" onsubmit="return preparedPdfData(event)" target="_blank">
                                 <div class="left-info-div" style="overflow: auto">
                                     <div class="phyexam-div">
                                         <h3 style="padding: 15px;">Patient's Info</h3>
 
                                         <div class="info-row">
                                             <span class="info-label">Name:</span>
-                                            <input type="text" id="pname" name="patient_name" contenteditable="true" value="<?= htmlspecialchars($consultationPersonInfo['Name'] ?? ''); ?>" />
+                                            <input type="text" id="pname" value="<?= htmlspecialchars($consultationPersonInfo['Name'] ?? ''); ?>" />
                                         </div>
 
                                         <div class="info-row">
                                             <span class="info-label">Age:</span>
-                                            <input type="text" id="page" name="patient_age" contenteditable="true" value=<?= htmlspecialchars($consultationPersonInfo['Age'] ?? '') ?>>
+                                            <input type="text" id="page" value="<?= htmlspecialchars($consultationPersonInfo['Age'] ?? '') ?>">
                                         </div>
+
                                         <div class="info-row">
                                             <span class="info-label">Sex:</span>
-                                            <input type="text" id="gender" contenteditable="true" value=<?= $gender ?>>
+                                            <input type="text" id="gender" value="<?= htmlspecialchars($gender) ?>">
                                         </div>
+
                                         <div class="info-row">
                                             <span class="info-label">Impression</span>
                                             <input type="text" name="p-impression" id="impression" value="<?= htmlspecialchars($prescriptions['impression'] ?? '') ?>" />
@@ -624,43 +626,40 @@ $gender = $stmt->fetchColumn() ?: 'Unknown';
 
                                 <div class="right-info-div">
                                     <div class="cert-controls" style="margin-top: 20px;">
-                                        <div class="cert-controls" style="margin-top: 0px;">
-                                            <button class="buttonsdp2" type="submit">Download as PDF</button>
-                                        </div>
+                                        <button class="buttonsdp2" type="submit">Download as PDF</button>
                                     </div>
-                                    <p id="save-message" style="color: green; display: none; font-weight: normal;"></p>
 
                                     <div class="SOAP-div" style="align-items: left;">
                                         <h3 style="font-family: 'DejaVu Sans'; font-size: 28pt;">℞</h3>
-                                        <textarea id="notes" name="notes" rows="20" cols="50" placeholder="Enter notes or paragraph here..."><?= htmlspecialchars($prescriptions['notes'] ?? '') ?></textarea>
+                                        <textarea id="notes" name="notes" rows="20" cols="50" placeholder="Enter notes"><?= htmlspecialchars($prescriptions['notes'] ?? '') ?></textarea>
                                     </div>
                                 </div>
 
-                                <!-- Hidden inputs to send data -->
-                                <input type="hidden" name="patient_name" id="input_patient_name" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
-                                <input type="hidden" name="patient_age" id="input_patient_age" value="<?= htmlspecialchars($age) ?: ''; ?>" />
-                                <input type="hidden" name="patient_sex" value="<?= htmlspecialchars($gender) ?>">
-                                <input type="hidden" name="date" id="input_date" value="<?= htmlspecialchars($prescriptions['date_created'] ?? '') ?>" />
-
-                                <!-- Hidden inputs for physician and LicNo -->
-                                <input type="hidden" name="input_physician" id="input_physician" value="<?= htmlspecialchars($prescriptions['physician'] ?? '') ?>" />
-                                <input type="hidden" name="input_LicNo" id="input_LicNo" value="<?= htmlspecialchars($prescriptions['license_no'] ?? '') ?>" />
-
+                                <!-- Hidden inputs -->
+                                <input type="hidden" name="p-patient_name" id="input_patient_name">
+                                <input type="hidden" name="p-patient_age" id="input_patient_age">
+                                <input type="hidden" name="patient_sex" id="input_patient_sex">
+                                <input type="hidden" name="input_date" id="input_date" value="<?= htmlspecialchars($prescriptions['date_created'] ?? '') ?>">
+                                <input type="hidden" name="input_physician" id="input_physician" value="<?= htmlspecialchars($prescriptions['physician'] ?? '') ?>">
+                                <input type="hidden" name="input_LicNo" id="input_LicNo" value="<?= htmlspecialchars($prescriptions['license_no'] ?? '') ?>">
                             </form>
-                            <script>
-                                function preparePdfData() {
-                                    document.getElementById('input_patient_name').value = document.getElementById('pname').value;
-                                    document.getElementById('input_patient_age').value = document.getElementById('page').value;
 
-                                    document.getElementById('input_patient_sex').value = document.getElementById('gender').value;
-                                    document.getElementById('input_date').value = document.getElementById('date2').textContent;
-                                    document.getElementById('input_physician').value = document.querySelector('input[name="physician"]').value;
-                                    document.getElementById('input_LicNo').value = document.querySelector('input[name="LicNo"]').value;
+                            <script>
+                                function preparedPdfData(event) {
+                                    // Copy visible inputs into hidden inputs
+                                    document.getElementById('input_patient_name').value = document.getElementById('pname').value.trim();
+                                    document.getElementById('input_patient_age').value = document.getElementById('page').value.trim();
+                                    document.getElementById('input_patient_sex').value = document.getElementById('gender').value.trim();
+                                    document.getElementById('input_date').value = document.getElementById('date2').textContent.trim();
+                                    document.getElementById('input_physician').value = document.querySelector('input[name="physician"]').value.trim();
+                                    document.getElementById('input_LicNo').value = document.querySelector('input[name="LicNo"]').value.trim();
+
+                                    // Let the form submit normally after values are set
                                     return true;
                                 }
                             </script>
-
                         </div>
+
                     </div>
                 </div>
             </div>
