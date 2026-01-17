@@ -246,8 +246,26 @@ $address = $personalinfo['CurrentAddress'] ?? '';
 $course = $personalinfo['Course'] ?? '';
 
 $fullName = trim($givenName . $surname);
+//================================================================================================
+$stmt = $pdo->prepare("SELECT * FROM consultationrecords WHERE ClientID = ?");
+$stmt->execute([$clientID]);
+$consultationPersonInfo = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
+$stmt = $pdo->prepare("
+    SELECT sex 
+    FROM prescriptions 
+    WHERE ClientID = ? 
+    ORDER BY id DESC 
+    LIMIT 1
+");
+$stmt->execute([(int)$clientID]);
+
+$gender = $stmt->fetchColumn() ?: 'Unknown';
 
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -412,22 +430,22 @@ $fullName = trim($givenName . $surname);
                                             <h3 style="margin-bottom: 15px;">Patient's Info</h3>
                                             <div class=" info-row">
                                                 <span class="info-label">Name:</span>
-                                                <input type="text" id="name" contenteditable="true" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
+                                                <input type="text" id="name" contenteditable="true" value="<?= htmlspecialchars($consultationPersonInfo['Name']) ?: ''; ?>" />
                                             </div>
 
                                             <div class="info-row">
                                                 <span class="info-label">Age:</span>
-                                                <input type="text" id="age" contenteditable="true" value="<?= htmlspecialchars($age) ?: ''; ?>" />
+                                                <input type="text" id="age" contenteditable="true" value="<?= htmlspecialchars($consultationPersonInfo['Age']) ?: ''; ?>" />
                                             </div>
 
                                             <div class="info-row">
                                                 <span class="info-label">Address:</span>
-                                                <input type="text" id="address" contenteditable="true" value="<?= htmlspecialchars($address) ?: ''; ?>" />
+                                                <input type="text" id="address" contenteditable="true" value="<?= htmlspecialchars($consultationPersonInfo['Address']) ?: ''; ?>" />
                                             </div>
 
                                             <div class="info-row">
                                                 <span class="info-label">Course:</span>
-                                                <input type="text" id="course" contenteditable="true" value="<?= htmlspecialchars($course) ?: ''; ?>" />
+                                                <input type="text" id="course" contenteditable="true" value="<?= htmlspecialchars($consultationPersonInfo['Course']) ?: ''; ?>" />
                                             </div>
 
                                             <div class="info-row">
@@ -570,16 +588,16 @@ $fullName = trim($givenName . $surname);
 
                                         <div class="info-row">
                                             <span class="info-label">Name:</span>
-                                            <input type="text" id="pname" name="patient_name" contenteditable="true" value="<?= htmlspecialchars($fullName) ?: ''; ?>" />
+                                            <input type="text" id="pname" name="patient_name" contenteditable="true" value="<?= htmlspecialchars($consultationPersonInfo['Name'] ?? ''); ?>" />
                                         </div>
 
                                         <div class="info-row">
                                             <span class="info-label">Age:</span>
-                                            <input type="text" id="page" name="patient_age" contenteditable="true" value=<?= htmlspecialchars($age) ?>>
+                                            <input type="text" id="page" name="patient_age" contenteditable="true" value=<?= htmlspecialchars($consultationPersonInfo['Age'] ?? '') ?>>
                                         </div>
                                         <div class="info-row">
                                             <span class="info-label">Sex:</span>
-                                            <input type="text" id="gender" contenteditable="true" value=<?= htmlspecialchars($gender) ?>>
+                                            <input type="text" id="gender" contenteditable="true" value=<?= $gender ?>>
                                         </div>
                                         <div class="info-row">
                                             <span class="info-label">Impression</span>

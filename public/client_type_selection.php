@@ -61,6 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_type_modal'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Client Type</title>
     <link rel="stylesheet" href="webicons/fontawesome-free-6.7.2-web/css/all.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" />
+
     <link rel="stylesheet" href="UC-Client/assets/css/user_selection.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -155,8 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_type_modal'])) {
 
         const coursesByDepartment = {
             "College of Computer Studies": ["Bachelor of Science in Information Technology", "Bachelor of Science in Computer Science"],
-            "College of Food Nutrition and Dietetics": ["Bachelor of Science in Food Nutrition", "Bachelor of Science in Dietetics"],
-            "College of Industrial Technology": ["Bachelor of Industrial Technology major in Electrical Technology", "Bachelor of Industrial Technology major in Automotive Technology", "Bachelor of Industrial Technology major in Food Processing Technology"],
+            "College of Food Nutrition and Dietetics": ["Bachelor of Science in Food Technology", "Bachelor of Science in Nutrition and Dietetics"],
             "College of Teacher Education": ["Bachelor of Secondary Education", "Bachelor of Elementary Education"],
             "College of Agriculture": ["Bachelor of Science in Agriculture", "Bachelor of Science in Agricultural Technology"],
             "College of Arts and Sciences": ["Bachelor of Arts in English", "Bachelor of Science in Mathematics"],

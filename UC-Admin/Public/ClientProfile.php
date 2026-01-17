@@ -211,6 +211,10 @@ $current_user = $stmt->fetch(PDO::FETCH_ASSOC); // false if no row found
 $role = $current_user['user_type'] ?? 'Admin';
 $name = $current_user['username'] ?? '';
 $email = $current_user['email'] ?? '';
+//================================================================================================
+$stmt = $pdo->prepare("SELECT * FROM consultationrecords WHERE ClientID = ?");
+$stmt->execute([$clientID]);
+$consultationPersonInfo = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 ?>
 
 
@@ -736,7 +740,7 @@ $email = $current_user['email'] ?? '';
                                     <div id="prescription-control" class="consultation-cert-controls">
                                         <div>
                                             <button type="button" class="buttonsdp" onclick="savePrescription()">Save</button>
-                                            <button class="buttonsdp2" type="button" onclick="savePDFRX()">Download as PDF</button>
+                                            <!--   <button class="buttonsdp2" type="button" onclick="savePDFRX()">Download as PDF</button>-->
                                         </div>
                                     </div>
                                 </div>
@@ -748,26 +752,23 @@ $email = $current_user['email'] ?? '';
                                             <div class="left-info-div">
                                                 <div class="phyexam-div">
                                                     <h3 style="margin-bottom: 15px;">Patient's Info</h3>
-                                                    <div class=" info-row">
-                                                        <span class="info-label">Name:</span>
-                                                        <input type="text" id="name" contenteditable="true" value="<?= htmlspecialchars($ClientName) ?: ''; ?>" />
-                                                    </div>
 
+                                                    <div class="info-row">
+                                                        <span class="info-label">Name:</span>
+                                                        <input type="text" id="name" value="<?= htmlspecialchars($consultationPersonInfo['Name'] ?? '') ?>">
+                                                    </div>
                                                     <div class="info-row">
                                                         <span class="info-label">Age:</span>
-                                                        <input type="text" id="age" contenteditable="true" value="<?= htmlspecialchars($age) ?: ''; ?>" />
+                                                        <input type="text" id="age" value="<?= htmlspecialchars($consultationPersonInfo['Age'] ?? '') ?>">
                                                     </div>
-
                                                     <div class="info-row">
                                                         <span class="info-label">Address:</span>
-                                                        <input type="text" id="address" contenteditable="true" value="<?= htmlspecialchars($address) ?: ''; ?>" />
+                                                        <input type="text" id="address" value="<?= htmlspecialchars($consultationPersonInfo['Address'] ?? '') ?>">
                                                     </div>
-
                                                     <div class="info-row">
                                                         <span class="info-label">Course:</span>
-                                                        <input type="text" id="course" contenteditable="true" value="<?= htmlspecialchars($course) ?: ''; ?>" />
+                                                        <input type="text" id="course" value="<?= htmlspecialchars($consultationPersonInfo['Course'] ?? '') ?>">
                                                     </div>
-
                                                     <div class="info-row">
                                                         <span class="info-label">Date:</span>
                                                         <span id="date"></span>
@@ -858,12 +859,12 @@ $email = $current_user['email'] ?? '';
 
                                 <script>
                                     function autoGrow(element) {
-                                        element.style.height = "5px"; // reset height
-                                        element.style.height = (element.scrollHeight) + "px"; // set new height
+                                        element.style.height = "5px";
+                                        element.style.height = (element.scrollHeight) + "px";
                                     }
-                                </script>
-                                <script>
+
                                     function saveConsultation() {
+                                        // Required fields
                                         const requiredFields = [{
                                                 id: 'bp_input',
                                                 label: 'BP'
@@ -886,15 +887,17 @@ $email = $current_user['email'] ?? '';
                                             const value = document.getElementById(field.id).value.trim();
                                             if (!value) {
                                                 alert(`Please enter ${field.label}.`);
-                                                return; // stop submission
+                                                return;
                                             }
                                         }
+
+                                        // Collect form data
                                         const formData = {
                                             client_id: document.getElementById('client-id').value,
-                                            name: document.getElementById('name').textContent,
-                                            age: document.getElementById('age').textContent,
-                                            address: document.getElementById('address').textContent,
-                                            course: document.getElementById('course').textContent,
+                                            name: document.getElementById('name').value,
+                                            age: document.getElementById('age').value,
+                                            address: document.getElementById('address').value,
+                                            course: document.getElementById('course').value,
                                             bp: document.getElementById('bp_input').value,
                                             hr_pr: document.getElementById('hr_pr').value,
                                             temp: document.getElementById('temp_input').value,
@@ -904,6 +907,8 @@ $email = $current_user['email'] ?? '';
                                             assessment: document.getElementById('assessment').value,
                                             plan: document.getElementById('plan').value
                                         };
+
+                                        console.log('Sending data:', formData); // Debug
 
                                         const statusDiv = document.getElementById('saveStatus');
                                         statusDiv.innerHTML = '<p class="loading">Saving data, please wait...</p>';
@@ -915,50 +920,24 @@ $email = $current_user['email'] ?? '';
                                                 },
                                                 body: new URLSearchParams(formData)
                                             })
-                                            .then(response => {
-                                                if (!response.ok) {
-                                                    throw new Error('Network response was not ok');
-                                                }
-                                                return response.text();
-                                            })
+                                            .then(response => response.json())
                                             .then(data => {
-
-                                                statusDiv.innerHTML = '<p class="success">Data saved successfully!</p>';
+                                                if (data.status === 'success') {
+                                                    statusDiv.innerHTML = '<p class="success">Data saved successfully!</p>';
+                                                } else {
+                                                    statusDiv.innerHTML = `<p style="color:red;">Error: ${data.message}</p>`;
+                                                }
 
                                                 setTimeout(() => {
                                                     statusDiv.innerHTML = '';
                                                 }, 3000);
                                             })
                                             .catch(error => {
-                                                statusDiv.innerHTML = `<p style="color: red;">Error saving data: ${error.message}</p>`;
-
+                                                statusDiv.innerHTML = `<p style="color:red;">Error saving data: ${error.message}</p>`;
                                                 setTimeout(() => {
                                                     statusDiv.innerHTML = '';
                                                 }, 5000);
                                             });
-                                    }
-
-                                    function submitPdfForm() {
-                                        document.getElementById('pdf-name').value = document.getElementById('name').value;
-                                        document.getElementById('pdf-age').value = document.getElementById('age').value;
-                                        document.getElementById('pdf-address').value = document.getElementById('address').value;
-                                        document.getElementById('pdf-course').value = document.getElementById('course').value;
-                                        document.getElementById('pdf-bp').value = document.getElementById('bp_input').value;
-                                        document.getElementById('pdf-hr_pr').value = document.getElementById('hr_pr').value;
-                                        document.getElementById('pdf-temp').value = document.getElementById('temp_input').value;
-                                        document.getElementById('pdf-o2sat').value = document.getElementById('o2sat').value;
-                                        document.getElementById('pdf-subjective').value = document.getElementById('subjective').value;
-                                        document.getElementById('pdf-objective').value = document.getElementById('objective').value;
-                                        document.getElementById('pdf-assessment').value = document.getElementById('assessment').value;
-                                        document.getElementById('pdf-plan').value = document.getElementById('plan').value;
-
-                                        const today = new Date();
-                                        document.getElementById('pdf-date').value = today.toLocaleDateString("en-US", {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        });
-                                        document.getElementById('pdfForm').submit();
                                     }
                                 </script>
 
@@ -973,17 +952,18 @@ $email = $current_user['email'] ?? '';
                                                     <h3 style="margin-bottom: 15px;">Patient's Info</h3>
                                                     <div class="info-row">
                                                         <span class="info-label">Name:</span>
-                                                        <input type="text" id="name" value="<?= htmlspecialchars($ClientName) ?: ''; ?>" />
+                                                        <input type="text" id="name" value="<?= htmlspecialchars($consultationPersonInfo['Name'] ?? '') ?>">
                                                     </div>
 
                                                     <div class="info-row">
                                                         <span class="info-label">Age:</span>
-                                                        <input type="text" id="age" contenteditable="true" value=<?= htmlspecialchars($age) ?: ''; ?>>
+                                                        <input type="text" id="age" value="<?= htmlspecialchars($consultationPersonInfo['Age'] ?? '') ?>">
                                                     </div>
                                                     <div class="info-row">
                                                         <span class="info-label">Sex:</span>
-                                                        <input type="text" id="gender" contenteditable="true" value=<?= htmlspecialchars($ClientSex) ?: '';  ?>>
+                                                        <input type="text" id="sex" value="<?= htmlspecialchars($ClientSex ?? '') ?>">
                                                     </div>
+
                                                     <!-- Removed Address -->
 
                                                     <div class="info-row">
@@ -1087,47 +1067,30 @@ $email = $current_user['email'] ?? '';
                                 </script>
                                 <script>
                                     function savePrescription() {
-                                        const patientName = document.getElementById('name').value;
-                                        const age = document.getElementById('age').value;
+
+                                        const patientName = document.getElementById('name').value.trim();
+                                        const age = document.getElementById('age').value.trim();
+                                        const sex = document.getElementById('sex').value.trim();
+
                                         const impression = document.querySelector('input[name="p-impression"]').value.trim();
                                         const physician = document.querySelector('input[name="physician"]').value.trim();
                                         const licenseNo = document.querySelector('input[name="LicNo"]').value.trim();
                                         const notes = document.getElementById('notes').value.trim();
 
-                                        if (!patientName) {
-                                            alert("Patient name is required.");
-                                            return;
-                                        }
-                                        if (!age) {
-                                            alert("Patient age is required.");
-                                            return;
-                                        }
-                                        if (!impression) {
-                                            alert("Impression is required.");
-                                            return;
-                                        }
-                                        if (!physician) {
-                                            alert("Visiting Physician is required.");
-                                            return;
-                                        }
-                                        if (!licenseNo) {
-                                            alert("License Number is required.");
-                                            return;
-                                        }
-                                        if (!notes) {
-                                            alert("Notes cannot be empty.");
+                                        if (!patientName || !age || !sex || !impression || !physician || !licenseNo || !notes) {
+                                            alert("All fields are required.");
                                             return;
                                         }
 
                                         const data = {
                                             client_id: document.getElementById('client-id').value,
-                                            patient_name: document.getElementById('name').value,
-                                            age: document.getElementById('age').value,
-
-                                            impression: document.querySelector('input[name="p-impression"]').value.trim(),
-                                            physician: document.querySelector('input[name="physician"]').value.trim(),
-                                            license_no: document.querySelector('input[name="LicNo"]').value.trim(),
-                                            notes: document.getElementById('notes').value.trim(),
+                                            patient_name: patientName,
+                                            age: age,
+                                            sex: sex,
+                                            impression: impression,
+                                            physician: physician,
+                                            license_no: licenseNo,
+                                            notes: notes,
                                             date_created: new Date().toISOString().slice(0, 10)
                                         };
 
@@ -1142,24 +1105,18 @@ $email = $current_user['email'] ?? '';
                                             .then(response => {
                                                 const statusDiv = document.getElementById("saveRxStatus");
                                                 if (response.success) {
-                                                    statusDiv.innerHTML = '<p class="success">Data saved successfully!</p>';
-                                                    setTimeout(() => {
-                                                        statusDiv.style.display = "none";
-                                                    }, 4000);
-
+                                                    statusDiv.innerHTML = '<p class="success">Prescription saved successfully.</p>';
                                                 } else {
-                                                    statusDiv.style.color = "red";
-                                                    statusDiv.textContent = "Error saving prescription: " + response.message;
-                                                    statusDiv.style.display = "block";
+                                                    statusDiv.innerHTML = '<p class="error">' + response.message + '</p>';
                                                 }
-
                                             })
                                             .catch(err => {
-                                                console.error("AJAX error:", err);
-                                                statusDiv.innerHTML = '<p style="color: red;">Something went wrong while saving.</p>';
+                                                console.error(err);
+                                                alert("Error saving prescription.");
                                             });
                                     }
                                 </script>
+
 
                             </div>
                         </div>
