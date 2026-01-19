@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-
+$allpatients = fetchAllPatients();
 $students = fetchStudents();
 $faculties = fetchFaculty();
 $personnel = fetchPersonnel();
@@ -189,6 +189,7 @@ $email = $current_user['email'] ?? '';
                             <div class="select-wrapper">
                                 <i class="fas fa-filter"></i>
                                 <select id="clientTypeDropdown" class="client-type-dropdown">
+                                    <option value="AllPatients">All Patients</option>
                                     <option value="Students">Regular Students</option>
                                     <option value="Freshman">Incoming Freshman Students</option>
                                     <option value="Faculty">Teaching Personnels</option>
@@ -592,7 +593,62 @@ $email = $current_user['email'] ?? '';
                 </style>
 
                 <!--====================================================================================-->
+                <div id="AllPatients" class="tab-content" style="display: block;">
 
+                    <table class="table table-bordered table-hover align-middle" id="AllPatientsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Profile</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Department</th>
+                                <th class="actions-column">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="clientTableBody">
+                            <?php foreach ($allpatients as $patient): ?>
+                                <tr class="client-row" data-href="ClientProfile.php?id=<?= urlencode($patient['ClientID']) ?>">
+                                    <td class="searchable-id"><?= htmlspecialchars($patient['ClientID']) ?></td>
+                                    <td>
+                                        <?php
+                                        $profilePath = !empty($patient['profilePicturePath']) ? '../../uploads/' . $patient['profilePicturePath'] : '../../uploads/profilepic2.png';
+                                        ?>
+                                        <img src="<?= htmlspecialchars($profilePath) ?>" alt="Profile" class="rounded-circle" width="50" height="50">
+                                    </td>
+                                    <td class="searchable-name">
+                                        <?= htmlspecialchars($patient['FullName']) ?>
+                                    </td>
+                                    <td class="email-td">
+                                        <?= htmlspecialchars($patient['Email']) ?>
+                                    </td>
+                                    <td class="course-td">
+                                        <?= htmlspecialchars($patient['Course']) ?>
+                                    </td>
+                                    <td class="department-td">
+                                        <?= htmlspecialchars($patient['Department']) ?>
+                                    </td>
+
+                                    <td class="actions-column">
+                                        <div class="action-buttons">
+                                            <a href="ClientProfile.php?id=<?= $patient['ClientID'] ?>" title="Edit User">
+                                                <img class="table-icon-img" src="assets/images/edit-blue-icon.svg" alt="Edit Icon" style="border-radius: 0; object-fit: unset; width: 20px; height: 20px;">
+                                            </a>
+
+                                            <a class="row-delete-btn"
+                                                data-id="<?= $patient['ClientID'] ?>"
+                                                data-url="manageclients.dbf/delete_client.php"
+                                                title="Delete User">
+                                                <i class="fa-solid fa-trash delete-icon"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
                 <div id="Freshman" class="tab-content" style="display: none;">
 
                     <table class="table table-bordered table-hover align-middle" id="freshmanstudentsTable">
@@ -720,7 +776,7 @@ $email = $current_user['email'] ?? '';
                 </div>
 
                 <!--====================================================================================-->
-                <div id="Students" class="tab-content" style="display: block;">
+                <div id="Students" class="tab-content" style="display: none;">
 
                     <table class="table table-bordered table-hover align-middle" id="studentsTable">
                         <thead>

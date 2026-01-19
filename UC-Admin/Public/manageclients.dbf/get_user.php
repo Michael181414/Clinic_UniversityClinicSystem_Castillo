@@ -8,13 +8,12 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../../../index.php');
     exit;
 }
-function getFilteredClients($clientType, $globalSearch = '', $page = 1, $perPage = 30)
+function getFilteredClients($clientType = 'All', $globalSearch = '', $limit = 30, $offset = 0)
 {
     $pdo = pdo_connect_mysql();
-    $offset = ($page - 1) * $perPage;
 
     $sql = "
-        SELECT 
+        SELECT
             c.ClientID,
             c.profilePicturePath,
             CONCAT(c.Firstname, ' ', c.Lastname) AS FullName,
@@ -24,69 +23,90 @@ function getFilteredClients($clientType, $globalSearch = '', $page = 1, $perPage
             c.ClientType
         FROM clients c
         LEFT JOIN personalinfo pi ON c.ClientID = pi.ClientID
-        WHERE c.ClientType = :clientType
-        AND c.deleted_at IS NULL
+        WHERE c.deleted_at IS NULL
     ";
 
-    $searchTerms = [];
-    if (!empty($globalSearch)) {
+    $params = [];
 
-        $keywords = explode(' ', $globalSearch);
+    // ✅ ClientType filter only when NOT AllPatients
+    if ($clientType !== 'All' && $clientType !== '') {
+        $sql .= " AND c.ClientType = :clientType";
+        $params[':clientType'] = $clientType;
+    }
+
+    // 🔍 Global search
+    if (!empty($globalSearch)) {
+        $keywords = preg_split('/\s+/', trim($globalSearch));
+        $searchParts = [];
 
         foreach ($keywords as $index => $keyword) {
             $param = ":keyword$index";
-            $searchParts[] = "(c.ClientID LIKE $param 
-                OR CONCAT(c.Firstname, ' ', c.Lastname) LIKE $param 
-                OR c.Email LIKE $param 
-                OR c.Department LIKE $param 
-                OR c.ClientType LIKE $param)";
-            $searchTerms[$param] = "%$keyword%";
+            $searchParts[] = "(
+                c.ClientID LIKE $param OR
+                CONCAT(c.Firstname, ' ', c.Lastname) LIKE $param OR
+                c.Email LIKE $param OR
+                c.Department LIKE $param OR
+                c.ClientType LIKE $param
+            )";
+            $params[$param] = "%$keyword%";
         }
 
-        if (!empty($searchParts)) {
-            $sql .= " AND (" . implode(" AND ", $searchParts) . ")";
-        }
+        $sql .= " AND (" . implode(" AND ", $searchParts) . ")";
     }
 
-    $sql .= " ORDER BY c.ClientID DESC LIMIT :limit OFFSET :offset";
+    $sql .= "
+        ORDER BY c.ClientID DESC
+        LIMIT :limit OFFSET :offset
+    ";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':clientType', $clientType, PDO::PARAM_STR);
-    $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
-    foreach ($searchTerms as $param => $value) {
-        $stmt->bindValue($param, $value, PDO::PARAM_STR);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value, PDO::PARAM_STR);
     }
 
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+
     $stmt->execute();
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function countFilteredClients($clientType, $globalSearch = '')
+
+function countFilteredClients($clientType = 'All', $globalSearch = '')
 {
     $pdo = pdo_connect_mysql();
 
     $sql = "
-        SELECT COUNT(*) FROM clients c
+        SELECT COUNT(*)
+        FROM clients c
         LEFT JOIN personalinfo pi ON c.ClientID = pi.ClientID
-        WHERE c.ClientType = :clientType
-        AND c.deleted_at IS NULL
+        WHERE c.deleted_at IS NULL
     ";
 
-    $searchTerms = [];
+    $params = [];
 
+    // ✅ Apply ClientType filter ONLY if not AllPatients
+    if ($clientType !== 'All' && $clientType !== '') {
+        $sql .= " AND c.ClientType = :clientType";
+        $params[':clientType'] = $clientType;
+    }
+
+    // 🔍 Global search
     if (!empty($globalSearch)) {
-        $keywords = explode(' ', $globalSearch);
+        $keywords = preg_split('/\s+/', trim($globalSearch));
+        $searchParts = [];
 
         foreach ($keywords as $index => $keyword) {
             $param = ":keyword$index";
-            $searchParts[] = "(c.ClientID LIKE $param 
-                OR CONCAT(c.Firstname, ' ', c.Lastname) LIKE $param 
-                OR c.Email LIKE $param 
-                OR c.Department LIKE $param 
-                OR c.ClientType LIKE $param)";
-            $searchTerms[$param] = "%$keyword%";
+            $searchParts[] = "(
+                c.ClientID LIKE $param OR
+                CONCAT(c.Firstname, ' ', c.Lastname) LIKE $param OR
+                c.Email LIKE $param OR
+                c.Department LIKE $param OR
+                c.ClientType LIKE $param
+            )";
+            $params[$param] = "%$keyword%";
         }
 
         if (!empty($searchParts)) {
@@ -95,14 +115,13 @@ function countFilteredClients($clientType, $globalSearch = '')
     }
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':clientType', $clientType, PDO::PARAM_STR);
 
-    foreach ($searchTerms as $param => $value) {
-        $stmt->bindValue($param, $value, PDO::PARAM_STR);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value, PDO::PARAM_STR);
     }
 
     $stmt->execute();
-    return $stmt->fetchColumn();
+    return (int) $stmt->fetchColumn();
 }
 
 $clientType = $_GET['client_type'] ?? '';
@@ -170,6 +189,30 @@ $totalPages = ceil($totalClients / $perPage);
 $clients = getFilteredClients($clientType, $idFilter, $page, $perPage);
 
 // Extra fetch functions, all updated with "AND c.deleted_at IS NULL"
+
+function fetchAllPatients($limit = 30, $offset = 0)
+{
+    $pdo = pdo_connect_mysql();
+    $stmt = $pdo->prepare("
+        SELECT 
+            c.ClientID,
+            c.profilePicturePath,
+            CONCAT(c.Firstname, ' ', c.Lastname) AS FullName,
+            c.Email,
+            COALESCE(pi.Course, 'N/A') AS Course,
+            c.Department,
+            c.ClientType
+        FROM clients c
+        LEFT JOIN personalinfo pi ON c.ClientID = pi.ClientID
+        WHERE c.deleted_at IS NULL
+        ORDER BY c.ClientID DESC
+        LIMIT :limit OFFSET :offset
+    ");
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 function fetchStudents($limit = 30, $offset = 0)
 {

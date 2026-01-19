@@ -87,15 +87,15 @@ loadFilteredData = function (tabId, clientType, searchId) {
 function loadFilteredData(tabId, clientType, searchId) {
   return fetch(
     `manageclients.dbf/get_user.php?client_type=${clientType}&id_filter=${encodeURIComponent(
-      searchId
-    )}`
+      searchId,
+    )}`,
   )
     .then((response) => response.text())
     .then((html) => {
       // Replace "View" buttons with eye icons in the returned HTML
       const updatedHtml = html.replace(
         /<a href="ClientProfile\.php\?id=([^"]+)" class="btn btn-primary btn-sm">View<\/a>/g,
-        '<a href="ClientProfile.php?id=$1" title="View Profile"><i class="fas fa-eye eye-icon" style="color: #000; font-size: 18px;"></i></a>'
+        '<a href="ClientProfile.php?id=$1" title="View Profile"><i class="fas fa-eye eye-icon" style="color: #000; font-size: 18px;"></i></a>',
       );
 
       const tbody = document.querySelector(`#${tabId} tbody`);
@@ -352,27 +352,21 @@ document.querySelectorAll(".row-delete-btn").forEach((btn) => {
   });
 });
 //===============================================================================
-//This is part is the search users functionalities
 document.addEventListener("DOMContentLoaded", function () {
   const searchInput = document.getElementById("searchInput");
   const resetBtn = document.getElementById("resetSearch");
-  const tabIds = [
-    "Students",
-    "Freshman",
-    "Faculty",
-    "Personnel",
-    "NewPersonnel",
-  ];
-  const clientTypes = [
-    "Student",
-    "Freshman",
-    "Faculty",
-    "Personnel",
-    "NewPersonnel",
-  ];
+
+  const tabConfig = {
+    AllPatients: "All",
+    Students: "Student",
+    Freshman: "Freshman",
+    Faculty: "Faculty",
+    Personnel: "Personnel",
+    NewPersonnel: "NewPersonnel",
+  };
+
   let debounceTimer;
 
-  // Attach search input
   if (searchInput) {
     searchInput.addEventListener("input", function () {
       clearTimeout(debounceTimer);
@@ -384,7 +378,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Reset search
   if (resetBtn) {
     resetBtn.addEventListener("click", function () {
       searchInput.value = "";
@@ -393,19 +386,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Load filtered data for all tabs
   function loadAllTabs(searchId) {
-    tabIds.forEach((tabId, index) => {
-      loadFilteredData(tabId, clientTypes[index], searchId);
+    Object.entries(tabConfig).forEach(([tabId, clientType]) => {
+      loadFilteredData(tabId, clientType, searchId);
     });
   }
 
-  // Fetch filtered data
   function loadFilteredData(tabId, clientType, searchId) {
     fetch(
-      `manageclients.dbf/get_user.php?client_type=${clientType}&id_filter=${encodeURIComponent(
-        searchId
-      )}`
+      `manageclients.dbf/get_user.php?client_type=${encodeURIComponent(
+        clientType,
+      )}&id_filter=${encodeURIComponent(searchId)}`,
     )
       .then((response) => response.text())
       .then((html) => {
@@ -418,10 +409,9 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((err) => console.error("Error loading data:", err));
   }
 
-  // Update URL without reloading page
   function updateUrl(searchId) {
     const url = new URL(window.location);
-    if (searchId === "") {
+    if (!searchId) {
       url.searchParams.delete("id_filter");
     } else {
       url.searchParams.set("id_filter", searchId);
@@ -429,21 +419,18 @@ document.addEventListener("DOMContentLoaded", function () {
     window.history.replaceState({}, "", url);
   }
 
-  // Make table rows clickable
   function attachRowClickEvents(selector) {
-    const rows = document.querySelectorAll(selector);
-    rows.forEach((row) => {
+    document.querySelectorAll(selector).forEach((row) => {
       row.addEventListener("click", function (e) {
         if (e.target.closest(".row-delete-btn")) return;
-        const url = this.dataset.href;
-        if (url) window.location.href = url;
+        if (this.dataset.href) window.location.href = this.dataset.href;
       });
     });
   }
 
-  // On page load: populate search if id_filter is in URL
   const urlParams = new URLSearchParams(window.location.search);
   const idFilter = urlParams.get("id_filter");
+
   if (idFilter && searchInput) {
     searchInput.value = idFilter;
     loadAllTabs(idFilter);
@@ -451,15 +438,15 @@ document.addEventListener("DOMContentLoaded", function () {
     loadAllTabs("");
   }
 
-  // Restore active tab from sessionStorage
   const activeTab = sessionStorage.getItem("activeTab");
   if (activeTab) {
     const tab = document.querySelector(
-      `.nav-tabs .nav-link[data-bs-target="${activeTab}"]`
+      `.nav-tabs .nav-link[data-bs-target="${activeTab}"]`,
     );
     if (tab) tab.click();
   }
 });
+
 //===================================================================================
 let selectedUserId = null;
 let selectedUrl = null;
